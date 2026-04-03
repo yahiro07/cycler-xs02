@@ -37,6 +37,7 @@
 /* Begin PBXFileReference section */
 		3CC606142F801ADD00B16DA7 /* Project1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Project1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CC6063A2F801ADE00B16DA7 /* Project1Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Project1Extension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CC606B52F801C1200B16DA7 /* DspCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DspCore.xcodeproj; path = ../DspCore/DspCore.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -100,6 +101,7 @@
 			children = (
 				3CC606162F801ADD00B16DA7 /* Project1 */,
 				3CC6063E2F801ADE00B16DA7 /* Project1Extension */,
+				3CC606B52F801C1200B16DA7 /* DspCore.xcodeproj */,
 				3CC606152F801ADD00B16DA7 /* Products */,
 			);
 			sourceTree = "<group>";
