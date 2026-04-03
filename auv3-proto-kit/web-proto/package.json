@@ -1,5 +1,5 @@
 {
-  "name": "web_proto",
+  "name": "web-proto",
   "devDependencies": {
     "vite": "^8.0.3"
   },
