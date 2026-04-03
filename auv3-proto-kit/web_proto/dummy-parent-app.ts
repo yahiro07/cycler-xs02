@@ -1,4 +1,4 @@
-import { DspCore, ParameterId } from "../dsp_proto/main";
+import { DspCore, ParameterId } from "../dsp_proto/dsp-core";
 
 type MessageFromUi =
   | { type: "uiLoaded" }
