@@ -15,7 +15,6 @@
 #import <vector>
 
 #import "Project1ExtensionParameterAddresses.h"
-#import "SinOscillator.h"
 
 #import "../../../../dsp/dsp-core.h"
 
@@ -31,7 +30,9 @@ private:
 public:
   void initialize(int channelCount, double inSampleRate) {
     mSampleRate = inSampleRate;
-    mSinOsc = SinOscillator(inSampleRate);
+    if (mDspCore) {
+      mDspCore->prepareProcessing(inSampleRate, mMaxFramesToRender);
+    }
   }
 
   void deInitialize() {}
@@ -44,6 +45,9 @@ public:
   // MARK: - Parameter Getter / Setter
   // Add a case for each parameter in Project1ExtensionParameterAddresses.h
   void setParameter(AUParameterAddress address, AUValue value) {
+    if (mDspCore) {
+      mDspCore->setParameter(address, value);
+    }
     switch (address) {
     case Project1ExtensionParameterAddress::gain:
       mGain = value;
@@ -112,18 +116,10 @@ public:
                            nullptr /* currentMeasureDownbeatPosition */);
     }
 
-    float tmpSample;
-
-    // Generate per sample dsp before assigning it to out
-    for (UInt32 frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-      // Do your frame by frame dsp here...
-      mDspCore->processAudio(&tmpSample, &tmpSample, 1);
-      // const auto sample = mSinOsc.process() * mNoteEnvelope * mGain;
-      auto sample = tmpSample * mGain;
-
-      for (UInt32 channel = 0; channel < outputBuffers.size(); ++channel) {
-        outputBuffers[channel][frameIndex] = sample;
-      }
+    if (mDspCore && outputBuffers.size() >= 2) {
+      mDspCore->processAudio(outputBuffers[0], outputBuffers[1], frameCount);
+    } else if (mDspCore && outputBuffers.size() == 1) {
+      mDspCore->processAudio(outputBuffers[0], outputBuffers[0], frameCount);
     }
   }
 
@@ -173,21 +169,18 @@ public:
 
     switch (message.channelVoice2.status) {
     case kMIDICVStatusNoteOff: {
-      mNoteEnvelope = 0.0;
+      if (mDspCore) {
+        mDspCore->noteOff(note.number);
+      }
     } break;
 
     case kMIDICVStatusNoteOn: {
       const auto velocity = message.channelVoice2.note.velocity;
-      const auto freqHertz = MIDINoteToFrequency(note.number);
-
-      mSinOsc = SinOscillator(mSampleRate);
-
-      // Set frequency on per channel oscillator
-      mSinOsc.setFrequency(freqHertz);
-
-      // Use velocity to set amp envelope level
-      mNoteEnvelope =
-          (double)velocity / (double)std::numeric_limits<std::uint16_t>::max();
+      if (mDspCore) {
+        mDspCore->noteOn(note.number,
+                         (double)velocity /
+                             (double)std::numeric_limits<std::uint16_t>::max());
+      }
     } break;
 
     default:
@@ -200,10 +193,7 @@ public:
 
   double mSampleRate = 44100.0;
   double mGain = 1.0;
-  double mNoteEnvelope = 0.0;
 
   bool mBypassed = false;
   AUAudioFrameCount mMaxFramesToRender = 1024;
-
-  SinOscillator mSinOsc;
 };
