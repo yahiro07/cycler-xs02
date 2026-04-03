@@ -1,4 +1,4 @@
-#include "main.h"
+#include "dsp-core.h"
 #include <cstdlib>
 
 class DspCore : public IDspCore {
