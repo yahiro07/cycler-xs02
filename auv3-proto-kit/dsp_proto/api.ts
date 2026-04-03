@@ -1,4 +1,4 @@
-interface IDspCore {
+export interface IDspCore {
   prepareProcessing(sampleRate: number, maxFrames: number): void;
   setParameter(id: number, value: number): void;
   noteOn(noteNumber: number, velocity: number): void;
