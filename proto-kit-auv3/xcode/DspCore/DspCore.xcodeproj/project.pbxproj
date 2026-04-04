@@ -12,7 +12,7 @@
 
 /* Begin PBXFileReference section */
 		3C057B2F2F8017B700876728 /* libDspCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDspCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		3CC607592F80251400B16DA7 /* dsp-core.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "dsp-core.cpp"; path = "/Users/ore/Documents/projects/yahiro/xs/auv3-proto-kit/dsp/dsp-core.cpp"; sourceTree = "<absolute>"; };
+		3CC607592F80251400B16DA7 /* dsp-core.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "dsp-core.cpp"; path = "../../dsp/dsp-core.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
