@@ -65,6 +65,8 @@ open class CommonAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   nonisolated public func createAudioUnit(with componentDescription: AudioComponentDescription)
     throws -> AUAudioUnit
   {
+    print("createAudioUnit 1903")
+
     return try DispatchQueue.main.sync {
 
       audioUnit = try Project1ExtensionAudioUnit(

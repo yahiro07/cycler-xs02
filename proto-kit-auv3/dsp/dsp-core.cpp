@@ -1,4 +1,5 @@
 #include "dsp-core.h"
+#include <cmath>
 #include <cstdlib>
 
 enum class ParameterId {
@@ -9,15 +10,10 @@ enum class ParameterId {
   oscVolume,
 };
 
-enum class OscWave {
-  Saw = 0,
-  Square,
-  Sine,
-  Noise
-};
+enum class OscWave { Saw = 0, Square, Sine, Noise };
 
 struct ParametersSuit {
-  bool oscEnabled
+  bool oscEnabled;
   OscWave oscWave;
   float oscPitch;
   float oscVolume;
@@ -30,6 +26,7 @@ private:
   bool gateOn = false;
   ParametersSuit parameters;
   float phase = 0.0;
+
 public:
   void prepareProcessing(double sampleRate, uint32_t maxFrames) override {
     this->sampleRate = sampleRate;
@@ -55,11 +52,25 @@ public:
     }
   }
   void processAudio(float *bufferL, float *bufferR, uint32_t frames) override {
-    const double noteNumber = this->noteNumber + this->parameters.oscPitch * 24 - 12;
-    const double freq = 440 * std::pow(2, (noteNumber - 69) / 12);
+    if (1) {
+      for (uint32_t i = 0; i < frames; i++) {
+        auto y = (rand() / (float)RAND_MAX * 2.0 - 1.0) * 0.1;
+        bufferL[i] = y;
+        bufferR[i] = y;
+      }
+      return;
+    }
+    if (this->sampleRate == 0.0)
+      return;
+
+    const double noteNumber =
+        this->noteNumber + this->parameters.oscPitch * 24 - 12;
+    const double freq = 440 * powf(2, (noteNumber - 69) / 12);
     const double phaseInc = freq / this->sampleRate;
-    const float gain = this->gateOn && this->parameters.oscEnabled ? this->parameters.oscVolume : 0;
-    
+    const float gain = this->gateOn && this->parameters.oscEnabled
+                           ? this->parameters.oscVolume
+                           : 0;
+
     for (uint32_t i = 0; i < frames; i++) {
       this->phase += phaseInc;
       this->phase -= std::floor(this->phase);
