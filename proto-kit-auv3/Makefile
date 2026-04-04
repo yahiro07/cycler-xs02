@@ -7,3 +7,6 @@ build:
 
 run: build
 	$(DERIVED_DATA)/Build/Products/Debug/Project1.app/Contents/MacOS/Project1
+
+proto_dev:
+	cd web-proto-root && npm run dev
