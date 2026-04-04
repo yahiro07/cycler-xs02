@@ -18,7 +18,7 @@
 #import "Project1ExtensionParameterAddresses.h"
 #import "SinOscillator.h"
 
-#include "../dsp/dsp-core.h"
+#include "./dsp/dsp-core.h"
 
 /*
  Project1ExtensionDSPKernel
