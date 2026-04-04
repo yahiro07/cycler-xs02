@@ -1,10 +1,19 @@
 import AudioToolbox
 import Foundation
 
+//must be synced with c++ definitions
+enum ParameterId: UInt64 {
+  case parametersVersion = 0
+  case oscEnabled
+  case oscWave
+  case oscPitch
+  case oscVolume
+}
+
 let Project1ExtensionParameterSpecs = ParameterTreeSpec {
   ParameterGroupSpec(identifier: "global", name: "Global") {
     ParameterSpec(
-      address: 0,
+      address: ParameterId.parametersVersion.rawValue,
       identifier: "parametersVersion",
       name: "Parameters Version",
       units: .generic,
@@ -13,7 +22,7 @@ let Project1ExtensionParameterSpecs = ParameterTreeSpec {
       flags: [AudioUnitParameterOptions.flag_IsGlobalMeta]
     )
     ParameterSpec(
-      address: 1,
+      address: ParameterId.oscEnabled.rawValue,
       identifier: "oscEnabled",
       name: "Osc Enabled",
       units: .boolean,
@@ -35,7 +44,7 @@ let Project1ExtensionParameterSpecs = ParameterTreeSpec {
       valueStrings: ["Saw", "Square", "Sine", "Noise"],
     )
     ParameterSpec(
-      address: 3,
+      address: ParameterId.oscPitch.rawValue,
       identifier: "oscPitch",
       name: "Osc Pitch",
       units: .generic,
@@ -43,7 +52,7 @@ let Project1ExtensionParameterSpecs = ParameterTreeSpec {
       defaultValue: 0.5,
     )
     ParameterSpec(
-      address: 4,
+      address: ParameterId.oscVolume.rawValue,
       identifier: "oscVolume",
       name: "Osc Volume",
       units: .generic,

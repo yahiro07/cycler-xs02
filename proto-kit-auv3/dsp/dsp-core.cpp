@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 enum class ParameterId {
-  parametersVersion = 1,
+  parametersVersion = 0,
   oscEnabled,
   oscWave,
   oscPitch,
