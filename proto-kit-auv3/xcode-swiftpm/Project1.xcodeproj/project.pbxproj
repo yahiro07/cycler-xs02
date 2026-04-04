@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C572C8B2F81131A006D2665 /* MyAudioPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 3C572C8A2F81131A006D2665 /* MyAudioPlugin */; };
 		3CC608772F8110FC00B16DA7 /* Project1Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3CC608762F8110FC00B16DA7 /* Project1Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -49,17 +50,6 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		3CC608A42F8110FC00B16DA7 /* Exceptions for "Project1Extension" folder in "Copy Bundle Resources" phase from "Project1Extension" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 3CC608742F8110FC00B16DA7 /* Resources */;
-			membershipExceptions = (
-				Common/DSP/Project1ExtensionAUProcessHelper.hpp,
-				DSP/Project1ExtensionDSPKernel.hpp,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3CC608522F8110FB00B16DA7 /* Project1 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -70,7 +60,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				3CC608A02F8110FC00B16DA7 /* Exceptions for "Project1Extension" folder in "Project1Extension" target */,
-				3CC608A42F8110FC00B16DA7 /* Exceptions for "Project1Extension" folder in "Copy Bundle Resources" phase from "Project1Extension" target */,
 			);
 			path = Project1Extension;
 			sourceTree = "<group>";
@@ -89,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C572C8B2F81131A006D2665 /* MyAudioPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +147,7 @@
 			);
 			name = Project1Extension;
 			packageProductDependencies = (
+				3C572C8A2F81131A006D2665 /* MyAudioPlugin */,
 			);
 			productName = Project1Extension;
 			productReference = 3CC608762F8110FC00B16DA7 /* Project1Extension.appex */;
@@ -189,6 +180,9 @@
 			);
 			mainGroup = 3CC608472F8110FB00B16DA7;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3C572C892F81131A006D2665 /* XCLocalSwiftPackageReference "MyAudioPluginPackage" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3CC608512F8110FB00B16DA7 /* Products */;
 			projectDirPath = "";
@@ -279,11 +273,12 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Project1Extension/Common/Project1Extension-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OBJC_INTEROP_MODE = objcxx;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
+				USE_HEADERMAP = NO;
 				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
@@ -324,11 +319,12 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Project1Extension/Common/Project1Extension-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OBJC_INTEROP_MODE = objcxx;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
+				USE_HEADERMAP = NO;
 				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
@@ -586,6 +582,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		3C572C892F81131A006D2665 /* XCLocalSwiftPackageReference "MyAudioPluginPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = MyAudioPluginPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3C572C8A2F81131A006D2665 /* MyAudioPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MyAudioPlugin;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3CC608482F8110FB00B16DA7 /* Project object */;
 }
