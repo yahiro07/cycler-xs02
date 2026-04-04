@@ -8,7 +8,6 @@
 #import <span>
 #import <vector>
 
-#import "Project1ExtensionParameterAddresses.h"
 #import "SinOscillator.h"
 
 #include "./dsp/dsp-core.h"
@@ -39,23 +38,24 @@ public:
   // MARK: - Parameter Getter / Setter
   // Add a case for each parameter in Project1ExtensionParameterAddresses.h
   void setParameter(AUParameterAddress address, AUValue value) {
-    switch (address) {
-    case Project1ExtensionParameterAddress::gain:
-      mGain = value;
-      break;
-    }
+    // switch (address) {
+    // case Project1ExtensionParameterAddress::gain:
+    //   mGain = value;
+    //   break;
+    // }
   }
 
   AUValue getParameter(AUParameterAddress address) {
     // Return the goal. It is not thread safe to return the ramping value.
 
-    switch (address) {
-    case Project1ExtensionParameterAddress::gain:
-      return (AUValue)mGain;
+    // switch (address) {
+    // case Project1ExtensionParameterAddress::gain:
+    //   return (AUValue)mGain;
 
-    default:
-      return 0.f;
-    }
+    // default:
+    //   return 0.f;
+    // }
+    return 0.f;
   }
 
   // MARK: - Max Frames
