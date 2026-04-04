@@ -17,7 +17,7 @@ struct PluginMainView: View {
       WebViewComponent { webViewIo in
         webViewIo.loadURL("http://localhost:3000?debug=1")
         // webViewIo.loadURL("app://www-bundles/index.html")
-        // webViewHub.bindWebViewIo(webViewIo)
+        webViewBridge.bindWebViewIo(webViewIo)
       }
     }
     .border(.green, width: 2)
