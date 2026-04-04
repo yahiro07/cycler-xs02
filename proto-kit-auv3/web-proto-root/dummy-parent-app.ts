@@ -1,4 +1,5 @@
-import { DspCore, ParameterId } from "../dsp-proto/dsp-core";
+import { ParameterId } from "../dsp-proto/dsp-core";
+import { createDspCoreWorkletWrapper } from "./dsp-dev-support/worklet-wrapper";
 
 type MessageFromUi =
   | { type: "uiLoaded" }
@@ -26,9 +27,7 @@ const windowTyped = window as unknown as {
   pluginEditorCallback?: (msg: MessageFromApp) => void;
 };
 
-
-//TODO: wrap with AudioWorklet
-const dspCore = new DspCore();
+const workletWrapper = createDspCoreWorkletWrapper();
 
 const draftParameterDefs: [number, string, number | boolean][] = [
   [ParameterId.parametersVersion, "parametersVersion", 1],
@@ -56,8 +55,14 @@ function onMessageFromUi(msg: MessageFromUi) {
   } else if (msg.type === "performEdit") {
     const id = parameterKeyToIdMap[msg.paramKey];
     if (id !== undefined) {
-      dspCore.setParameter(id, msg.value);
+      workletWrapper.setParameter(id, msg.value);
     }
+  } else if (msg.type === "noteOnRequest") {
+    workletWrapper.noteOn(msg.noteNumber, 1);
+    sendMessageToUi({ type: "hostNoteOn", noteNumber: msg.noteNumber });
+  } else if (msg.type === "noteOffRequest") {
+    workletWrapper.noteOff(msg.noteNumber);
+    sendMessageToUi({ type: "hostNoteOff", noteNumber: msg.noteNumber });
   }
 }
 
