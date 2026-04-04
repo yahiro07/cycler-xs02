@@ -2,6 +2,11 @@ import Combine
 import SwiftUI
 import WebKit
 
+private func serializeNSDictionaryToJsonString(_ dict: NSDictionary) -> String {
+  let data = try! JSONSerialization.data(withJSONObject: dict as Any, options: [])
+  return String(data: data, encoding: .utf8)!
+}
+
 private class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
   let handler: (String) -> Void
 
@@ -12,8 +17,9 @@ private class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
   func userContentController(
     _ userContentController: WKUserContentController, didReceive message: WKScriptMessage
   ) {
-    if let messageBody = message.body as? String {
-      handler(messageBody)
+    if let messageBody = message.body as? NSDictionary {
+      let str = serializeNSDictionaryToJsonString(messageBody)
+      handler(str)
     } else {
       logger.warn("Invalid message body type: \(type(of: message.body))")
     }
