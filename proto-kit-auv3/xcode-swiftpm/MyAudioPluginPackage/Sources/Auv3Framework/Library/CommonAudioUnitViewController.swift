@@ -10,7 +10,7 @@ private let log = Logger(
 open class CommonAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   var audioUnit: AUAudioUnit?
 
-  var hostingController: HostingController<Project1ExtensionMainView>?
+  var hostingController: HostingController<PluginMainView>?
 
   private var observation: NSKeyValueObservation?
 
@@ -103,10 +103,12 @@ open class CommonAudioUnitViewController: AUViewController, AUAudioUnitFactory {
       host.view.removeFromSuperview()
     }
 
-    guard let observableParameterTree = audioUnit.observableParameterTree else {
+    guard let parameterTree = audioUnit.parameterTree else {
       return
     }
-    let content = Project1ExtensionMainView(parameterTree: observableParameterTree)
+    let controllerFacade = ControllerFacade(
+      parameterTree: parameterTree, audioUnit: audioUnit)
+    let content = PluginMainView(controllerFacade)
     let host = HostingController(rootView: content)
     self.addChild(host)
     host.view.frame = self.view.bounds
