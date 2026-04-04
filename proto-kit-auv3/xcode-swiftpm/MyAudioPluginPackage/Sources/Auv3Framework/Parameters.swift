@@ -6,8 +6,8 @@
 //
 
 import AudioToolbox
+import Auv3DspCore
 import Foundation
-import MyDspCore
 
 let Project1ExtensionParameterSpecs = ParameterTreeSpec {
   ParameterGroupSpec(identifier: "global", name: "Global") {

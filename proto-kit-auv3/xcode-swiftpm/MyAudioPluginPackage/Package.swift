@@ -7,16 +7,16 @@ let package = Package(
   name: "MyAudioPlugin",
   platforms: [.macOS(.v14), .iOS(.v16)],
   products: [
-    .library(name: "MyAudioPlugin", targets: ["MyAuv3Framework"])
+    .library(name: "MyAudioPlugin", targets: ["Auv3Framework"])
   ],
   targets: [
     .target(
-      name: "MyDspCore",
+      name: "Auv3DspCore",
       publicHeadersPath: "include"
     ),
     .target(
-      name: "MyAuv3Framework",
-      dependencies: ["MyDspCore"],
+      name: "Auv3Framework",
+      dependencies: ["Auv3DspCore"],
       swiftSettings: [
         .interoperabilityMode(.Cxx)
       ]

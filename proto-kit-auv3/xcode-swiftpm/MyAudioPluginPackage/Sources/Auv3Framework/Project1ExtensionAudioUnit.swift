@@ -6,7 +6,7 @@
 //
 
 import AVFoundation
-import MyDspCore
+import Auv3DspCore
 
 public class Project1ExtensionAudioUnit: AUAudioUnit, @unchecked Sendable {
   // C++ Objects
