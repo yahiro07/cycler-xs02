@@ -1,6 +1,6 @@
-PROJECT := xcode/Project1/Project1.xcodeproj
+PROJECT := xcode-swiftpm/Project1.xcodeproj
 SCHEME := Project1Extension
-DERIVED_DATA := xcode/Project1/.build/Project1Extension
+DERIVED_DATA := xcode-swiftpm/.build/Project1Extension
 
 build:
 	xcodebuild -project "$(PROJECT)" -scheme "$(SCHEME)" -destination platform=macOS -derivedDataPath "$(DERIVED_DATA)" build
