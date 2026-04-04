@@ -16,9 +16,9 @@ class ControllerFacade: ControllerFacadeProtocol {
   }
 
   func applyParameterEditFromUi(_ identifier: String, _ value: Float) {
-    guard let parameter = parameterTree.value(forKey: identifier) as? AUParameter
+    guard let parameter = parameterTree.allParameters.first(where: { $0.identifier == identifier })
     else {
-      print("Parameter not found for: \(identifier)")
+      print("Parameter not found for: (identifier)")
       return
     }
     parameter.setValue(value, originator: nil)
