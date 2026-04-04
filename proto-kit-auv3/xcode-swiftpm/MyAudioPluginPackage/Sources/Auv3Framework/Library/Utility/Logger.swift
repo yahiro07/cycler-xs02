@@ -60,10 +60,9 @@ let logKindIcons: [String: String] = [
       udpLogger.pushLogLine(jsonText)
     }
   }
-  let loggerCore = LoggerCore()
 
   class LoggerEntry {
-
+    private let loggerCore = LoggerCore()
     private let subsystem: String
 
     init(subsystem: String) {
@@ -99,18 +98,11 @@ let logKindIcons: [String: String] = [
     }
   }
 
-  let logger = LoggerEntry(subsystem: "ext")
+  nonisolated(unsafe) let logger = LoggerEntry(subsystem: "ext")
 
 #else
 
-  class LoggerCore {
-    init() {}
-    func pushLogItem(_ item: LogItem) {
-    }
-  }
-  let loggerCore = LoggerCore()
-
-  class LoggerEntry {
+  final class LoggerEntry: Sendable {
     init() {}
     func log(_ message: String) {
     }
