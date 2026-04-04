@@ -1,6 +1,14 @@
 #include "dsp-core.h"
 #include <cstdlib>
 
+enum class ParameterId {
+  parametersVersion = 1,
+  oscEnabled,
+  oscWave,
+  oscPitch,
+  oscVolume,
+};
+
 class DspCore : public IDspCore {
 public:
   void prepareProcessing(double sampleRate, uint32_t maxFrames) override {}

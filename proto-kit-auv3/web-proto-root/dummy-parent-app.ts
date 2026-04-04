@@ -31,6 +31,7 @@ const windowTyped = window as unknown as {
 const dspCore = new DspCore();
 
 const draftParameterDefs: [number, string, number | boolean][] = [
+  [ParameterId.parametersVersion, "parametersVersion", 1],
   [ParameterId.oscEnabled, "oscEnabled", true],
   [ParameterId.oscWave, "oscWave", 0],
   [ParameterId.oscPitch, "oscPitch", 0.5],

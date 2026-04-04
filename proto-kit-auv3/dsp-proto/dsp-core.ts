@@ -1,7 +1,8 @@
 import { IDspCore } from "./api";
 
 export enum ParameterId {
-  oscEnabled = 0,
+  parametersVersion = 1,
+  oscEnabled,
   oscWave,
   oscPitch,
   oscVolume,
