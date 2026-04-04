@@ -21,7 +21,7 @@ private class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
 }
 
 class WebViewCoordinator: NSObject, WebViewIoProtocol, WKNavigationDelegate {
-  weak var webView: WKWebView?
+  weak var webViewInstance: WKWebView?
   private var receivers: [UUID: (String) -> Void] = [:]
   private var didCallOnBind = false
 
@@ -37,20 +37,20 @@ class WebViewCoordinator: NSObject, WebViewIoProtocol, WKNavigationDelegate {
 
   func loadURL(_ urlString: String) {
     logger.log("loadURL: \(urlString)")
-    guard let webView else { return }
+    guard let webViewInstance else { return }
     if let url = URL(string: urlString) {
-      webView.load(URLRequest(url: url))
+      webViewInstance.load(URLRequest(url: url))
     } else {
       logger.warn("Invalid URL string: \(urlString)")
     }
   }
 
   func sendMessage(_ message: String) {
-    guard let webView else { return }
+    guard let webViewInstance else { return }
     // sendMessageToWebViewRaw(webView: webView, jsDataDictionary: data)
     let jsCode =
       "window.pluginEditorCallback && window.pluginEditorCallback(\(message));"
-    webView.evaluateJavaScript(jsCode)
+    webViewInstance.evaluateJavaScript(jsCode)
   }
 
   @discardableResult
@@ -123,7 +123,7 @@ class MySchemeHandler: NSObject, WKURLSchemeHandler {
     _ webView: WKWebView,
     start urlSchemeTask: WKURLSchemeTask
   ) {
-    // logger.log("urlSchemeTask: \(urlSchemeTask.request.url?.absoluteString ?? "unknown")")
+    // print("urlSchemeTask: \(urlSchemeTask.request.url?.absoluteString ?? "unknown")")
 
     guard let url = urlSchemeTask.request.url else { return }
 
@@ -194,7 +194,7 @@ func commonWebViewSetup(
   webView.isInspectable = true
   webView.navigationDelegate = coordinator
 
-  coordinator.webView = webView
+  coordinator.webViewInstance = webView
 
   coordinator.callOnBindIfNeeded(onBind)
 
