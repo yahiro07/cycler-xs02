@@ -73,8 +73,8 @@ public:
           outputBuffers[channel][frameIndex] = sample;
         }
       }
+      return;
     }
-    return;
 
     if (mBypassed) {
       // Fill the 'outputBuffers' with silence

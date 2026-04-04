@@ -52,7 +52,7 @@ public:
     }
   }
   void processAudio(float *bufferL, float *bufferR, uint32_t frames) override {
-    if (1) {
+    if (0) {
       for (uint32_t i = 0; i < frames; i++) {
         auto y = (rand() / (float)RAND_MAX * 2.0 - 1.0) * 0.1;
         bufferL[i] = y;
