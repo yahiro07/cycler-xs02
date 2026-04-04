@@ -5,5 +5,5 @@
 //  Created by ore on 2026/04/04.
 //
 
-#import "Project1ExtensionParameterAddresses.h"
-#import "Project1ExtensionAUProcessHelper.hpp"
+#import "../Parameters/Project1ExtensionParameterAddresses.h"
+#import "./DSP/Project1ExtensionAUProcessHelper.hpp"

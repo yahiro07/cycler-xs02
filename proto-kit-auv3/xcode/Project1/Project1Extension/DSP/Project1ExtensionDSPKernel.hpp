@@ -14,7 +14,7 @@
 #import <span>
 #import <vector>
 
-#import "Project1ExtensionParameterAddresses.h"
+#import "../Parameters/Project1ExtensionParameterAddresses.h"
 
 #import "../../../../dsp/dsp-core.h"
 
