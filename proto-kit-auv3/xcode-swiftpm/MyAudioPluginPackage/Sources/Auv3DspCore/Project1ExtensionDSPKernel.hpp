@@ -8,8 +8,6 @@
 #import <span>
 #import <vector>
 
-#import "SinOscillator.h"
-
 #include "./dsp/dsp-core.h"
 
 /*
@@ -24,7 +22,6 @@ private:
 public:
   void initialize(int channelCount, double inSampleRate) {
     mSampleRate = inSampleRate;
-    mSinOsc = SinOscillator(inSampleRate);
     mDspCore->prepareProcessing(inSampleRate, mMaxFramesToRender);
   }
 
@@ -36,25 +33,12 @@ public:
   void setBypass(bool shouldBypass) { mBypassed = shouldBypass; }
 
   // MARK: - Parameter Getter / Setter
-  // Add a case for each parameter in Project1ExtensionParameterAddresses.h
   void setParameter(AUParameterAddress address, AUValue value) {
-    // switch (address) {
-    // case Project1ExtensionParameterAddress::gain:
-    //   mGain = value;
-    //   break;
-    // }
+    mDspCore->setParameter(address, value);
   }
 
   AUValue getParameter(AUParameterAddress address) {
-    // Return the goal. It is not thread safe to return the ramping value.
-
-    // switch (address) {
-    // case Project1ExtensionParameterAddress::gain:
-    //   return (AUValue)mGain;
-
-    // default:
-    //   return 0.f;
-    // }
+    // todo: return cached value
     return 0.f;
   }
 
@@ -73,11 +57,6 @@ public:
   // MARK: - MIDI Protocol
   MIDIProtocolID AudioUnitMIDIProtocol() const { return kMIDIProtocol_2_0; }
 
-  inline double MIDINoteToFrequency(int note) {
-    constexpr auto kMiddleA = 440.0;
-    return (kMiddleA / 32.0) * pow(2, ((note - 9) / 12.0));
-  }
-
   /**
    MARK: - Internal Process
 
@@ -87,16 +66,12 @@ public:
   void process(std::span<float *> outputBuffers,
                AUEventSampleTime bufferStartTime,
                AUAudioFrameCount frameCount) {
-
-    // for (auto i = 0; i < frameCount; ++i) {
-    //   mDspCore->processAudio(outputBuffers[0] + i, outputBuffers[1] + i, 1);
-    // }
-    for (UInt32 frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-      // const auto sample = (rand() / (float)RAND_MAX) * 2.0 - 1.0;
-      float sample;
-      mDspCore->processAudio(&sample, &sample, 1);
-      for (UInt32 channel = 0; channel < outputBuffers.size(); ++channel) {
-        outputBuffers[channel][frameIndex] = sample;
+    if (false) {
+      for (UInt32 frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
+        const auto sample = (rand() / (float)RAND_MAX) * 2.0 - 1.0;
+        for (UInt32 channel = 0; channel < outputBuffers.size(); ++channel) {
+          outputBuffers[channel][frameIndex] = sample;
+        }
       }
     }
     return;
@@ -121,14 +96,13 @@ public:
                            nullptr /* currentMeasureDownbeatPosition */);
     }
 
-    // Generate per sample dsp before assigning it to out
-    for (UInt32 frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-      // Do your frame by frame dsp here...
-      const auto sample = mSinOsc.process() * mNoteEnvelope * mGain;
-
-      for (UInt32 channel = 0; channel < outputBuffers.size(); ++channel) {
-        outputBuffers[channel][frameIndex] = sample;
-      }
+    if (outputBuffers.size() >= 2) {
+      auto bufferL = outputBuffers[0];
+      auto bufferR = outputBuffers[1];
+      mDspCore->processAudio(bufferL, bufferR, frameCount);
+    } else {
+      auto bufferL = outputBuffers[0];
+      mDspCore->processAudio(bufferL, bufferL, frameCount);
     }
   }
 
@@ -178,21 +152,12 @@ public:
 
     switch (message.channelVoice2.status) {
     case kMIDICVStatusNoteOff: {
-      mNoteEnvelope = 0.0;
+      mDspCore->noteOff(note.number);
     } break;
 
     case kMIDICVStatusNoteOn: {
       const auto velocity = message.channelVoice2.note.velocity;
-      const auto freqHertz = MIDINoteToFrequency(note.number);
-
-      mSinOsc = SinOscillator(mSampleRate);
-
-      // Set frequency on per channel oscillator
-      mSinOsc.setFrequency(freqHertz);
-
-      // Use velocity to set amp envelope level
-      mNoteEnvelope =
-          (double)velocity / (double)std::numeric_limits<std::uint16_t>::max();
+      mDspCore->noteOn(note.number, velocity);
     } break;
 
     default:
@@ -204,11 +169,7 @@ public:
   AUHostMusicalContextBlock mMusicalContextBlock;
 
   double mSampleRate = 44100.0;
-  double mGain = 1.0;
-  double mNoteEnvelope = 0.0;
 
   bool mBypassed = false;
   AUAudioFrameCount mMaxFramesToRender = 1024;
-
-  SinOscillator mSinOsc;
 };
