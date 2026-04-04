@@ -1,16 +1,9 @@
-//
-//  Project1ExtensionMainView.swift
-//  Project1Extension
-//
-//  Created by ore on 2026/04/04.
-//
-
 import SwiftUI
 
 struct Project1ExtensionMainView: View {
-    var parameterTree: ObservableAUParameterGroup
-    
-    var body: some View {
-        ParameterSlider(param: parameterTree.global.gain)
-    }
+  var parameterTree: ObservableAUParameterGroup
+
+  var body: some View {
+    ParameterSlider(param: parameterTree.global.gain)
+  }
 }

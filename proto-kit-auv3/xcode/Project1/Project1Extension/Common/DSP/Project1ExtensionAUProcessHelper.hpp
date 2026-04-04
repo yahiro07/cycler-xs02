@@ -1,10 +1,3 @@
-//
-//  Project1ExtensionAUProcessHelper.hpp
-//  Project1Extension
-//
-//  Created by ore on 2026/04/04.
-//
-
 #pragma once
 
 #import <AVFoundation/AVFoundation.h>

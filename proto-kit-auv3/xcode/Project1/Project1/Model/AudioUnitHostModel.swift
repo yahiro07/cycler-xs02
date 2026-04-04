@@ -1,10 +1,3 @@
-//
-//  AudioUnitHostModel.swift
-//  Project1
-//
-//  Created by ore on 2026/04/04.
-//
-
 import AVFAudio
 import AudioToolbox
 import CoreMIDI

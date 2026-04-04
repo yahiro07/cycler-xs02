@@ -1,10 +1,3 @@
-//
-//  AudioUnitViewController.swift
-//  Project1Extension
-//
-//  Created by ore on 2026/04/04.
-//
-
 import Combine
 import CoreAudioKit
 import SwiftUI

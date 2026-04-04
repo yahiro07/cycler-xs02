@@ -1,10 +1,3 @@
-//
-//  Project1ExtensionAudioUnit.swift
-//  Project1Extension
-//
-//  Created by ore on 2026/04/04.
-//
-
 import AVFoundation
 import Auv3DspCore
 

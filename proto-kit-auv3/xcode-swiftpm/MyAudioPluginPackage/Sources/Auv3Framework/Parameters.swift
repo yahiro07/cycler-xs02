@@ -1,10 +1,3 @@
-//
-//  Parameters.swift
-//  Project1Extension
-//
-//  Created by ore on 2026/04/04.
-//
-
 import AudioToolbox
 import Auv3DspCore
 import Foundation
