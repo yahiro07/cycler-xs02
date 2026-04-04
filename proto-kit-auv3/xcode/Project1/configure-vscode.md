@@ -5,6 +5,11 @@
 
 for files in Project1Extension folder
 
+## Things not covered in this settings
+
+Code Analysis and Completion for files in Project1 folder
+
+
 ## Tested Environment
 Mac Mini M4
 MacOS 26
