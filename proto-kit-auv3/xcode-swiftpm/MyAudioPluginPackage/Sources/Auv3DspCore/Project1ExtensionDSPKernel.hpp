@@ -37,11 +37,6 @@ public:
     mDspCore->setParameter(address, value);
   }
 
-  AUValue getParameter(AUParameterAddress address) {
-    // todo: return cached value
-    return 0.f;
-  }
-
   // MARK: - Max Frames
   AUAudioFrameCount maximumFramesToRender() const { return mMaxFramesToRender; }
 

@@ -11,6 +11,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   private var format: AVAudioFormat
 
+  let parameterStore = ParameterStore()
   private(set) var controllerFacade: ControllerFacade?
 
   @objc override init(
@@ -86,8 +87,12 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     self.parameterTree = parameterTree
     self.controllerFacade = ControllerFacade(audioUnit: self, parameterTree: parameterTree)
 
-    // Set the Parameter default values before setting up the parameter callbacks
+    let maxAddress = parameterTree.allParameters.map { $0.address }.max() ?? 0
+    let capacity = maxAddress + 1
+    parameterStore.setParameterCapacity(UInt32(capacity))
+
     for param in parameterTree.allParameters {
+      parameterStore.setParameter(param.address, param.value)
       kernel.setParameter(param.address, param.value)
     }
 
@@ -97,12 +102,13 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   private func setupParameterCallbacks() {
     // implementorValueObserver is called when a parameter changes value.
     parameterTree?.implementorValueObserver = { [weak self] param, value -> Void in
+      self?.parameterStore.setParameter(param.address, value)
       self?.kernel.setParameter(param.address, value)
     }
 
     // implementorValueProvider is called when the value needs to be refreshed.
     parameterTree?.implementorValueProvider = { [weak self] param in
-      return self!.kernel.getParameter(param.address)
+      return self?.parameterStore.getParameter(param.address) ?? 0.0
     }
 
     // A function to provide string representations of parameter values.
