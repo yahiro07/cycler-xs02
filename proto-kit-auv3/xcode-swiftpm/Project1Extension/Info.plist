@@ -10,13 +10,13 @@
 			<array>
 				<dict>
 					<key>description</key>
-					<string>Project1Extension</string>
+					<string>Project1Extension PRK3</string>
 					<key>factoryFunction</key>
 					<string>$(PRODUCT_MODULE_NAME).AudioUnitViewController</string>
 					<key>manufacturer</key>
 					<string>Myco</string>
 					<key>name</key>
-					<string>sonic: Project1Extension</string>
+					<string>sonic: Project1Extension PRK3</string>
 					<key>sandboxSafe</key>
 					<true/>
 					<key>subtype</key>
