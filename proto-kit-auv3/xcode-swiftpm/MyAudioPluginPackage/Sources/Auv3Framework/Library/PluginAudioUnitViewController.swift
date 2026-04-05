@@ -65,7 +65,7 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
       audioUnit = try PluginAudioUnit(
         componentDescription: componentDescription, options: [])
 
-      guard let audioUnit = self.audioUnit as? PluginAudioUnit else {
+      guard let audioUnit = self.audioUnit else {
         log.error("Unable to create Project1ExtensionAudioUnit")
         return audioUnit!
       }
