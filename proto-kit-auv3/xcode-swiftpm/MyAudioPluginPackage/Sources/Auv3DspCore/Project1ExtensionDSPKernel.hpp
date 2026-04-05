@@ -1,5 +1,8 @@
 #pragma once
 
+#include "./RtHostEvent.hpp"
+#include "./RtProcessorEvent.hpp"
+#include "./SpscQueue.hpp"
 #import <AudioToolbox/AudioToolbox.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <algorithm>
@@ -16,8 +19,18 @@
  */
 class Project1ExtensionDSPKernel {
 private:
+  // MARK: - Member Variables
+  AUHostMusicalContextBlock mMusicalContextBlock;
+
+  double mSampleRate = 44100.0;
+  bool mBypassed = false;
+  AUAudioFrameCount mMaxFramesToRender = 1024;
+
   std::unique_ptr<IDspCore> mDspCore =
       std::unique_ptr<IDspCore>(createDspCore());
+
+  SpscQueue<RtHostEvent, 256> rtHostEventQueue;
+  SpscQueue<RtProcessorEvent, 256> rtProcessorEventQueue;
 
 public:
   void initialize(int channelCount, double inSampleRate) {
@@ -26,6 +39,24 @@ public:
   }
 
   void deInitialize() {}
+
+  bool popRtHostEvent(RtHostEvent &outEvent) {
+    return rtHostEventQueue.pop(outEvent);
+  }
+
+  void pushParameterChange(uint64_t address, float value) {
+    rtProcessorEventQueue.push(
+        {RtProcessorEventType::Parameter, address, value});
+  }
+
+  void drainProcessorEvents() {
+    RtProcessorEvent e;
+    while (rtProcessorEventQueue.pop(e)) {
+      if (e.type == RtProcessorEventType::Parameter) {
+        mDspCore->setParameter(e.address, e.value);
+      }
+    }
+  }
 
   // MARK: - Bypass
   bool isBypassed() { return mBypassed; }
@@ -102,40 +133,21 @@ public:
   }
 
   void handleOneEvent(AUEventSampleTime now, AURenderEvent const *event) {
-    switch (event->head.eventType) {
-    case AURenderEventParameter: {
-      handleParameterEvent(now, event->parameter);
-      break;
-    }
-
-    case AURenderEventMIDIEventList: {
+    if (event->head.eventType == AURenderEventParameter) {
+      setParameter(event->parameter.parameterAddress, event->parameter.value);
+    } else if (event->head.eventType == AURenderEventMIDIEventList) {
       handleMIDIEventList(now, &event->MIDIEventsList);
-      break;
-    }
-
-    default:
-      break;
     }
   }
 
-  void handleParameterEvent(AUEventSampleTime now,
-                            AUParameterEvent const &parameterEvent) {
-    setParameter(parameterEvent.parameterAddress, parameterEvent.value);
-  }
-
+private:
   void handleMIDIEventList(AUEventSampleTime now,
                            AUMIDIEventList const *midiEvent) {
     auto visitor = [](void *context, MIDITimeStamp timeStamp,
                       MIDIUniversalMessage message) {
       auto thisObject = static_cast<Project1ExtensionDSPKernel *>(context);
-
-      switch (message.type) {
-      case kMIDIMessageTypeChannelVoice2: {
+      if (message.type == kMIDIMessageTypeChannelVoice2) {
         thisObject->handleMIDI2VoiceMessage(message);
-      } break;
-
-      default:
-        break;
       }
     };
 
@@ -145,26 +157,18 @@ public:
   void handleMIDI2VoiceMessage(const struct MIDIUniversalMessage &message) {
     const auto &note = message.channelVoice2.note;
 
-    switch (message.channelVoice2.status) {
-    case kMIDICVStatusNoteOff: {
-      mDspCore->noteOff(note.number);
-    } break;
+    const auto &status = message.channelVoice2.status;
 
-    case kMIDICVStatusNoteOn: {
-      const auto velocity = message.channelVoice2.note.velocity;
+    if (status == kMIDICVStatusNoteOn) {
+      auto velocity = (double)note.velocity /
+                      (double)std::numeric_limits<std::uint16_t>::max();
       mDspCore->noteOn(note.number, velocity);
-    } break;
 
-    default:
-      break;
+      rtHostEventQueue.push(
+          {RtHostEventType::NoteOn, note.number, static_cast<float>(velocity)});
+    } else if (status == kMIDICVStatusNoteOff) {
+      mDspCore->noteOff(note.number);
+      rtHostEventQueue.push({RtHostEventType::NoteOff, note.number, 0.f});
     }
   }
-
-  // MARK: - Member Variables
-  AUHostMusicalContextBlock mMusicalContextBlock;
-
-  double mSampleRate = 44100.0;
-
-  bool mBypassed = false;
-  AUAudioFrameCount mMaxFramesToRender = 1024;
 };

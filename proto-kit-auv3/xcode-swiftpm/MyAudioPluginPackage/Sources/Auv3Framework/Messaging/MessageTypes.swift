@@ -11,4 +11,8 @@ enum MessageFromUI {
 enum MessageFromApp {
   case setParameter(paramKey: String, value: Float)
   case bulkSendParameters(params: [String: Float])
+  case hostNoteOn(noteNumber: Int, velocity: Float)
+  case hostNoteOff(noteNumber: Int)
+  case hostTempo(tempo: Float)
+  case hostPlayState(isPlaying: Bool)
 }

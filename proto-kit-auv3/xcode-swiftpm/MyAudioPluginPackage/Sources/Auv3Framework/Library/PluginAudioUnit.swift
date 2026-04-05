@@ -11,8 +11,13 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   private var format: AVAudioFormat
 
-  let parameterStore = ParameterStore()
+  private let parameterStore = ParameterStore()
+  private let hostEventService = HostEventService()
+  private var parametersService: ParametersService?
   private(set) var controllerFacade: ControllerFacade?
+
+  private let intervalTimer = IntervalTimer()
+  private var viewCount = 0
 
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
@@ -85,7 +90,10 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   public func setupParameterTree(_ parameterTree: AUParameterTree) {
     self.parameterTree = parameterTree
-    self.controllerFacade = ControllerFacade(audioUnit: self, parameterTree: parameterTree)
+    self.parametersService = ParametersService(parameterTree: parameterTree)
+    self.controllerFacade = ControllerFacade(
+      audioUnit: self, parametersService: self.parametersService!,
+      hostEventService: hostEventService)
 
     let maxAddress = parameterTree.allParameters.map { $0.address }.max() ?? 0
     let capacity = maxAddress + 1
@@ -103,7 +111,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     // implementorValueObserver is called when a parameter changes value.
     parameterTree?.implementorValueObserver = { [weak self] param, value -> Void in
       self?.parameterStore.setParameter(param.address, value)
-      self?.kernel.setParameter(param.address, value)
+      self?.kernel.pushParameterChange(param.address, value)
     }
 
     // implementorValueProvider is called when the value needs to be refreshed.
@@ -117,6 +125,32 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
         return "-"
       }
       return NSString.localizedStringWithFormat("%.f", value) as String
+    }
+  }
+
+  func drainHostEvents() {
+    var rawEvent = RtHostEvent()
+    while kernel.popRtHostEvent(&rawEvent) {
+      if let event = mapHostEventFromRtHostEvent(rawEvent) {
+        hostEventService.emitHostEvent(event)
+      }
+    }
+  }
+
+  func onIntervalTimerTick() {
+    drainHostEvents()
+  }
+
+  func viewAdded() {
+    viewCount += 1
+    if viewCount == 1 {
+      intervalTimer.start(intervalMs: 16, callback: onIntervalTimerTick)
+    }
+  }
+  func viewRemoved() {
+    viewCount -= 1
+    if viewCount == 0 {
+      intervalTimer.stop()
     }
   }
 }

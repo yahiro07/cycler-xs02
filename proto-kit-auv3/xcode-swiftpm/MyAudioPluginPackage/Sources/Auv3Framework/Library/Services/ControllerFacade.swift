@@ -9,35 +9,42 @@ enum ParameterEditState: Int {
 
 protocol ControllerFacadeProtocol {
   func getAllParameterValues() -> [String: Float]
-  func subscribeToParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
+  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
     -> Int
-  func unsubscribeFromParameterChanges(_ token: Int)
+  func unsubscribeParameterChanges(_ token: Int)
   func applyParameterEditFromUi(_ paramKey: String, _ value: Float, _ state: ParameterEditState)
   func requestNoteOn(_ noteNumber: Int, _ velocity: Float)
   func requestNoteOff(_ noteNumber: Int)
+
+  func subscribeHostEvents(_ listener: ((_ event: HostEvent) -> Void)?) -> Int
+  func unsubscribeHostEvents(_ token: Int)
 }
 
 class ControllerFacade: ControllerFacadeProtocol {
   let audioUnit: AUAudioUnit
   let parametersService: ParametersService
+  let hostEventService: HostEventService
 
-  init(audioUnit: AUAudioUnit, parameterTree: AUParameterTree) {
+  init(
+    audioUnit: AUAudioUnit, parametersService: ParametersService, hostEventService: HostEventService
+  ) {
     self.audioUnit = audioUnit
-    self.parametersService = ParametersService(parameterTree: parameterTree)
+    self.parametersService = parametersService
+    self.hostEventService = hostEventService
   }
 
   func getAllParameterValues() -> [String: Float] {
     return parametersService.getAllParameterValues()
   }
 
-  func subscribeToParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
+  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
     -> Int
   {
-    return parametersService.subscribeToParameterChanges(listener)
+    return parametersService.subscribeParameterChanges(listener)
   }
 
-  func unsubscribeFromParameterChanges(_ token: Int) {
-    parametersService.unsubscribeFromParameterChanges(token)
+  func unsubscribeParameterChanges(_ token: Int) {
+    parametersService.unsubscribeParameterChanges(token)
   }
 
   func applyParameterEditFromUi(_ paramKey: String, _ value: Float, _ state: ParameterEditState) {
@@ -61,5 +68,13 @@ class ControllerFacade: ControllerFacadeProtocol {
   func requestNoteOff(_ noteNumber: Int) {
     let bytes: [UInt8] = [0x80, UInt8(noteNumber), 0]
     audioUnit.scheduleMIDIEventBlock?(AUEventSampleTimeImmediate, 0, 3, bytes)
+  }
+
+  func subscribeHostEvents(_ listener: ((_ event: HostEvent) -> Void)?) -> Int {
+    return hostEventService.subscribe(listener)
+  }
+
+  func unsubscribeHostEvents(_ token: Int) {
+    hostEventService.unsubscribe(token)
   }
 }

@@ -6,6 +6,7 @@ class WebViewBridge: ObservableObject {
   private var webViewIo: WebViewIoProtocol?
   private var webViewIoSubscription: AnyCancellable?
   private var parameterChangesToken: Int = 0
+  private var hostEventsToken: Int = 0
 
   init(_ controllerFacade: ControllerFacadeProtocol) {
     self.controllerFacade = controllerFacade
@@ -46,9 +47,14 @@ class WebViewBridge: ObservableObject {
         logger.warn("Unknown or invalid message from UI \(message)")
       }
     }
-    parameterChangesToken = controllerFacade.subscribeToParameterChanges({ paramKey, value in
+    parameterChangesToken = controllerFacade.subscribeParameterChanges({ paramKey, value in
       let msg = mapMessageFromApp_toJsonString(.setParameter(paramKey: paramKey, value: value))
       webViewIo.sendMessage(msg)
+    })
+    hostEventsToken = controllerFacade.subscribeHostEvents({ e in
+      let msg = mapHostEventToMessage(e)
+      let json = mapMessageFromApp_toJsonString(msg)
+      webViewIo.sendMessage(json)
     })
   }
 
@@ -59,8 +65,12 @@ class WebViewBridge: ObservableObject {
       webViewIo = nil
     }
     if parameterChangesToken != 0 {
-      controllerFacade.unsubscribeFromParameterChanges(parameterChangesToken)
+      controllerFacade.unsubscribeParameterChanges(parameterChangesToken)
       parameterChangesToken = 0
+    }
+    if hostEventsToken != 0 {
+      controllerFacade.unsubscribeHostEvents(hostEventsToken)
+      hostEventsToken = 0
     }
   }
 }

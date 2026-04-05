@@ -3,9 +3,9 @@ import CoreAudioKit
 typealias ParamId = UInt64
 
 protocol ParameterServiceProtocol {
-  func subscribeToParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
+  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
     -> Int
-  func unsubscribeFromParameterChanges(_ token: Int)
+  func unsubscribeParameterChanges(_ token: Int)
   func setParameterEditState(_ paramKey: String, _ editing: Bool)
   func setParameterEditValue(_ paramKey: String, _ value: Float)
   func getAllParameterValues() -> [String: Float]
@@ -47,7 +47,7 @@ class ParametersService: ParameterServiceProtocol {
     }
   }
 
-  func subscribeToParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
+  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
     -> Int
   {
     let token = nextListenerToken
@@ -59,7 +59,7 @@ class ParametersService: ParameterServiceProtocol {
     return token
   }
 
-  func unsubscribeFromParameterChanges(_ token: Int) {
+  func unsubscribeParameterChanges(_ token: Int) {
     listeners.removeValue(forKey: token)
     if listeners.count == 0 {
       stopObserve()

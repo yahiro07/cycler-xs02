@@ -42,9 +42,6 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   }
   */
 
-  deinit {
-  }
-
   public override func viewDidLoad() {
     super.viewDidLoad()
 
@@ -118,6 +115,11 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
     host.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
     host.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
     self.view.bringSubviewToFront(host.view)
+
+    audioUnit.viewAdded()
   }
 
+  deinit {
+    audioUnit?.viewRemoved()
+  }
 }
