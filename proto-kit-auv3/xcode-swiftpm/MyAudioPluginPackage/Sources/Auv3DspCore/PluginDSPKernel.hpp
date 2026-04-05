@@ -14,10 +14,10 @@
 #include "./dsp/dsp-core.h"
 
 /*
- Project1ExtensionDSPKernel
+ PluginDSPKernel
  As a non-ObjC class, this is safe to use from render thread.
  */
-class Project1ExtensionDSPKernel {
+class PluginDSPKernel {
 private:
   // MARK: - Member Variables
   AUHostMusicalContextBlock mMusicalContextBlock;
@@ -145,7 +145,7 @@ private:
                            AUMIDIEventList const *midiEvent) {
     auto visitor = [](void *context, MIDITimeStamp timeStamp,
                       MIDIUniversalMessage message) {
-      auto thisObject = static_cast<Project1ExtensionDSPKernel *>(context);
+      auto thisObject = static_cast<PluginDSPKernel *>(context);
       if (message.type == kMIDIMessageTypeChannelVoice2) {
         thisObject->handleMIDI2VoiceMessage(message);
       }

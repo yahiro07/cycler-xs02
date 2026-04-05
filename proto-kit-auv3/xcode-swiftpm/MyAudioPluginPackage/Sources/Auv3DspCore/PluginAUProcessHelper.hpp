@@ -4,17 +4,17 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
-#include "Project1ExtensionDSPKernel.hpp"
+#include "PluginDSPKernel.hpp"
 #include <vector>
 
 // MARK:- AUProcessHelper Utility Class
 class AUProcessHelper {
 private:
-  Project1ExtensionDSPKernel &mKernel;
+  PluginDSPKernel &mKernel;
   std::vector<float *> mOutputBuffers;
 
 public:
-  AUProcessHelper(Project1ExtensionDSPKernel &kernel) : mKernel{kernel} {}
+  AUProcessHelper(PluginDSPKernel &kernel) : mKernel{kernel} {}
 
   void setChannelCount(UInt32 inputChannelCount, UInt32 outputChannelCount) {
     mOutputBuffers.resize(outputChannelCount);

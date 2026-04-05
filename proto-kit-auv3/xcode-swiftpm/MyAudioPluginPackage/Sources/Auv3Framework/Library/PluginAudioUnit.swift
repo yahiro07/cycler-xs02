@@ -3,7 +3,7 @@ import Auv3DspCore
 
 public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   // C++ Objects
-  var kernel = Project1ExtensionDSPKernel()
+  var kernel = PluginDSPKernel()
   var processHelper: AUProcessHelper?
 
   private var outputBus: AUAudioUnitBus?
