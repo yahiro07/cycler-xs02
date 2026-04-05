@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3C572C8B2F81131A006D2665 /* MyAudioPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 3C572C8A2F81131A006D2665 /* MyAudioPlugin */; };
+		3CA0808E2F82472300AA0958 /* MyAudioPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA080882F8245ED00AA0958 /* MyAudioPlugin */; };
+		3CA0808D2F82472200AA0958 /* MyAudioPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA0808C2F82472200AA0958 /* MyAudioPlugin */; };
 		3CC608772F8110FC00B16DA7 /* Project1Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3CC608762F8110FC00B16DA7 /* Project1Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -71,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CA0808E2F82472300AA0958 /* MyAudioPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,18 +80,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C572C8B2F81131A006D2665 /* MyAudioPlugin in Frameworks */,
+				3CA0808D2F82472200AA0958 /* MyAudioPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3CA080802F82452100AA0958 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3CC608472F8110FB00B16DA7 = {
 			isa = PBXGroup;
 			children = (
 				3CC608522F8110FB00B16DA7 /* Project1 */,
 				3CC6087A2F8110FC00B16DA7 /* Project1Extension */,
+				3CA080802F82452100AA0958 /* Frameworks */,
 				3CC608512F8110FB00B16DA7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -118,6 +128,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3CA080892F8245ED00AA0958 /* PBXTargetDependency */,
 				3CC608792F8110FC00B16DA7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
@@ -125,6 +136,7 @@
 			);
 			name = Project1;
 			packageProductDependencies = (
+				3CA080882F8245ED00AA0958 /* MyAudioPlugin */,
 			);
 			productName = Project1;
 			productReference = 3CC608502F8110FB00B16DA7 /* Project1.app */;
@@ -141,6 +153,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3CA0808B2F8246DE00AA0958 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				3CC6087A2F8110FC00B16DA7 /* Project1Extension */,
@@ -148,6 +161,7 @@
 			name = Project1Extension;
 			packageProductDependencies = (
 				3C572C8A2F81131A006D2665 /* MyAudioPlugin */,
+				3CA0808C2F82472200AA0958 /* MyAudioPlugin */,
 			);
 			productName = Project1Extension;
 			productReference = 3CC608762F8110FC00B16DA7 /* Project1Extension.appex */;
@@ -181,7 +195,7 @@
 			mainGroup = 3CC608472F8110FB00B16DA7;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				3C572C892F81131A006D2665 /* XCLocalSwiftPackageReference "MyAudioPluginPackage" */,
+				3CA080832F8245C900AA0958 /* XCLocalSwiftPackageReference "MyAudioPluginPackage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3CC608512F8110FB00B16DA7 /* Products */;
@@ -229,6 +243,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3CA080892F8245ED00AA0958 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 3CA080882F8245ED00AA0958 /* MyAudioPlugin */;
+		};
+		3CA0808B2F8246DE00AA0958 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 3CA0808A2F8246DE00AA0958 /* MyAudioPlugin */;
+		};
 		3CC608792F8110FC00B16DA7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3CC608752F8110FC00B16DA7 /* Project1Extension */;
@@ -604,7 +626,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		3C572C892F81131A006D2665 /* XCLocalSwiftPackageReference "MyAudioPluginPackage" */ = {
+		3CA080832F8245C900AA0958 /* XCLocalSwiftPackageReference "MyAudioPluginPackage" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = MyAudioPluginPackage;
 		};
@@ -612,6 +634,20 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		3C572C8A2F81131A006D2665 /* MyAudioPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MyAudioPlugin;
+		};
+		3CA080882F8245ED00AA0958 /* MyAudioPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3CA080832F8245C900AA0958 /* XCLocalSwiftPackageReference "MyAudioPluginPackage" */;
+			productName = MyAudioPlugin;
+		};
+		3CA0808A2F8246DE00AA0958 /* MyAudioPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3CA080832F8245C900AA0958 /* XCLocalSwiftPackageReference "MyAudioPluginPackage" */;
+			productName = MyAudioPlugin;
+		};
+		3CA0808C2F82472200AA0958 /* MyAudioPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MyAudioPlugin;
 		};

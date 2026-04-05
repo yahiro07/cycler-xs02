@@ -7,7 +7,7 @@ let package = Package(
   name: "MyAudioPlugin",
   platforms: [.macOS(.v14), .iOS(.v16)],
   products: [
-    .library(name: "MyAudioPlugin", targets: ["Auv3Framework"])
+    .library(name: "MyAudioPlugin", targets: ["Auv3Framework", "HostApp"]),
   ],
   targets: [
     .target(
@@ -19,6 +19,12 @@ let package = Package(
       dependencies: ["Auv3DspCore"],
       swiftSettings: [
         .interoperabilityMode(.Cxx)
+      ]
+    ),
+    .target(
+      name: "HostApp",
+      resources: [
+        .process("Resources/dummy.aif")
       ]
     ),
   ],
