@@ -1,15 +1,10 @@
 import SwiftUI
 
 struct PluginMainView: View {
-  // var parameterTree: ObservableAUParameterGroup
-
-  // var body: some View {
-  //   ParameterSlider(param: parameterTree.global.gain)
-  // }
-  let webViewBridge: WebViewBridge
+  @StateObject private var webViewBridge: WebViewBridge
 
   init(_ controllerFacade: ControllerFacadeProtocol) {
-    self.webViewBridge = WebViewBridge(controllerFacade)
+    _webViewBridge = StateObject(wrappedValue: WebViewBridge(controllerFacade))
   }
 
   var body: some View {
@@ -17,7 +12,9 @@ struct PluginMainView: View {
       WebViewComponent { webViewIo in
         webViewIo.loadURL("http://localhost:3000?debug=1")
         // webViewIo.loadURL("app://www-bundles/index.html")
-        webViewBridge.bindWebViewIo(webViewIo)
+        webViewBridge.bindWebView(webViewIo)
+      }.onDisappear {
+        webViewBridge.unbindWebView()
       }
     }
     .border(.green, width: 2)

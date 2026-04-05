@@ -54,7 +54,7 @@ func mapMessageFromUI_fromJsonString(_ jsonString: String) -> MessageFromUI? {
   return nil
 }
 
-class WebViewBridge {
+class WebViewBridge: ObservableObject {
   private let controllerFacade: ControllerFacadeProtocol
   private var webViewIo: WebViewIoProtocol?
   private var webViewIoSubscription: AnyCancellable?
@@ -86,11 +86,9 @@ class WebViewBridge {
   }
 
   @MainActor
-  func bindWebViewIo(_ webViewIo: WebViewIoProtocol) {
-    logger.info("bindWebViewIo")
+  func bindWebView(_ webViewIo: WebViewIoProtocol) {
+    logger.info("bindWebView")
     self.webViewIo = webViewIo
-
-    webViewIoSubscription?.cancel()
     webViewIoSubscription = webViewIo.subscribeMessage { [weak self] message in
       if let msg: MessageFromUI = mapMessageFromUI_fromJsonString(message) {
         self?.handleMessageFromUI(msg: msg)
@@ -98,5 +96,11 @@ class WebViewBridge {
         logger.warn("Unknown or invalid message from UI \(message)")
       }
     }
+  }
+
+  func unbindWebView() {
+    logger.info("unbindWebView")
+    webViewIoSubscription?.cancel()
+    webViewIo = nil
   }
 }
