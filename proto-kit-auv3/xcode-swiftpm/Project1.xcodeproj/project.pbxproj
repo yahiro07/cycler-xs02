@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3CA0808E2F82472300AA0958 /* MyAudioPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA080882F8245ED00AA0958 /* MyAudioPlugin */; };
-		3CA0808D2F82472200AA0958 /* MyAudioPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA0808C2F82472200AA0958 /* MyAudioPlugin */; };
+		3CA080A92F82601A00AA0958 /* MyAudioPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA080A82F82601A00AA0958 /* MyAudioPlugin */; };
 		3CC608772F8110FC00B16DA7 /* Project1Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3CC608762F8110FC00B16DA7 /* Project1Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -80,26 +80,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CA0808D2F82472200AA0958 /* MyAudioPlugin in Frameworks */,
+				3CA080A92F82601A00AA0958 /* MyAudioPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3CA080802F82452100AA0958 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		3CC608472F8110FB00B16DA7 = {
 			isa = PBXGroup;
 			children = (
 				3CC608522F8110FB00B16DA7 /* Project1 */,
 				3CC6087A2F8110FC00B16DA7 /* Project1Extension */,
-				3CA080802F82452100AA0958 /* Frameworks */,
 				3CC608512F8110FB00B16DA7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -162,6 +154,7 @@
 			packageProductDependencies = (
 				3C572C8A2F81131A006D2665 /* MyAudioPlugin */,
 				3CA0808C2F82472200AA0958 /* MyAudioPlugin */,
+				3CA080A82F82601A00AA0958 /* MyAudioPlugin */,
 			);
 			productName = Project1Extension;
 			productReference = 3CC608762F8110FC00B16DA7 /* Project1Extension.appex */;
@@ -648,6 +641,10 @@
 			productName = MyAudioPlugin;
 		};
 		3CA0808C2F82472200AA0958 /* MyAudioPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MyAudioPlugin;
+		};
+		3CA080A82F82601A00AA0958 /* MyAudioPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MyAudioPlugin;
 		};
