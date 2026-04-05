@@ -1,7 +1,7 @@
 import AVFoundation
 import Auv3DspCore
 
-public class Project1ExtensionAudioUnit: AUAudioUnit, @unchecked Sendable {
+public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   // C++ Objects
   var kernel = Project1ExtensionDSPKernel()
   var processHelper: AUProcessHelper?

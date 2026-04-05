@@ -7,8 +7,8 @@ private let log = Logger(
   subsystem: "com.example.sonic.proto-kit-auv3.Project1Extension",
   category: "AudioUnitViewController")
 
-open class CommonAudioUnitViewController: AUViewController, AUAudioUnitFactory {
-  var audioUnit: Project1ExtensionAudioUnit?
+open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
+  var audioUnit: PluginAudioUnit?
 
   var hostingController: HostingController<PluginMainView>?
 
@@ -62,10 +62,10 @@ open class CommonAudioUnitViewController: AUViewController, AUAudioUnitFactory {
 
     return try DispatchQueue.main.sync {
 
-      audioUnit = try Project1ExtensionAudioUnit(
+      audioUnit = try PluginAudioUnit(
         componentDescription: componentDescription, options: [])
 
-      guard let audioUnit = self.audioUnit as? Project1ExtensionAudioUnit else {
+      guard let audioUnit = self.audioUnit as? PluginAudioUnit else {
         log.error("Unable to create Project1ExtensionAudioUnit")
         return audioUnit!
       }
@@ -97,7 +97,7 @@ open class CommonAudioUnitViewController: AUViewController, AUAudioUnitFactory {
     }
   }
 
-  private func configureSwiftUIView(audioUnit: Project1ExtensionAudioUnit) {
+  private func configureSwiftUIView(audioUnit: PluginAudioUnit) {
     if let host = hostingController {
       host.removeFromParent()
       host.view.removeFromSuperview()
