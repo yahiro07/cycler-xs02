@@ -25,6 +25,7 @@ private:
   double mSampleRate = 44100.0;
   bool mBypassed = false;
   AUAudioFrameCount mMaxFramesToRender = 1024;
+  double mCurrentTempo = 0.0;
 
   std::unique_ptr<IDspCore> mDspCore =
       std::unique_ptr<IDspCore>(createDspCore());
@@ -111,15 +112,20 @@ public:
     }
 
     // Use this to get Musical context info from the Plugin Host,
-    // Replace nullptr with &memberVariable according to the
-    // AUHostMusicalContextBlock function signature
     if (mMusicalContextBlock) {
-      mMusicalContextBlock(nullptr /* currentTempo */,
-                           nullptr /* timeSignatureNumerator */,
-                           nullptr /* timeSignatureDenominator */,
-                           nullptr /* currentBeatPosition */,
-                           nullptr /* sampleOffsetToNextBeat */,
-                           nullptr /* currentMeasureDownbeatPosition */);
+      double currentTempo = 0.0;
+      if (mMusicalContextBlock(&currentTempo /* currentTempo */,
+                               nullptr /* timeSignatureNumerator */,
+                               nullptr /* timeSignatureDenominator */,
+                               nullptr /* currentBeatPosition */,
+                               nullptr /* sampleOffsetToNextBeat */,
+                               nullptr /* currentMeasureDownbeatPosition */)) {
+        if (currentTempo != mCurrentTempo) {
+          mCurrentTempo = currentTempo;
+          rtHostEventQueue.push({RtHostEventType::Tempo,
+                                 .tempo = static_cast<float>(currentTempo)});
+        }
+      }
     }
 
     if (outputBuffers.size() >= 2) {
