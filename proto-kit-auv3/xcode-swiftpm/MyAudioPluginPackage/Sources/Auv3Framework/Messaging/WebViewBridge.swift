@@ -1,75 +1,25 @@
 import Combine
 import SwiftUI
 
-enum MessageFromUI {
-  case uiLoaded
-  case beginEdit(_ paramKey: String)
-  case endEdit(_ paramKey: String)
-  case performEdit(_ paramKey: String, _ value: Float)
-  case instantEdit(_ paramKey: String, _ value: Float)
-  case noteOnRequest(_ noteNumber: Int)
-  case noteOffRequest(_ noteNumber: Int)
-}
-
-func mapMessageFromUI_fromJsonString(_ jsonString: String) -> MessageFromUI? {
-  let dict =
-    try? JSONSerialization.jsonObject(with: jsonString.data(using: .utf8)!, options: [])
-    as? [String: Any]
-  guard let dict = dict else { return nil }
-  guard let type = dict["type"] as? String else { return nil }
-  switch type {
-  case "uiLoaded":
-    return .uiLoaded
-  case "beginEdit":
-    if let paramKey = dict["paramKey"] as? String {
-      return .beginEdit(paramKey)
-    }
-  case "performEdit":
-    if let paramKey = dict["paramKey"] as? String,
-      let value = dict["value"] as? Double
-    {
-      return .performEdit(paramKey, Float(value))
-    }
-  case "endEdit":
-    if let paramKey = dict["paramKey"] as? String {
-      return .endEdit(paramKey)
-    }
-  case "instantEdit":
-    if let paramKey = dict["paramKey"] as? String,
-      let value = dict["value"] as? Double
-    {
-      return .instantEdit(paramKey, Float(value))
-    }
-  case "noteOnRequest":
-    if let noteNumber = dict["noteNumber"] as? Int {
-      return .noteOnRequest(noteNumber)
-    }
-  case "noteOffRequest":
-    if let noteNumber = dict["noteNumber"] as? Int {
-      return .noteOffRequest(noteNumber)
-    }
-  default:
-    return nil
-  }
-  return nil
-}
-
 class WebViewBridge: ObservableObject {
   private let controllerFacade: ControllerFacadeProtocol
   private var webViewIo: WebViewIoProtocol?
   private var webViewIoSubscription: AnyCancellable?
+  private var parameterChangesToken: Int = 0
 
   init(_ controllerFacade: ControllerFacadeProtocol) {
     self.controllerFacade = controllerFacade
   }
 
+  @MainActor
   private func handleMessageFromUI(msg: MessageFromUI) {
     logger.log("handleMessageFromUI: \(msg)")
     switch msg {
     case .uiLoaded:
       logger.log("ui loaded")
-      //let allParameters = controllerFacade.getAllParameterValues()
-      break
+      let allParameters = controllerFacade.getAllParameterValues()
+      let msg = mapMessageFromApp_toJsonString(.bulkSendParameters(params: allParameters))
+      webViewIo?.sendMessage(msg)
     case .beginEdit(let paramKey):
       controllerFacade.applyParameterEditFromUi(paramKey, 0, ParameterEditState.Begin)
     case .performEdit(let paramKey, let value):
@@ -96,11 +46,21 @@ class WebViewBridge: ObservableObject {
         logger.warn("Unknown or invalid message from UI \(message)")
       }
     }
+    parameterChangesToken = controllerFacade.subscribeToParameterChanges({ paramKey, value in
+      let msg = mapMessageFromApp_toJsonString(.setParameter(paramKey: paramKey, value: value))
+      webViewIo.sendMessage(msg)
+    })
   }
 
   func unbindWebView() {
     logger.info("unbindWebView")
-    webViewIoSubscription?.cancel()
-    webViewIo = nil
+    if webViewIo != nil {
+      webViewIoSubscription?.cancel()
+      webViewIo = nil
+    }
+    if parameterChangesToken != 0 {
+      controllerFacade.unsubscribeFromParameterChanges(parameterChangesToken)
+      parameterChangesToken = 0
+    }
   }
 }
