@@ -8,7 +8,7 @@ private let log = Logger(
   category: "AudioUnitViewController")
 
 open class CommonAudioUnitViewController: AUViewController, AUAudioUnitFactory {
-  var audioUnit: AUAudioUnit?
+  var audioUnit: Project1ExtensionAudioUnit?
 
   var hostingController: HostingController<PluginMainView>?
 
@@ -97,17 +97,13 @@ open class CommonAudioUnitViewController: AUViewController, AUAudioUnitFactory {
     }
   }
 
-  private func configureSwiftUIView(audioUnit: AUAudioUnit) {
+  private func configureSwiftUIView(audioUnit: Project1ExtensionAudioUnit) {
     if let host = hostingController {
       host.removeFromParent()
       host.view.removeFromSuperview()
     }
 
-    guard let parameterTree = audioUnit.parameterTree else {
-      return
-    }
-    let controllerFacade = ControllerFacade(
-      parameterTree: parameterTree, audioUnit: audioUnit)
+    guard let controllerFacade = audioUnit.controllerFacade else { return }
     let content = PluginMainView(controllerFacade)
     let host = HostingController(rootView: content)
     self.addChild(host)

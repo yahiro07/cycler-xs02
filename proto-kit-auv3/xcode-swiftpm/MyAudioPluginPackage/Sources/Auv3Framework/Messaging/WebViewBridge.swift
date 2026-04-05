@@ -6,6 +6,7 @@ enum MessageFromUI {
   case beginEdit(_ paramKey: String)
   case endEdit(_ paramKey: String)
   case performEdit(_ paramKey: String, _ value: Float)
+  case instantEdit(_ paramKey: String, _ value: Float)
   case noteOnRequest(_ noteNumber: Int)
   case noteOffRequest(_ noteNumber: Int)
 }
@@ -32,6 +33,12 @@ func mapMessageFromUI_fromJsonString(_ jsonString: String) -> MessageFromUI? {
   case "endEdit":
     if let paramKey = dict["paramKey"] as? String {
       return .endEdit(paramKey)
+    }
+  case "instantEdit":
+    if let paramKey = dict["paramKey"] as? String,
+      let value = dict["value"] as? Double
+    {
+      return .instantEdit(paramKey, Float(value))
     }
   case "noteOnRequest":
     if let noteNumber = dict["noteNumber"] as? Int {
@@ -61,13 +68,16 @@ class WebViewBridge {
     switch msg {
     case .uiLoaded:
       logger.log("ui loaded")
+      //let allParameters = controllerFacade.getAllParameterValues()
       break
     case .beginEdit(let paramKey):
-      break
-    case .endEdit(let paramKey):
-      break
+      controllerFacade.applyParameterEditFromUi(paramKey, 0, ParameterEditState.Begin)
     case .performEdit(let paramKey, let value):
-      controllerFacade.applyParameterEditFromUi(paramKey, value)
+      controllerFacade.applyParameterEditFromUi(paramKey, value, ParameterEditState.Perform)
+    case .endEdit(let paramKey):
+      controllerFacade.applyParameterEditFromUi(paramKey, 0, ParameterEditState.End)
+    case .instantEdit(let paramKey, let value):
+      controllerFacade.applyParameterEditFromUi(paramKey, value, ParameterEditState.InstantChange)
     case .noteOnRequest(let noteNumber):
       controllerFacade.requestNoteOn(noteNumber, 1.0)
     case .noteOffRequest(let noteNumber):

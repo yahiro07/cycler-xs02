@@ -11,6 +11,8 @@ public class Project1ExtensionAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   private var format: AVAudioFormat
 
+  private(set) var controllerFacade: ControllerFacade?
+
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
   ) throws {
@@ -82,6 +84,7 @@ public class Project1ExtensionAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   public func setupParameterTree(_ parameterTree: AUParameterTree) {
     self.parameterTree = parameterTree
+    self.controllerFacade = ControllerFacade(audioUnit: self, parameterTree: parameterTree)
 
     // Set the Parameter default values before setting up the parameter callbacks
     for param in parameterTree.allParameters {
