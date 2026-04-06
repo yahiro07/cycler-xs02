@@ -1,4 +1,4 @@
-import Auv3Framework
+import FrameworkMain
 
 @MainActor
 public class AudioUnitViewController: PluginAudioUnitViewController {}

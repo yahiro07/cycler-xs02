@@ -11,7 +11,12 @@ let package = Package(
   ],
   targets: [
     .target(
+      name: "Dsp",
+      publicHeadersPath: "",
+    ),
+    .target(
       name: "DspRoute",
+      dependencies: ["Dsp"],
       publicHeadersPath: "include"
     ),
     .target(
