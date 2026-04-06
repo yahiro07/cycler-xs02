@@ -9,7 +9,6 @@
 #include <cstdlib>
 #include <memory>
 #import <span>
-#import <vector>
 
 #include "../Dsp/dsp-core.h"
 

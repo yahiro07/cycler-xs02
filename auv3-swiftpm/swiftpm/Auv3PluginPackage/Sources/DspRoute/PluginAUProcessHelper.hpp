@@ -1,7 +1,5 @@
 #pragma once
 
-#include "RtHostEvent.hpp"
-#import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
 #include "PluginDSPKernel.hpp"
