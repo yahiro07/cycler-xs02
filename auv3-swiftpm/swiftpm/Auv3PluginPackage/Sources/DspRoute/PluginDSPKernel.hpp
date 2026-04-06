@@ -11,7 +11,7 @@
 #import <span>
 #import <vector>
 
-#include "../../../Dsp/dsp-core.h"
+#include "../Dsp/dsp-core.h"
 
 /*
  PluginDSPKernel
