@@ -22,13 +22,14 @@ import os
 
     private func log(_ logLine: String) {
       guard let content = logLine.data(using: .utf8) else { return }
-      dispatchQueue.async { [weak self] in
+      let workItem = DispatchWorkItem { [weak self] in
         guard let self else { return }
         self.ensureConnection()
         self.conn?.send(
           content: content,
           completion: .contentProcessed({ error in }))
       }
+      dispatchQueue.async(execute: workItem)
     }
 
     func pushLogLine(_ logLine: String) {

@@ -70,10 +70,10 @@ class WebViewCoordinator: NSObject, WebViewIoProtocol, WKNavigationDelegate {
     }
   }
 
-  func webView(
+  @MainActor func webView(
     _ webView: WKWebView,
     decidePolicyFor navigationAction: WKNavigationAction,
-    decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy) -> Void
   ) {
     if navigationAction.navigationType == .reload {
       logger.log("Detected WKWebView reload: \(String(describing: navigationAction.request.url))")
