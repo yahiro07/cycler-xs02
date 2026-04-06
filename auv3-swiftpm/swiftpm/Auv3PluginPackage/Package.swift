@@ -4,19 +4,19 @@
 import PackageDescription
 
 let package = Package(
-  name: "MyAudioPlugin",
+  name: "Auv3PluginPackage",
   platforms: [.macOS(.v14), .iOS(.v16)],
   products: [
-    .library(name: "MyAudioPlugin", targets: ["Auv3Framework", "HostApp"]),
+    .library(name: "Auv3PluginPackage", targets: ["FrameworkMain", "HostApp"]),
   ],
   targets: [
     .target(
-      name: "Auv3DspCore",
+      name: "DspRoute",
       publicHeadersPath: "include"
     ),
     .target(
-      name: "Auv3Framework",
-      dependencies: ["Auv3DspCore"],
+      name: "FrameworkMain",
+      dependencies: ["DspRoute"],
       swiftSettings: [
         .interoperabilityMode(.Cxx)
       ]

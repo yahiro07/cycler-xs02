@@ -1,5 +1,5 @@
 import AVFoundation
-import Auv3DspCore
+import DspRoute
 
 public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   // C++ Objects

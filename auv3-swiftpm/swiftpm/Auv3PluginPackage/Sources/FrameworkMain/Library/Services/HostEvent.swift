@@ -1,4 +1,4 @@
-import Auv3DspCore
+import DspRoute
 
 enum HostEvent {
   case hostNoteOn(Int, Float)
