@@ -1,7 +1,5 @@
-import AVFoundation
-
 final class ParameterStore: @unchecked Sendable {
-  private var parameterValues: [AUValue] = []
+  private var parameterValues: [Float] = []
 
   init() {}
 
@@ -10,7 +8,7 @@ final class ParameterStore: @unchecked Sendable {
     parameterValues = Array(repeating: 0, count: clampedCapacity)
   }
 
-  func setParameter(_ address: AUParameterAddress, _ value: AUValue) {
+  func setParameter(_ address: UInt64, _ value: Float) {
     let index = Int(address)
     guard index >= 0, index < parameterValues.count else {
       return
@@ -18,7 +16,7 @@ final class ParameterStore: @unchecked Sendable {
     parameterValues[index] = value
   }
 
-  func getParameter(_ address: AUParameterAddress) -> AUValue {
+  func getParameter(_ address: UInt64) -> Float {
     let index = Int(address)
     guard index >= 0, index < parameterValues.count else {
       return 0
