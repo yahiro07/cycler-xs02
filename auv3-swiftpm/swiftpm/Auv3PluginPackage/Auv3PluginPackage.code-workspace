@@ -1,10 +1,10 @@
 {
   "folders": [
     {
-      "path": "../../frontend"
+      "path": "../../prototyping"
     },
     {
-      "path": "../../prototyping"
+      "path": "../../frontend"
     },
     {
       "path": "."
