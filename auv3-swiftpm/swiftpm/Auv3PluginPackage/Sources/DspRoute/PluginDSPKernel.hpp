@@ -10,7 +10,7 @@
 #include <memory>
 #import <span>
 
-#include "../Dsp/dsp-core.h"
+#include "../Dsp/dsp-core-entry.h"
 
 /*
  PluginDSPKernel
@@ -27,7 +27,7 @@ private:
   double mCurrentTempo = 0.0;
 
   std::unique_ptr<IDspCore> mDspCore =
-      std::unique_ptr<IDspCore>(createDspCore());
+      std::unique_ptr<IDspCore>(createDspCoreInstance());
 
   SpscQueue<RtHostEvent, 256> rtHostEventQueue;
   SpscQueue<RtProcessorEvent, 256> rtProcessorEventQueue;
@@ -45,15 +45,33 @@ public:
   }
 
   void pushParameterChange(uint64_t address, float value) {
-    rtProcessorEventQueue.push(
-        {RtProcessorEventType::Parameter, address, value});
+    rtProcessorEventQueue.push({RtProcessorEventType::ParameterChange,
+                                .parameterChange = {address, value}});
+  }
+
+  void pushInternalNote(int noteNumber, float velocity) {
+    rtProcessorEventQueue.push({RtProcessorEventType::InternalNote,
+                                .internalNote = {noteNumber, velocity}});
   }
 
   void drainProcessorEvents() {
     RtProcessorEvent e;
     while (rtProcessorEventQueue.pop(e)) {
-      if (e.type == RtProcessorEventType::Parameter) {
-        mDspCore->setParameter(e.address, e.value);
+      if (e.type == RtProcessorEventType::ParameterChange) {
+        mDspCore->setParameter(e.parameterChange.address,
+                               e.parameterChange.value);
+      } else if (e.type == RtProcessorEventType::InternalNote) {
+        auto noteNumber = e.internalNote.noteNumber;
+        auto velocity = e.internalNote.velocity;
+        if (velocity > 0.0f) {
+          mDspCore->noteOn(noteNumber, velocity);
+          rtHostEventQueue.push({RtHostEventType::NoteOn, noteNumber,
+                                 velocity}); // ack response to ui
+        } else {
+          mDspCore->noteOff(noteNumber);
+          rtHostEventQueue.push({RtHostEventType::NoteOff, noteNumber,
+                                 0.f}); //  ack response to ui
+        }
       }
     }
   }

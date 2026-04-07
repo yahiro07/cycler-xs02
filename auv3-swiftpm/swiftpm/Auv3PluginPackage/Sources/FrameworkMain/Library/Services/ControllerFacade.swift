@@ -13,24 +13,42 @@ protocol ControllerFacadeProtocol {
     -> Int
   func unsubscribeParameterChanges(_ token: Int)
   func applyParameterEditFromUi(_ paramKey: String, _ value: Float, _ state: ParameterEditState)
+  func loadFullParametersSuit(_ parameters: [String: Float])
+
   func requestNoteOn(_ noteNumber: Int, _ velocity: Float)
   func requestNoteOff(_ noteNumber: Int)
 
   func subscribeHostEvents(_ listener: ((_ event: HostEvent) -> Void)?) -> Int
   func unsubscribeHostEvents(_ token: Int)
+
+  func readFile(path: String, skipIfNotExist: Bool?) -> String?
+  func writeFile(path: String, content: String, append: Bool?) -> Bool
+  func deleteFile(path: String) -> Bool
+  func getStateKvsItems() -> [String: String]
+  func writeStateKvsItem(key: String, value: String)
+  func deleteStateKvsItem(key: String)
+
 }
 
 class ControllerFacade: ControllerFacadeProtocol {
-  let audioUnit: AUAudioUnit
   let parametersService: ParametersService
   let hostEventService: HostEventService
+  let internalNoteService: InternalNoteService
+  let storageFileIoService: StorageFileIoService
+  let stateKvsService: StateKvsService
 
   init(
-    audioUnit: AUAudioUnit, parametersService: ParametersService, hostEventService: HostEventService
+    parametersService: ParametersService,
+    hostEventService: HostEventService,
+    internalNoteService: InternalNoteService,
+    storageFileIoService: StorageFileIoService,
+    stateKvsService: StateKvsService
   ) {
-    self.audioUnit = audioUnit
     self.parametersService = parametersService
     self.hostEventService = hostEventService
+    self.internalNoteService = internalNoteService
+    self.storageFileIoService = storageFileIoService
+    self.stateKvsService = stateKvsService
   }
 
   func getAllParameterValues() -> [String: Float] {
@@ -61,13 +79,15 @@ class ControllerFacade: ControllerFacadeProtocol {
     }
   }
 
+  func loadFullParametersSuit(_ parameters: [String: Float]) {
+    parametersService.loadFullParametersSuit(parameters)
+  }
+
   func requestNoteOn(_ noteNumber: Int, _ velocity: Float) {
-    let bytes: [UInt8] = [0x90, UInt8(noteNumber), UInt8(velocity * 127)]
-    audioUnit.scheduleMIDIEventBlock?(AUEventSampleTimeImmediate, 0, 3, bytes)
+    internalNoteService.requestNoteOn(noteNumber, velocity)
   }
   func requestNoteOff(_ noteNumber: Int) {
-    let bytes: [UInt8] = [0x80, UInt8(noteNumber), 0]
-    audioUnit.scheduleMIDIEventBlock?(AUEventSampleTimeImmediate, 0, 3, bytes)
+    internalNoteService.requestNoteOff(noteNumber)
   }
 
   func subscribeHostEvents(_ listener: ((_ event: HostEvent) -> Void)?) -> Int {
@@ -76,5 +96,29 @@ class ControllerFacade: ControllerFacadeProtocol {
 
   func unsubscribeHostEvents(_ token: Int) {
     hostEventService.unsubscribe(token)
+  }
+
+  func readFile(path: String, skipIfNotExist: Bool?) -> String? {
+    return storageFileIoService.readFile(path: path, skipIfNotExist: skipIfNotExist)
+  }
+
+  func writeFile(path: String, content: String, append: Bool?) -> Bool {
+    return storageFileIoService.writeFile(path: path, content: content, append: append)
+  }
+
+  func deleteFile(path: String) -> Bool {
+    return storageFileIoService.deleteFile(path: path)
+  }
+
+  func getStateKvsItems() -> [String: String] {
+    return stateKvsService.getItems()
+  }
+
+  func writeStateKvsItem(key: String, value: String) {
+    stateKvsService.write(key, value)
+  }
+
+  func deleteStateKvsItem(key: String) {
+    stateKvsService.delete(key)
   }
 }
