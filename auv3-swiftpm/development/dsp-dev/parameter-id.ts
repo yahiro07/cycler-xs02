@@ -53,4 +53,6 @@ export const ParameterId = {
   internalBpm: hash("internalBpm"),
 };
 
-export const CommandId = {};
+export const CommandId = {
+  setPlayState: hash("setPlayState"),
+};

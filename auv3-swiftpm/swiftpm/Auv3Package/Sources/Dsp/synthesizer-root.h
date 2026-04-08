@@ -83,7 +83,10 @@ struct SynthesizerStateBus {
   int noteNumber = 60;
   bool gateOn = false;
   float bpm = 120.0;
+  bool playState = false;
 };
+
+static const int noteNumber_globalPlayState = 200;
 
 class SynthesizerRoot : public IDspCore {
 private:
@@ -132,6 +135,12 @@ public:
       auto y = getFormulaicOscWave(prWave, mPhase) * gain;
       leftBuffer[i] = y;
       rightBuffer[i] = y;
+    }
+  }
+
+  void applyCommand(uint64_t id, double value) override {
+    if (id == CommandId::setPlayState) {
+      bus.playState = paramToBool(value);
     }
   }
 

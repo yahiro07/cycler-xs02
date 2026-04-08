@@ -22,6 +22,8 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   private let intervalTimer = IntervalTimer()
   private var viewCount = 0
 
+  private var commandServiceSubscriptionToken: Int?
+
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
   ) throws {
@@ -36,6 +38,22 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
       self.kernel.pushInternalNote(Int32(noteNumber), velocity)
     }
     self.setupParameterTree()
+
+    commandServiceSubscriptionToken = commandService.subscribeCommandFromUi {
+      [weak self] id, value in
+      if id == "randomizeParameters" {
+        self?.doRandomizeParameters()
+      } else if id == "setPlayState" {
+        self?.kernel.pushCustomCommand(commandId_setPlayState, value)
+      }
+    }
+  }
+
+  deinit {
+    if let token = commandServiceSubscriptionToken {
+      commandService.unsubscribeCommandFromUi(token)
+      commandServiceSubscriptionToken = nil
+    }
   }
 
   public override var outputBusses: AUAudioUnitBusArray {
@@ -179,11 +197,15 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     }
   }
 
+  private func doRandomizeParameters() {
+    var parameters = parametersService!.getAllParameterValues()
+    randomizeParameters(&parameters)
+    parametersService!.loadFullParametersSuit(parameters)
+  }
+
   private func updateParameterRandomization() {
     if kernel.extraLogic_isRandomizeRequired() {
-      var parameters = parametersService!.getAllParameterValues()
-      randomizeParameters(&parameters)
-      parametersService!.loadFullParametersSuit(parameters)
+      doRandomizeParameters()
     }
   }
 

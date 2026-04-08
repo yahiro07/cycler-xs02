@@ -57,3 +57,5 @@ enum ParameterId : uint64_t {
   autoRandomizeOnLoop = hash("autoRandomizeOnLoop"),
   randomizeLevel = hash("randomizeLevel")
 };
+
+enum CommandId : uint64_t { setPlayState = hash("setPlayState") };

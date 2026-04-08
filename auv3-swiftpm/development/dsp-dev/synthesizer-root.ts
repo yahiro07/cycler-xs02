@@ -1,5 +1,5 @@
 import { IDspCore } from "./api";
-import { ParameterId } from "./parameter-id";
+import { CommandId, ParameterId } from "./parameter-id";
 
 enum OscWave {
   Saw = 0,
@@ -27,6 +27,7 @@ export class SynthesizerRoot implements IDspCore {
   };
   phase: number = 0.0;
   bpm: number = 130.0;
+  playing: boolean = false;
 
   prepareProcessing(sampleRate: number, maxFrames: number): void {
     this.sampleRate = sampleRate;
@@ -84,5 +85,9 @@ export class SynthesizerRoot implements IDspCore {
     }
   }
 
-  applyCommand(id: number, value: number): void {}
+  applyCommand(id: number, value: number): void {
+    if (id === CommandId.setPlayState) {
+      this.playing = value > 0.5;
+    }
+  }
 }
