@@ -11,6 +11,8 @@ protocol ParameterServiceProtocol {
   func getAllParameterValues() -> [String: Float]
 
   func loadFullParametersSuit(_ parameters: [String: Float])
+
+  func setInternalParameterFromHost(_ paramId: ParamId, _ value: Float)
 }
 
 class ParametersService: ParameterServiceProtocol {
@@ -29,6 +31,10 @@ class ParametersService: ParameterServiceProtocol {
 
   private func getParamKeyByParamId(_ paramId: ParamId) -> String? {
     return parameterTree.parameter(withAddress: paramId)?.identifier
+  }
+
+  private func getAuParameterByParamId(_ paramId: ParamId) -> AUParameter? {
+    return parameterTree.parameter(withAddress: paramId)
   }
 
   private func getAuParameterByParamKey(_ paramKey: String) -> AUParameter? {
@@ -98,5 +104,10 @@ class ParametersService: ParameterServiceProtocol {
         param.value = value
       }
     }
+  }
+
+  func setInternalParameterFromHost(_ paramId: ParamId, _ value: Float) {
+    guard let parameter = getAuParameterByParamId(paramId) else { return }
+    parameter.value = value
   }
 }

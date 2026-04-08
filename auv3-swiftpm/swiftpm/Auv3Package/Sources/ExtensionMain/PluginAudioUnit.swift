@@ -173,8 +173,8 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     if isStandalone {
       //standalone
     } else {
-      //executed in host app
-      kernel.pushParameterChange(ParameterId.internalBpm.rawValue, bpm)
+      //Host bpm --> DSP, UI
+      parametersService?.setInternalParameterFromHost(ParameterId.internalBpm.rawValue, bpm)
     }
   }
 
