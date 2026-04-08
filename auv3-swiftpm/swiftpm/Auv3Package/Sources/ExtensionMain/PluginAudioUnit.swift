@@ -173,8 +173,17 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     if isStandalone {
       //standalone
     } else {
+      //executed in host app
       //Host bpm --> DSP, UI
       parametersService?.setInternalParameterFromHost(ParameterId.internalBpm.rawValue, bpm)
+    }
+  }
+
+  private func updateParameterRandomization() {
+    if kernel.extraLogic_isRandomizeRequired() {
+      var parameters = parametersService!.getAllParameterValues()
+      randomizeParameters(&parameters)
+      parametersService!.loadFullParametersSuit(parameters)
     }
   }
 
@@ -195,6 +204,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   func onIntervalTimerTick() {
     drainHostEvents()
+    updateParameterRandomization()
   }
 
   func viewAdded() {

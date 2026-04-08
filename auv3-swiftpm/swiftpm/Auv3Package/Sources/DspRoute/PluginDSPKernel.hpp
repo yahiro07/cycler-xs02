@@ -199,4 +199,13 @@ private:
       rtHostEventQueue.push({RtHostEventType::NoteOff, note.number, 0.f});
     }
   }
+
+public:
+  bool extraLogic_isRandomizeRequired() {
+    return mDspCore->extraLogic_isRandomizeRequired();
+  }
+  // void extraLogic_randomizeParameters(std::map<uint64_t, double> &parameters)
+  // {
+  //   mDspCore->extraLogic_randomizeParameters(parameters);
+  // }
 };

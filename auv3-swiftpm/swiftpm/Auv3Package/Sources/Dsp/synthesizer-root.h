@@ -135,5 +135,7 @@ public:
     }
   }
 
-  void applyCommand(uint64_t id, double value) override {}
+  bool extraLogic_isRandomizeRequired() override { return false; }
+  // void extraLogic_randomizeParameters(
+  //     std::map<uint64_t, double> &parameters) override {}
 };

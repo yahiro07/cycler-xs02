@@ -54,6 +54,6 @@ enum ParameterId : uint64_t {
   masterVolume = hash("masterVolume"),
   //
   internalBpm = hash("internalBpm"),
+  autoRandomizeOnLoop = hash("autoRandomizeOnLoop"),
+  randomizeLevel = hash("randomizeLevel")
 };
-
-enum CommandId : uint64_t {};
