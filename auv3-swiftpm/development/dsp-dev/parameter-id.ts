@@ -49,8 +49,8 @@ export const ParameterId = {
   glide: hash("glide"),
   voicingMode: hash("voicingMode"),
   masterVolume: hash("masterVolume"),
+  //
+  internalBpm: hash("internalBpm"),
 };
 
-export const CommandId = {
-  setBpm: hash("setBpm"),
-};
+export const CommandId = {};

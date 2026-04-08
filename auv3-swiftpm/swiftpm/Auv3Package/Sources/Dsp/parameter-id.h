@@ -52,8 +52,8 @@ enum ParameterId : uint64_t {
   glide = hash("glide"),
   voicingMode = hash("voicingMode"),
   masterVolume = hash("masterVolume"),
+  //
+  internalBpm = hash("internalBpm"),
 };
 
-enum CommandId : uint64_t {
-  setBpm = hash("setBpm"),
-};
+enum CommandId : uint64_t {};

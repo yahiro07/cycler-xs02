@@ -1,13 +1,5 @@
 import { IDspCore } from "./api";
-import { CommandId } from "./parameter-id";
-
-export enum ParameterId {
-  parametersVersion = 1,
-  oscEnabled,
-  oscWave,
-  oscPitch,
-  oscVolume,
-}
+import { ParameterId } from "./parameter-id";
 
 enum OscWave {
   Saw = 0,
@@ -40,14 +32,16 @@ export class SynthesizerRoot implements IDspCore {
     this.sampleRate = sampleRate;
   }
   setParameter(id: number, value: number): void {
-    if (id === ParameterId.oscEnabled) {
+    if (id === ParameterId.osc1On) {
       this.parameters.oscEnabled = value > 0.5;
-    } else if (id === ParameterId.oscWave) {
+    } else if (id === ParameterId.osc1Wave) {
       this.parameters.oscWave = value;
-    } else if (id === ParameterId.oscPitch) {
+    } else if (id === ParameterId.osc1Octave) {
       this.parameters.oscPitch = value;
-    } else if (id === ParameterId.oscVolume) {
+    } else if (id === ParameterId.osc1Volume) {
       this.parameters.oscVolume = value;
+    } else if (id === ParameterId.internalBpm) {
+      this.bpm = value;
     }
   }
   noteOn(noteNumber: number, velocity: number): void {
@@ -90,9 +84,5 @@ export class SynthesizerRoot implements IDspCore {
     }
   }
 
-  applyCommand(id: number, value: number): void {
-    if (id === CommandId.setBpm) {
-      this.bpm = value;
-    }
-  }
+  applyCommand(id: number, value: number): void {}
 }

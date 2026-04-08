@@ -65,6 +65,8 @@ enum ParameterId: CaseIterable {
   case glide
   case voicingMode
   case masterVolume
+  //
+  case internalBpm
 }
 
 private func hash(_ str: String) -> UInt64 {

@@ -70,6 +70,18 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
       PB.Unary(.glide, "glide", "glide", 0.0)
       PB.Enum(.voicingMode, "voicingMode", "Voicing Mode", "Mono", ["Mono", "Poly"])
       PB.Unary(.masterVolume, "masterVolume", "Master Volume", 0.8)
+      //
+      PB.Raw(
+        address: .internalBpm,
+        identifier: "internalBpm",
+        name: "Internal BPM",
+        units: .generic,
+        valueRange: 0...400,
+        defaultValue: 120,
+        flags: [
+          AudioUnitParameterOptions.flag_IsGlobalMeta, AudioUnitParameterOptions.flag_NonRealTime,
+        ]
+      )
     }
   }
 }

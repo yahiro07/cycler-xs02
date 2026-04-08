@@ -82,13 +82,13 @@ struct SynthesizerStateBus {
   float sampleRate = 0.f;
   int noteNumber = 60;
   bool gateOn = false;
+  float bpm = 120.0;
 };
 
 class SynthesizerRoot : public IDspCore {
 private:
   float mPhase = 0.0;
   SynthesizerStateBus bus;
-  float bpm = 120.0;
 
 public:
   void prepareProcessing(double sampleRate, uint32_t maxFrameLength) override {
@@ -97,7 +97,11 @@ public:
   }
 
   void setParameter(uint64_t id, double value) override {
-    applySynthesisParameter(bus.synthesisParameters, id, value);
+    if (id == PK::internalBpm) {
+      bus.bpm = static_cast<float>(value);
+    } else {
+      applySynthesisParameter(bus.synthesisParameters, id, value);
+    }
   }
 
   void noteOn(int noteNumber, double velocity) override {
@@ -131,9 +135,5 @@ public:
     }
   }
 
-  void applyCommand(uint64_t id, double value) override {
-    if (id == CommandId::setBpm) {
-      bpm = static_cast<float>(value);
-    }
-  }
+  void applyCommand(uint64_t id, double value) override {}
 };
