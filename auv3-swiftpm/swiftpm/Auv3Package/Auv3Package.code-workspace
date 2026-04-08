@@ -1,6 +1,9 @@
 {
   "folders": [
     {
+      "path": "../../development/dsp-dev"
+    },
+    {
       "path": "../../frontend"
     },
     {

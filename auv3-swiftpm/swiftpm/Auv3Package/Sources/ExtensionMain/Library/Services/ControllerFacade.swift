@@ -28,6 +28,9 @@ protocol ControllerFacadeProtocol {
   func writeStateKvsItem(key: String, value: String)
   func deleteStateKvsItem(key: String)
 
+  func subscribeCommandFromApp(_ listener: ((_ key: String, _ value: Float) -> Void)?) -> Int
+  func unsubscribeCommandFromApp(_ token: Int)
+  func emitCommandFromUi(commandKey: String, value: Float)
 }
 
 class ControllerFacade: ControllerFacadeProtocol {
@@ -36,27 +39,29 @@ class ControllerFacade: ControllerFacadeProtocol {
   let internalNoteService: InternalNoteService
   let storageFileIoService: StorageFileIoService
   let stateKvsService: StateKvsService
+  let commandService: CommandService
 
   init(
     parametersService: ParametersService,
     hostEventService: HostEventService,
     internalNoteService: InternalNoteService,
     storageFileIoService: StorageFileIoService,
-    stateKvsService: StateKvsService
+    stateKvsService: StateKvsService,
+    commandService: CommandService
   ) {
     self.parametersService = parametersService
     self.hostEventService = hostEventService
     self.internalNoteService = internalNoteService
     self.storageFileIoService = storageFileIoService
     self.stateKvsService = stateKvsService
+    self.commandService = commandService
   }
 
   func getAllParameterValues() -> [String: Float] {
     return parametersService.getAllParameterValues()
   }
 
-  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
-    -> Int
+  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?) -> Int
   {
     return parametersService.subscribeParameterChanges(listener)
   }
@@ -120,5 +125,15 @@ class ControllerFacade: ControllerFacadeProtocol {
 
   func deleteStateKvsItem(key: String) {
     stateKvsService.delete(key)
+  }
+
+  func subscribeCommandFromApp(_ listener: ((_ key: String, _ value: Float) -> Void)?) -> Int {
+    return commandService.subscribeCommandFromApp(listener)
+  }
+  func unsubscribeCommandFromApp(_ token: Int) {
+    commandService.unsubscribeCommandFromApp(token)
+  }
+  func emitCommandFromUi(commandKey: String, value: Float) {
+    commandService.emitCommandFromUi(commandKey, value)
   }
 }

@@ -16,10 +16,13 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   private let internalNoteService = InternalNoteService()
   private let storageFileIoService = StorageFileIoService()
   private let stateKvsService = StateKvsService()
+  private let commandService = CommandService()
   private(set) var controllerFacade: ControllerFacade?
 
   private let intervalTimer = IntervalTimer()
   private var viewCount = 0
+
+  private var songController: SongController?
 
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
@@ -35,6 +38,17 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
       self.kernel.pushInternalNote(Int32(noteNumber), velocity)
     }
     self.setupParameterTree()
+    let songController = SongController(
+      commandService: commandService, hostEventService: hostEventService)
+    songController.setKernelPushCommandFn { id, value in
+      self.kernel.pushCustomCommand(id, value)
+    }
+    songController.setup()
+    self.songController = songController
+  }
+
+  deinit {
+    songController?.tearDown()
   }
 
   public override var outputBusses: AUAudioUnitBusArray {
@@ -102,7 +116,8 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     self.controllerFacade = ControllerFacade(
       parametersService: parametersService,
       hostEventService: hostEventService, internalNoteService: internalNoteService,
-      storageFileIoService: storageFileIoService, stateKvsService: stateKvsService)
+      storageFileIoService: storageFileIoService, stateKvsService: stateKvsService,
+      commandService: commandService)
 
     setupParameterStore(parameterTree)
   }
@@ -165,29 +180,11 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     }
   }
 
-  let isStandalone = true
-
-  func handleHostBpmChange(bpm: Float) {
-    if isStandalone {
-      //standalone
-
-    } else {
-      //executed in host app
-      kernel.pushCustomCommand(commandId_setBpm, bpm)
-    }
-  }
-
   func drainHostEvents() {
     var rawEvent = RtHostEvent()
     while kernel.popRtHostEvent(&rawEvent) {
       if let event = mapHostEventFromRtHostEvent(rawEvent) {
         hostEventService.emitHostEvent(event)
-        switch event {
-        case .hostTempo(let bpm):
-          handleHostBpmChange(bpm: bpm)
-        default:
-          break
-        }
       }
     }
   }
@@ -208,4 +205,66 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
       intervalTimer.stop()
     }
   }
+}
+
+class SongController {
+  var kernelPushCommandFn: ((UInt64, Float) -> Void)?
+
+  let commandService: CommandService
+  let hostEventService: HostEventService
+
+  var hostEventSubscriptionToken: Int = 0
+  var commandFromUiSubscriptionToken: Int = 0
+
+  init(commandService: CommandService, hostEventService: HostEventService) {
+    self.commandService = commandService
+    self.hostEventService = hostEventService
+  }
+
+  func setKernelPushCommandFn(_ kernelPushCommandFn: ((UInt64, Float) -> Void)?) {
+    self.kernelPushCommandFn = kernelPushCommandFn
+  }
+
+  private func emitBpmToProcessor(_ bpm: Float) {
+    kernelPushCommandFn?(commandId_setBpm, bpm)
+  }
+
+  private let isStandalone = true
+
+  private func handleHostBpmChange(_ bpm: Float) {
+    if isStandalone {
+      //standalone
+    } else {
+      //executed in host app
+      emitBpmToProcessor(bpm)
+    }
+  }
+
+  func setup() {
+    hostEventSubscriptionToken = hostEventService.subscribe { event in
+      switch event {
+      case .hostTempo(let bpm):
+        self.handleHostBpmChange(bpm)
+      default:
+        break
+      }
+    }
+    commandFromUiSubscriptionToken = commandService.subscribeCommandFromUi { key, value in
+      if key == "setBpm" {
+        self.emitBpmToProcessor(value)
+      }
+    }
+  }
+
+  func tearDown() {
+    if hostEventSubscriptionToken != 0 {
+      hostEventService.unsubscribe(hostEventSubscriptionToken)
+      hostEventSubscriptionToken = 0
+    }
+    if commandFromUiSubscriptionToken != 0 {
+      commandService.unsubscribeCommandFromUi(commandFromUiSubscriptionToken)
+      commandFromUiSubscriptionToken = 0
+    }
+  }
+
 }

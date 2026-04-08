@@ -10,4 +10,5 @@ public:
   virtual void noteOff(int noteNumber) = 0;
   virtual void processAudio(float *bufferL, float *bufferR,
                             uint32_t frames) = 0;
+  virtual void applyCommand(uint64_t id, double value) = 0;
 };

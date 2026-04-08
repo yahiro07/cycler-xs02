@@ -53,3 +53,7 @@ enum ParameterId : uint64_t {
   voicingMode = hash("voicingMode"),
   masterVolume = hash("masterVolume"),
 };
+
+enum CommandId : uint64_t {
+  setBpm = hash("setBpm"),
+};

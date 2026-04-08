@@ -88,6 +88,7 @@ class SynthesizerRoot : public IDspCore {
 private:
   float mPhase = 0.0;
   SynthesizerStateBus bus;
+  float bpm = 120.0;
 
 public:
   void prepareProcessing(double sampleRate, uint32_t maxFrameLength) override {
@@ -127,6 +128,12 @@ public:
       auto y = getFormulaicOscWave(prWave, mPhase) * gain;
       leftBuffer[i] = y;
       rightBuffer[i] = y;
+    }
+  }
+
+  void applyCommand(uint64_t id, double value) override {
+    if (id == CommandId::setBpm) {
+      bpm = static_cast<float>(value);
     }
   }
 };

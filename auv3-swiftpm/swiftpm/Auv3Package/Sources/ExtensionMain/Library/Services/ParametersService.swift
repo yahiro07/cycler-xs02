@@ -49,8 +49,7 @@ class ParametersService: ParameterServiceProtocol {
     }
   }
 
-  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
-    -> Int
+  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?) -> Int
   {
     let token = nextListenerToken
     nextListenerToken += 1

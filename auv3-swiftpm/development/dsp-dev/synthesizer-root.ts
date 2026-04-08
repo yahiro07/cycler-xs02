@@ -90,7 +90,7 @@ export class SynthesizerRoot implements IDspCore {
     }
   }
 
-  applyCustomCommand(id: number, value: number): void {
+  applyCommand(id: number, value: number): void {
     if (id === CommandId.setBpm) {
       this.bpm = value;
     }
