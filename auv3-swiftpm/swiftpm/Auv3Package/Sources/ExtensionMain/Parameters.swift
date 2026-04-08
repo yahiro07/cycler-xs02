@@ -27,7 +27,9 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
         units: .generic,
         valueRange: 0...999999,
         defaultValue: 1,
-        flags: [AudioUnitParameterOptions.flag_IsGlobalMeta]
+        flags: [
+          AudioUnitParameterOptions.flag_IsGlobalMeta, AudioUnitParameterOptions.flag_NonRealTime,
+        ]
       )
       PB.Bool(.osc1On, "osc1On", "OSC1 On", true)
       PB.Enum(.osc1Wave, "osc1Wave", "OSC1 Wave", DefaultValues.osc1Wave, oscWaveValues)
