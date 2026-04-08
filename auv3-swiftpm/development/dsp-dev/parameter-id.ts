@@ -50,3 +50,7 @@ export const ParameterId = {
   voicingMode: hash("voicingMode"),
   masterVolume: hash("masterVolume"),
 };
+
+export const CommandId = {
+  setBpm: hash("setBpm"),
+};

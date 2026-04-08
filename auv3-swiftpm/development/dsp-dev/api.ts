@@ -8,4 +8,5 @@ export interface IDspCore {
     bufferR: Float32Array,
     frames: number,
   ): void;
+  applyCustomCommand(id: number, value: number): void;
 }

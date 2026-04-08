@@ -1,6 +1,11 @@
 #include <cstdint>
 
-enum class RtProcessorEventType { None = 0, ParameterChange, InternalNote };
+enum class RtProcessorEventType {
+  None = 0,
+  ParameterChange,
+  InternalNote,
+  CustomCommand
+};
 
 struct RtProcessorEvent {
   RtProcessorEventType type;
@@ -13,5 +18,9 @@ struct RtProcessorEvent {
       int noteNumber;
       float velocity; // 0 for noteOff
     } internalNote;
+    struct {
+      uint64_t id;
+      float value;
+    } customCommand;
   };
 };

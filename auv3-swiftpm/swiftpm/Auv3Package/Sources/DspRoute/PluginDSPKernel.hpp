@@ -54,6 +54,11 @@ public:
                                 .internalNote = {noteNumber, velocity}});
   }
 
+  void pushCustomCommand(uint64_t id, float value) {
+    rtProcessorEventQueue.push(
+        {RtProcessorEventType::CustomCommand, .customCommand = {id, value}});
+  }
+
   void drainProcessorEvents() {
     RtProcessorEvent e;
     while (rtProcessorEventQueue.pop(e)) {

@@ -165,11 +165,29 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     }
   }
 
+  let isStandalone = true
+
+  func handleHostBpmChange(bpm: Float) {
+    if isStandalone {
+      //standalone
+
+    } else {
+      //executed in host app
+      kernel.pushCustomCommand(commandId_setBpm, bpm)
+    }
+  }
+
   func drainHostEvents() {
     var rawEvent = RtHostEvent()
     while kernel.popRtHostEvent(&rawEvent) {
       if let event = mapHostEventFromRtHostEvent(rawEvent) {
         hostEventService.emitHostEvent(event)
+        switch event {
+        case .hostTempo(let bpm):
+          handleHostBpmChange(bpm: bpm)
+        default:
+          break
+        }
       }
     }
   }
