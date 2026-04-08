@@ -4,10 +4,10 @@
 import PackageDescription
 
 let package = Package(
-  name: "Auv3PluginPackage",
+  name: "Auv3Package",
   platforms: [.macOS(.v14), .iOS(.v16)],
   products: [
-    .library(name: "Auv3PluginPackage", targets: ["FrameworkMain", "Auv3HostApp"])
+    .library(name: "Auv3Package", targets: ["ExtensionMain", "Auv3HostApp"])
   ],
   targets: [
     .target(
@@ -20,7 +20,7 @@ let package = Package(
       publicHeadersPath: "include"
     ),
     .target(
-      name: "FrameworkMain",
+      name: "ExtensionMain",
       dependencies: ["DspRoute"],
       resources: [
         .copy("Resources/pages")
