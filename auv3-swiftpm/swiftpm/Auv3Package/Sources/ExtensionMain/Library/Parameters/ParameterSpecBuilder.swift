@@ -1,5 +1,12 @@
 import AudioToolbox
 
+let flagsDefault: AudioUnitParameterOptions = [
+  .flag_IsReadable, .flag_IsWritable,
+]
+let flagsInternal: AudioUnitParameterOptions = [
+  .flag_IsGlobalMeta, .flag_NonRealTime,
+]
+
 class ParameterSpecBuilder<Address: RawRepresentable>
 where Address.RawValue == AUParameterAddress {
   init() {}
@@ -11,9 +18,7 @@ where Address.RawValue == AUParameterAddress {
     valueRange: ClosedRange<AUValue>,
     defaultValue: AUValue,
     unitName: String? = nil,
-    flags: AudioUnitParameterOptions = [
-      AudioUnitParameterOptions.flag_IsWritable, AudioUnitParameterOptions.flag_IsReadable,
-    ],
+    flags: AudioUnitParameterOptions = flagsDefault,
     valueStrings: [String]? = nil,
     dependentParameters: [NSNumber]? = nil
   ) -> ParameterSpec {
@@ -32,7 +37,7 @@ where Address.RawValue == AUParameterAddress {
   }
   func Linear(
     _ address: Address, _ identifier: String, _ name: String, _ defaultValue: AUValue,
-    _ minValue: AUValue, _ maxValue: AUValue
+    _ minValue: AUValue, _ maxValue: AUValue, isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
       address: address.rawValue,
@@ -41,10 +46,12 @@ where Address.RawValue == AUParameterAddress {
       units: .generic,
       valueRange: minValue...maxValue,
       defaultValue: defaultValue,
+      flags: isInternal ? flagsInternal : flagsDefault,
     )
   }
   func Unary(
-    _ address: Address, _ identifier: String, _ name: String, _ defaultValue: AUValue
+    _ address: Address, _ identifier: String, _ name: String, _ defaultValue: AUValue,
+    isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
       address: address.rawValue,
@@ -53,10 +60,12 @@ where Address.RawValue == AUParameterAddress {
       units: .generic,
       valueRange: 0.0...1.0,
       defaultValue: defaultValue,
+      flags: isInternal ? flagsInternal : flagsDefault,
     )
   }
   func Bool(
-    _ address: Address, _ identifier: String, _ name: String, _ defaultValue: Bool
+    _ address: Address, _ identifier: String, _ name: String, _ defaultValue: Bool,
+    isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
       address: address.rawValue,
@@ -65,11 +74,12 @@ where Address.RawValue == AUParameterAddress {
       units: .boolean,
       valueRange: 0.0...1.0,
       defaultValue: defaultValue ? 1.0 : 0.0,
+      flags: isInternal ? flagsInternal : flagsDefault,
     )
   }
   func Enum(
     _ address: Address, _ identifier: String, _ name: String, _ defaultString: String,
-    _ valueStrings: [String]
+    _ valueStrings: [String], isInternal: Bool = false
   ) -> ParameterSpec {
     let defaultIndex = valueStrings.firstIndex(of: defaultString) ?? 0
     return ParameterSpec(
@@ -79,10 +89,9 @@ where Address.RawValue == AUParameterAddress {
       units: .indexed,
       valueRange: 0.0...Float(valueStrings.count - 1),
       defaultValue: Float(defaultIndex),
-      flags: [
-        .flag_IsWritable, .flag_IsReadable,
-        .flag_ValuesHaveStrings,
-      ],
+      flags: isInternal
+        ? [flagsInternal, .flag_ValuesHaveStrings]
+        : [flagsDefault, .flag_ValuesHaveStrings],
       valueStrings: valueStrings
     )
   }

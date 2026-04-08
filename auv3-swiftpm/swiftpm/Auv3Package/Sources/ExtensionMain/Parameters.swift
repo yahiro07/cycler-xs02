@@ -20,16 +20,9 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
   let PB: ParameterSpecBuilder<ParameterId> = ParameterSpecBuilder()
   return ParameterTreeSpec {
     ParameterGroupSpec(identifier: "global", name: "Global") {
-      PB.Raw(
-        address: .parametersVersion,
-        identifier: "parametersVersion",
-        name: "Parameters Version",
-        units: .generic,
-        valueRange: 0...999999,
-        defaultValue: 1,
-        flags: [
-          AudioUnitParameterOptions.flag_IsGlobalMeta, AudioUnitParameterOptions.flag_NonRealTime,
-        ]
+      PB.Linear(
+        .parametersVersion, "parametersVersion", "Parameters Version", 0, 999999, 1,
+        isInternal: true,
       )
       PB.Bool(.osc1On, "osc1On", "OSC1 On", true)
       PB.Enum(.osc1Wave, "osc1Wave", "OSC1 Wave", DefaultValues.osc1Wave, oscWaveValues)
@@ -71,16 +64,17 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
       PB.Enum(.voicingMode, "voicingMode", "Voicing Mode", "Mono", ["Mono", "Poly"])
       PB.Unary(.masterVolume, "masterVolume", "Master Volume", 0.8)
       //
-      PB.Raw(
-        address: .internalBpm,
-        identifier: "internalBpm",
-        name: "Internal BPM",
-        units: .generic,
-        valueRange: 0...400,
-        defaultValue: 120,
-        flags: [
-          AudioUnitParameterOptions.flag_IsGlobalMeta, AudioUnitParameterOptions.flag_NonRealTime,
-        ]
+      PB.Linear(
+        .internalBpm, "internalBpm", "Internal BPM", 0, 400, 120, isInternal: true,
+      )
+      PB.Bool(
+        .autoRandomizeOnLoop, "autoRandomizeOnLoop", "Auto Randomize On Loop", false,
+        isInternal: true,
+      )
+      PB.Enum(
+        .randomizeLevel, "randomizeLevel", "Randomize Level", "rnd1",
+        ["rnd1", "rnd2", "rnd5", "rnd10", "rnd20", "rndFull"],
+        isInternal: true,
       )
     }
   }

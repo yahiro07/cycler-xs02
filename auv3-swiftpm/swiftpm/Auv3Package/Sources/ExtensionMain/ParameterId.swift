@@ -67,14 +67,6 @@ enum ParameterId: CaseIterable {
   case masterVolume
   //
   case internalBpm
+  case autoRandomizeOnLoop
+  case randomizeLevel
 }
-
-private func hash(_ str: String) -> UInt64 {
-  var result: UInt64 = 0x811c_9dc5
-  for byte in str.utf8 {
-    result ^= UInt64(byte)
-    result = result &* 0x0100_0193
-  }
-  return result
-}
-let commandId_setBpm = hash("setBpm")
