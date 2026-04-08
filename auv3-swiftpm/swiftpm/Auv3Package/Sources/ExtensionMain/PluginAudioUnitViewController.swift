@@ -89,8 +89,9 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   }
 
   private func configureSwiftUIView(audioUnit: PluginAudioUnit) {
-    guard let controllerFacade = audioUnit.controllerFacade else { return }
-    let content = PluginMainView(controllerFacade)
+    let controllerPivot = audioUnit.controllerPivot
+    let webviewBridge = WebViewBridge(controllerPivot)
+    let content = PluginMainView(webviewBridge)
     hostingControllerWrapper.bindView(vc: self, content: AnyView(content))
     audioUnit.viewAdded()
   }

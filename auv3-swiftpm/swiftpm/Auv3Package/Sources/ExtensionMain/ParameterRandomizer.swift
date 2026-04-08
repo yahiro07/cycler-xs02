@@ -1,3 +1,3 @@
-func randomizeParameters(_ parameters: inout [String: Float]) {
+func applyRandomizeParameters(_ parameters: inout [String: Float]) {
 
 }

@@ -26,7 +26,7 @@ private class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
   }
 }
 
-class WebViewCoordinator: NSObject, WebViewIoProtocol, WKNavigationDelegate {
+class WebViewCoordinator: NSObject, @preconcurrency WebViewIoProtocol, WKNavigationDelegate {
   weak var webViewInstance: WKWebView?
   private var receivers: [UUID: (String) -> Void] = [:]
   private var didCallOnBind = false

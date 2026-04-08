@@ -1,6 +1,5 @@
 import Combine
 
-@MainActor
 protocol WebViewIoProtocol {
   func loadURL(_ urlString: String)
 

@@ -3,7 +3,7 @@ import CoreAudioKit
 typealias ParamId = UInt64
 
 protocol ParameterServiceProtocol {
-  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?)
+  func subscribeParameterChanges(_ listener: @escaping (_ paramKey: String, _ value: Float) -> Void)
     -> Int
   func unsubscribeParameterChanges(_ token: Int)
   func setParameterEditState(_ paramKey: String, _ editing: Bool)
@@ -13,6 +13,8 @@ protocol ParameterServiceProtocol {
   func loadFullParametersSuit(_ parameters: [String: Float])
 
   func setInternalParameterFromHost(_ paramId: ParamId, _ value: Float)
+
+  func randomizeParameters()
 }
 
 class ParametersService: ParameterServiceProtocol {
@@ -55,7 +57,8 @@ class ParametersService: ParameterServiceProtocol {
     }
   }
 
-  func subscribeParameterChanges(_ listener: ((_ paramKey: String, _ value: Float) -> Void)?) -> Int
+  func subscribeParameterChanges(_ listener: @escaping (_ paramKey: String, _ value: Float) -> Void)
+    -> Int
   {
     let token = nextListenerToken
     nextListenerToken += 1
@@ -110,4 +113,11 @@ class ParametersService: ParameterServiceProtocol {
     guard let parameter = getAuParameterByParamId(paramId) else { return }
     parameter.value = value
   }
+
+  func randomizeParameters() {
+    var parameters = getAllParameterValues()
+    applyRandomizeParameters(&parameters)
+    loadFullParametersSuit(parameters)
+  }
+
 }
