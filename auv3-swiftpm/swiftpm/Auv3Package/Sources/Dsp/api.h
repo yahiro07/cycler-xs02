@@ -12,7 +12,7 @@ public:
                             uint32_t frames) = 0;
   virtual void applyCommand(uint64_t id, double value) = 0;
   // called on main thread
-  virtual bool extraLogic_isRandomizeRequired() = 0;
+  virtual bool extraLogic_pullRandomizeRequestFlag() = 0;
   // virtual void
   // extraLogic_randomizeParameters(std::map<uint64_t, double> &parameters) = 0;
 };

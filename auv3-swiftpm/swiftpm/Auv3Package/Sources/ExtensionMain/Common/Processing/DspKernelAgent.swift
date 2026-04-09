@@ -19,8 +19,8 @@ class DspKernelAgent {
     dspKernel.pointee.setParameter(address, value)
   }
 
-  func extraLogic_isRandomizeRequired() -> Bool {
-    return dspKernel.pointee.extraLogic_isRandomizeRequired()
+  func extraLogic_pullRandomizeRequestFlag() -> Bool {
+    return dspKernel.pointee.extraLogic_pullRandomizeRequestFlag()
   }
 
   func drainHostEvents(fn: (HostEvent) -> Void) {

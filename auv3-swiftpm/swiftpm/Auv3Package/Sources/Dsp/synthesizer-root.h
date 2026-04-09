@@ -1,6 +1,7 @@
 #pragma once
 #include "./api.h"
 #include "parameter-id.h"
+#include <atomic>
 #include <cmath>
 #include <cstdio>
 
@@ -84,6 +85,8 @@ struct SynthesizerStateBus {
   bool gateOn = false;
   float bpm = 120.0;
   bool playState = false;
+  float gateOnUptimeSec = 0.f;
+  std::atomic<bool> needRandomize = false;
 };
 
 static const int noteNumber_globalPlayState = 200;
@@ -110,6 +113,7 @@ public:
   void noteOn(int noteNumber, double velocity) override {
     bus.noteNumber = noteNumber;
     bus.gateOn = true;
+    bus.gateOnUptimeSec = 0.f;
   }
   void noteOff(int noteNumber) override {
     if (noteNumber == bus.noteNumber) {
@@ -136,6 +140,17 @@ public:
       leftBuffer[i] = y;
       rightBuffer[i] = y;
     }
+    auto elapsed = (float)frames / bus.sampleRate;
+    auto currUptime = bus.gateOnUptimeSec;
+    auto nextUptime = bus.gateOnUptimeSec + elapsed;
+    if (bus.gateOn) {
+      auto currSec = static_cast<int>(currUptime / 1.0);
+      auto nextSec = static_cast<int>(nextUptime / 1.0);
+      if (currSec != nextSec) {
+        bus.needRandomize.store(true, std::memory_order_release);
+      }
+    }
+    bus.gateOnUptimeSec = nextUptime;
   }
 
   void applyCommand(uint64_t id, double value) override {
@@ -144,7 +159,9 @@ public:
     }
   }
 
-  bool extraLogic_isRandomizeRequired() override { return false; }
+  bool extraLogic_pullRandomizeRequestFlag() override {
+    return bus.needRandomize.exchange(false, std::memory_order_acq_rel);
+  }
   // void extraLogic_randomizeParameters(
   //     std::map<uint64_t, double> &parameters) override {}
 };

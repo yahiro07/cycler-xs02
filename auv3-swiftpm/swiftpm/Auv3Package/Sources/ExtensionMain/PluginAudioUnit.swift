@@ -192,7 +192,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   }
 
   func updateParameterRandomization() {
-    if dspKernel.extraLogic_isRandomizeRequired() {
+    if dspKernel.extraLogic_pullRandomizeRequestFlag() {
       parametersService.randomizeParameters()
     }
   }

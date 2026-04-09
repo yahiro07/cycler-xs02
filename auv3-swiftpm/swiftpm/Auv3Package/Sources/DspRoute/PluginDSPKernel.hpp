@@ -201,8 +201,8 @@ private:
   }
 
 public:
-  bool extraLogic_isRandomizeRequired() {
-    return mDspCore->extraLogic_isRandomizeRequired();
+  bool extraLogic_pullRandomizeRequestFlag() {
+    return mDspCore->extraLogic_pullRandomizeRequestFlag();
   }
   // void extraLogic_randomizeParameters(std::map<uint64_t, double> &parameters)
   // {
