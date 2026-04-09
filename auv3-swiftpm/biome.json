@@ -12,7 +12,8 @@
         "useImportType": "off"
       },
       "correctness": {
-        "noConstantCondition": "off"
+        "noConstantCondition": "off",
+        "noChildrenProp": "off"
       },
       "suspicious": {
         "noDuplicateElseIf": "off"
