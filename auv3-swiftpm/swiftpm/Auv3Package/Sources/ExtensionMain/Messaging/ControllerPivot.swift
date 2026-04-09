@@ -6,6 +6,8 @@ class ControllerPivot: ControllerPivotProtocol {
 
   private var bridges: [WebViewBridgeProtocol] = []
 
+  private var isStandalone: Bool = false
+
   init(
     dspKernelAgent: DspKernelAgent,
     parametersService: ParametersService,
@@ -18,6 +20,15 @@ class ControllerPivot: ControllerPivotProtocol {
     self.stateKvsService = stateKvsService
   }
 
+  func setStandaloneFlag() {
+    if !self.isStandalone {
+      self.isStandalone = true
+      for bridge in bridges {
+        bridge.sendCommandFromApp("setStandaloneFlag", 1)
+      }
+    }
+  }
+
   func addWebViewBridge(_ bridge: WebViewBridgeProtocol) {
     bridges.append(bridge)
   }
@@ -27,6 +38,9 @@ class ControllerPivot: ControllerPivotProtocol {
   func uiLoaded(_ bridge: WebViewBridgeProtocol) {
     let parameters = parametersService.getAllParameterValues()
     bridge.bulkSendParameters(parameters)
+    if self.isStandalone {
+      bridge.sendCommandFromApp("setStandaloneFlag", 1)
+    }
   }
 
   func applyParameterEditFromUi(_ paramKey: String, _ value: Float, _ state: ParameterEditState) {

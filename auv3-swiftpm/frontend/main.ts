@@ -189,6 +189,10 @@ windowTyped.pluginEditorCallback = (msg) => {
     pushLogLine(`host note off: ${msg.noteNumber}`);
     const indicator = document.getElementById("indicator") as HTMLDivElement;
     indicator.innerText = "";
+  } else if (msg.type === "applyCommand") {
+    if (msg.commandKey === "setStandaloneFlag") {
+      pushLogLine("isStandalone");
+    }
   }
 };
 

@@ -18,6 +18,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   private var parameterChangesToken: Int = 0
 
   private let intervalTimerManager = IntervalTimerManager()
+  private var isStandalone = false
 
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
@@ -164,9 +165,11 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     set(newValue) {
       logger.log("fullState restoration")
       guard let state = newValue else { return }
-      // if let flag = state["MySynth1.hostedInStandaloneApp"] as? Bool {
-      //   self.isHostedInStandaloneApp = flag
-      // }
+      if state["MySynth1.hostedInStandaloneApp"] != nil {
+        logger.log("hosted in standalone app")
+        controllerPivot.setStandaloneFlag()
+        isStandalone = true
+      }
       if let parameters = state["parameters"] as? [String: Float] {
         parametersService.loadFullParametersSuit(parameters)
       }
@@ -178,17 +181,15 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     }
   }
 
-  // private let isStandalone = false
-
   private func handleHostBpmChange(_ bpm: Float) {
     logger.log("host bpm change: \(bpm)")
-    // if isStandalone {
-    //   //standalone
-    // } else {
-    //executed in host app
-    //Host bpm --> DSP, UI
-    parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
-    // }
+    if isStandalone {
+      //standalone
+    } else {
+      //executed in host app
+      //Host bpm --> DSP, UI
+      parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
+    }
   }
 
   func updateParameterRandomization() {
