@@ -3,9 +3,9 @@
     // {
     //   "path": "../../development/dsp-dev"
     // },
-    // {
-    //   "path": "../../frontend"
-    // },
+    {
+      "path": "../../frontend"
+    },
     {
       "path": "."
     }
