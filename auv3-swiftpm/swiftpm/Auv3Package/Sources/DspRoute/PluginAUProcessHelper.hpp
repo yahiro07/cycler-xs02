@@ -58,6 +58,7 @@ public:
     };
   }
 
+private:
   /**
    This function handles the event list processing and rendering loop for you.
    Call it inside your internalRenderBlock.
