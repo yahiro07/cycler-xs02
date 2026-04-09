@@ -55,7 +55,7 @@ class ControllerPivot: ControllerPivotProtocol {
     if commandKey == "randomizeParameters" {
       parametersService.randomizeParameters()
     } else if commandKey == "setPlayState" {
-      dspKernelAgent.pushCustomCommand(commandId_setPlayState, value)
+      dspKernelAgent.pushCustomCommand(commandIds.setPlayState, value)
     }
   }
 

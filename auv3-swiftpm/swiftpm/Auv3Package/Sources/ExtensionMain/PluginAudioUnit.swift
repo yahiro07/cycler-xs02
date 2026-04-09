@@ -185,7 +185,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     } else {
       //executed in host app
       //Host bpm --> DSP, UI
-      parametersService.setInternalParameterFromHost(ParameterId.internalBpm.rawValue, bpm)
+      parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
     }
   }
 

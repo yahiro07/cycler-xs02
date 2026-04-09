@@ -17,62 +17,63 @@ struct DefaultValues {
 }
 
 func buildPluginParameterSpecs() -> ParameterTreeSpec {
-  let PB: ParameterSpecBuilder<ParameterId> = ParameterSpecBuilder()
+  let pk = parameterIds
+  let pb = ParameterSpecBuilder()
   return ParameterTreeSpec {
     ParameterGroupSpec(identifier: "global", name: "Global") {
-      PB.Linear(
-        .parametersVersion, "parametersVersion", "Parameters Version", 1, 0, 999999,
+      pb.Linear(
+        pk.parametersVersion, "parametersVersion", "Parameters Version", 1, 0, 999999,
         isInternal: true,
       )
-      PB.Bool(.osc1On, "osc1On", "OSC1 On", true)
-      PB.Enum(.osc1Wave, "osc1Wave", "OSC1 Wave", DefaultValues.osc1Wave, oscWaveValues)
-      PB.Unary(.osc1Octave, "osc1Octave", "OSC1 Octave", 0.5)
-      PB.Unary(.osc1PwMix, "osc1PwMix", "OSC1 PwMix", 0.5)
-      PB.Unary(.osc1Volume, "osc1Volume", "OSC1 Volume", DefaultValues.osc1Volume)
+      pb.Bool(pk.osc1On, "osc1On", "OSC1 On", true)
+      pb.Enum(pk.osc1Wave, "osc1Wave", "OSC1 Wave", DefaultValues.osc1Wave, oscWaveValues)
+      pb.Unary(pk.osc1Octave, "osc1Octave", "OSC1 Octave", 0.5)
+      pb.Unary(pk.osc1PwMix, "osc1PwMix", "OSC1 PwMix", 0.5)
+      pb.Unary(pk.osc1Volume, "osc1Volume", "OSC1 Volume", DefaultValues.osc1Volume)
       //
-      PB.Bool(.osc2On, "osc2On", "OSC2 On", false)
-      PB.Enum(.osc2Wave, "osc2Wave", "OSC2 Wave", "Saw", oscWaveValues)
-      PB.Unary(.osc2Octave, "osc2Octave", "OSC2 Octave", 0.5)
-      PB.Unary(.osc2Detune, "osc2Detune", "OSC2 Detune", 0.5)
-      PB.Unary(.osc2Volume, "osc2Volume", "OSC2 Volume", 0.5)
+      pb.Bool(pk.osc2On, "osc2On", "OSC2 On", false)
+      pb.Enum(pk.osc2Wave, "osc2Wave", "OSC2 Wave", "Saw", oscWaveValues)
+      pb.Unary(pk.osc2Octave, "osc2Octave", "OSC2 Octave", 0.5)
+      pb.Unary(pk.osc2Detune, "osc2Detune", "OSC2 Detune", 0.5)
+      pb.Unary(pk.osc2Volume, "osc2Volume", "OSC2 Volume", 0.5)
       //
-      PB.Bool(.filterOn, "filterOn", "Filter On", true)
-      PB.Enum(.filterType, "filterType", "Filter Type", "LPF", ["LPF", "BPF", "HPF"])
-      PB.Unary(.filterCutoff, "filterCutoff", "Filter Cutoff", 1.0)
-      PB.Unary(.filterPeak, "filterPeak", "Filter Peak", 0.0)
-      PB.Unary(.filterEnvMod, "filterEnvMod", "Filter EnvMod", 0.5)
+      pb.Bool(pk.filterOn, "filterOn", "Filter On", true)
+      pb.Enum(pk.filterType, "filterType", "Filter Type", "LPF", ["LPF", "BPF", "HPF"])
+      pb.Unary(pk.filterCutoff, "filterCutoff", "Filter Cutoff", 1.0)
+      pb.Unary(pk.filterPeak, "filterPeak", "Filter Peak", 0.0)
+      pb.Unary(pk.filterEnvMod, "filterEnvMod", "Filter EnvMod", 0.5)
       //
-      PB.Bool(.ampOn, "ampOn", "Amp On", true)
-      PB.Unary(.ampAttack, "ampAttack", "Amp Attack", 0.0)
-      PB.Unary(.ampDecay, "ampDecay", "Amp Decay", 0.0)
-      PB.Unary(.ampSustain, "ampSustain", "Amp Sustain", 1.0)
-      PB.Unary(.ampRelease, "ampRelease", "Amp Release", 0.0)
+      pb.Bool(pk.ampOn, "ampOn", "Amp On", true)
+      pb.Unary(pk.ampAttack, "ampAttack", "Amp Attack", 0.0)
+      pb.Unary(pk.ampDecay, "ampDecay", "Amp Decay", 0.0)
+      pb.Unary(pk.ampSustain, "ampSustain", "Amp Sustain", 1.0)
+      pb.Unary(pk.ampRelease, "ampRelease", "Amp Release", 0.0)
       //
-      PB.Bool(.lfoOn, "lfoOn", "LFO On", false)
-      PB.Enum(.lfoWave, "lfoWave", "LFO Wave", "Saw", oscWaveValues)
-      PB.Unary(.lfoRate, "lfoRate", "LFO Rate", 0.5)
-      PB.Unary(.lfoDepth, "lfoDepth", "LFO Depth", 0.5)
-      PB.Enum(.lfoTarget, "lfoTarget", "LFO Target", "None", lfoDestinationValues)
+      pb.Bool(pk.lfoOn, "lfoOn", "LFO On", false)
+      pb.Enum(pk.lfoWave, "lfoWave", "LFO Wave", "Saw", oscWaveValues)
+      pb.Unary(pk.lfoRate, "lfoRate", "LFO Rate", 0.5)
+      pb.Unary(pk.lfoDepth, "lfoDepth", "LFO Depth", 0.5)
+      pb.Enum(pk.lfoTarget, "lfoTarget", "LFO Target", "None", lfoDestinationValues)
       //
-      PB.Bool(.egOn, "egOn", "EG On", false)
-      PB.Unary(.egAttack, "egAttack", "EG Attack", 0.0)
-      PB.Unary(.egDecay, "egDecay", "EG Decay", 0.0)
-      PB.Unary(.egAmount, "egAmount", "EG Amount", 0.5)
-      PB.Enum(.egTarget, "egTarget", "EG Target", "None", lfoDestinationValues)
+      pb.Bool(pk.egOn, "egOn", "EG On", false)
+      pb.Unary(pk.egAttack, "egAttack", "EG Attack", 0.0)
+      pb.Unary(pk.egDecay, "egDecay", "EG Decay", 0.0)
+      pb.Unary(pk.egAmount, "egAmount", "EG Amount", 0.5)
+      pb.Enum(pk.egTarget, "egTarget", "EG Target", "None", lfoDestinationValues)
       //
-      PB.Unary(.glide, "glide", "glide", 0.0)
-      PB.Enum(.voicingMode, "voicingMode", "Voicing Mode", "Mono", ["Mono", "Poly"])
-      PB.Unary(.masterVolume, "masterVolume", "Master Volume", 0.8)
+      pb.Unary(pk.glide, "glide", "glide", 0.0)
+      pb.Enum(pk.voicingMode, "voicingMode", "Voicing Mode", "Mono", ["Mono", "Poly"])
+      pb.Unary(pk.masterVolume, "masterVolume", "Master Volume", 0.8)
       //
-      PB.Linear(
-        .internalBpm, "internalBpm", "Internal BPM", 120, 30, 400, isInternal: true,
+      pb.Linear(
+        pk.internalBpm, "internalBpm", "Internal BPM", 120, 30, 400, isInternal: true,
       )
-      PB.Bool(
-        .autoRandomizeOnLoop, "autoRandomizeOnLoop", "Auto Randomize On Loop", false,
+      pb.Bool(
+        pk.autoRandomizeOnLoop, "autoRandomizeOnLoop", "Auto Randomize On Loop", false,
         isInternal: true,
       )
-      PB.Enum(
-        .randomizeLevel, "randomizeLevel", "Randomize Level", "rnd1",
+      pb.Enum(
+        pk.randomizeLevel, "randomizeLevel", "Randomize Level", "rnd1",
         ["rnd1", "rnd2", "rnd5", "rnd10", "rnd20", "rndFull"],
         isInternal: true,
       )

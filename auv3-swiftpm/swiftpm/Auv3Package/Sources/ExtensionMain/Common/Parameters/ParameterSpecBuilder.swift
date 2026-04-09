@@ -7,11 +7,10 @@ let flagsInternal: AudioUnitParameterOptions = [
   .flag_IsGlobalMeta, .flag_NonRealTime,
 ]
 
-class ParameterSpecBuilder<Address: RawRepresentable>
-where Address.RawValue == AUParameterAddress {
+class ParameterSpecBuilder {
   init() {}
   func Raw(
-    address: Address,
+    address: UInt64,
     identifier: String,
     name: String,
     units: AudioUnitParameterUnit,
@@ -23,7 +22,7 @@ where Address.RawValue == AUParameterAddress {
     dependentParameters: [NSNumber]? = nil
   ) -> ParameterSpec {
     return ParameterSpec(
-      address: address.rawValue,
+      address: address,
       identifier: identifier,
       name: name,
       units: units,
@@ -36,11 +35,11 @@ where Address.RawValue == AUParameterAddress {
     )
   }
   func Linear(
-    _ address: Address, _ identifier: String, _ name: String, _ defaultValue: AUValue,
+    _ address: UInt64, _ identifier: String, _ name: String, _ defaultValue: AUValue,
     _ minValue: AUValue, _ maxValue: AUValue, isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
-      address: address.rawValue,
+      address: address,
       identifier: identifier,
       name: name,
       units: .generic,
@@ -50,11 +49,11 @@ where Address.RawValue == AUParameterAddress {
     )
   }
   func Unary(
-    _ address: Address, _ identifier: String, _ name: String, _ defaultValue: AUValue,
+    _ address: UInt64, _ identifier: String, _ name: String, _ defaultValue: AUValue,
     isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
-      address: address.rawValue,
+      address: address,
       identifier: identifier,
       name: name,
       units: .generic,
@@ -64,11 +63,11 @@ where Address.RawValue == AUParameterAddress {
     )
   }
   func Bool(
-    _ address: Address, _ identifier: String, _ name: String, _ defaultValue: Bool,
+    _ address: UInt64, _ identifier: String, _ name: String, _ defaultValue: Bool,
     isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
-      address: address.rawValue,
+      address: address,
       identifier: identifier,
       name: name,
       units: .boolean,
@@ -78,12 +77,12 @@ where Address.RawValue == AUParameterAddress {
     )
   }
   func Enum(
-    _ address: Address, _ identifier: String, _ name: String, _ defaultString: String,
+    _ address: UInt64, _ identifier: String, _ name: String, _ defaultString: String,
     _ valueStrings: [String], isInternal: Bool = false
   ) -> ParameterSpec {
     let defaultIndex = valueStrings.firstIndex(of: defaultString) ?? 0
     return ParameterSpec(
-      address: address.rawValue,
+      address: address,
       identifier: identifier,
       name: name,
       units: .indexed,
