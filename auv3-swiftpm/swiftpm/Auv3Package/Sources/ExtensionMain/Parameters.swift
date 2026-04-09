@@ -21,7 +21,7 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
   return ParameterTreeSpec {
     ParameterGroupSpec(identifier: "global", name: "Global") {
       PB.Linear(
-        .parametersVersion, "parametersVersion", "Parameters Version", 0, 999999, 1,
+        .parametersVersion, "parametersVersion", "Parameters Version", 1, 0, 999999,
         isInternal: true,
       )
       PB.Bool(.osc1On, "osc1On", "OSC1 On", true)
@@ -65,7 +65,7 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
       PB.Unary(.masterVolume, "masterVolume", "Master Volume", 0.8)
       //
       PB.Linear(
-        .internalBpm, "internalBpm", "Internal BPM", 0, 400, 120, isInternal: true,
+        .internalBpm, "internalBpm", "Internal BPM", 120, 30, 400, isInternal: true,
       )
       PB.Bool(
         .autoRandomizeOnLoop, "autoRandomizeOnLoop", "Auto Randomize On Loop", false,
