@@ -1,8 +1,8 @@
 #pragma once
 
-#include "./RtHostEvent.hpp"
-#include "./RtProcessorEvent.hpp"
-#include "./SpscQueue.hpp"
+#include "./RtHostEvent.h"
+#include "./RtProcessorEvent.h"
+#include "./SpscQueue.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <CoreMIDI/CoreMIDI.h>
 #import <algorithm>
@@ -12,13 +12,8 @@
 
 #include "../Dsp/dsp-core-entry.h"
 
-/*
- PluginDSPKernel
- As a non-ObjC class, this is safe to use from render thread.
- */
-class PluginDSPKernel {
+class DspKernel {
 private:
-  // MARK: - Member Variables
   AUHostMusicalContextBlock mMusicalContextBlock;
 
   double mSampleRate = 44100.0;
@@ -81,37 +76,26 @@ public:
     }
   }
 
-  // MARK: - Bypass
   bool isBypassed() { return mBypassed; }
 
   void setBypass(bool shouldBypass) { mBypassed = shouldBypass; }
 
-  // MARK: - Parameter Getter / Setter
   void setParameter(AUParameterAddress address, AUValue value) {
     mDspCore->setParameter(address, value);
   }
 
-  // MARK: - Max Frames
   AUAudioFrameCount maximumFramesToRender() const { return mMaxFramesToRender; }
 
   void setMaximumFramesToRender(const AUAudioFrameCount &maxFrames) {
     mMaxFramesToRender = maxFrames;
   }
 
-  // MARK: - Musical Context
   void setMusicalContextBlock(AUHostMusicalContextBlock contextBlock) {
     mMusicalContextBlock = contextBlock;
   }
 
-  // MARK: - MIDI Protocol
   MIDIProtocolID AudioUnitMIDIProtocol() const { return kMIDIProtocol_2_0; }
 
-  /**
-   MARK: - Internal Process
-
-   This function does the core siginal processing.
-   Do your custom DSP here.
-   */
   void process(std::span<float *> outputBuffers,
                AUEventSampleTime bufferStartTime,
                AUAudioFrameCount frameCount) {
@@ -173,7 +157,7 @@ private:
                            AUMIDIEventList const *midiEvent) {
     auto visitor = [](void *context, MIDITimeStamp timeStamp,
                       MIDIUniversalMessage message) {
-      auto thisObject = static_cast<PluginDSPKernel *>(context);
+      auto thisObject = static_cast<DspKernel *>(context);
       if (message.type == kMIDIMessageTypeChannelVoice2) {
         thisObject->handleMIDI2VoiceMessage(message);
       }

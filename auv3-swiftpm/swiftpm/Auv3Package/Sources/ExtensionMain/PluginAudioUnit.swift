@@ -2,9 +2,7 @@ import AVFoundation
 import DspRoute
 
 public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
-  // C++ Objects
-  var dspKernel = PluginDSPKernel()
-  var processHelper: AUProcessHelper?
+  private var dspRoute = DspRouteEntry()  // C++ Object
   private var outputBus: AUAudioUnitBus?
   private var _outputBusses: AUAudioUnitBusArray!
   private let format: AVAudioFormat
@@ -23,7 +21,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
   ) throws {
-    dspKernelAgent = DspKernelAgent(dspKernel: &dspKernel)
+    dspKernelAgent = DspKernelAgent(dspKernel: &dspRoute)
     let parameterTree = buildPluginParameterSpecs().createAUParameterTree()
     parametersService = ParametersService(parameterTree: parameterTree)
     controllerPivot = ControllerPivot(
@@ -37,7 +35,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     outputBus?.maximumChannelCount = 2
     _outputBusses = AUAudioUnitBusArray(
       audioUnit: self, busType: AUAudioUnitBusType.output, busses: [outputBus!])
-    processHelper = AUProcessHelper(&dspKernel)
+    // processHelper = AUProcessHelper(&dspKernel)
     setupParameterStore(parameterTree)
     intervalTimerManager.setTimerCallbackFn(onIntervalTimerTick)
     intervalTimerManager.start()
@@ -70,32 +68,32 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   public override var maximumFramesToRender: AUAudioFrameCount {
     get {
-      return dspKernel.maximumFramesToRender()
+      return dspRoute.maximumFramesToRender()
     }
 
     set {
-      dspKernel.setMaximumFramesToRender(newValue)
+      dspRoute.setMaximumFramesToRender(newValue)
     }
   }
 
   public override var shouldBypassEffect: Bool {
     get {
-      return dspKernel.isBypassed()
+      return dspRoute.isBypassed()
     }
 
     set {
-      dspKernel.setBypass(newValue)
+      dspRoute.setBypass(newValue)
     }
   }
 
   // MARK: - MIDI
   public override var audioUnitMIDIProtocol: MIDIProtocolID {
-    return dspKernel.AudioUnitMIDIProtocol()
+    return dspRoute.AudioUnitMIDIProtocol()
   }
 
   // MARK: - Rendering
   public override var internalRenderBlock: AUInternalRenderBlock {
-    return processHelper!.internalRenderBlock()
+    return dspRoute.internalRenderBlock()
   }
 
   // Allocate resources required to render.
@@ -103,10 +101,10 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   public override func allocateRenderResources() throws {
     let outputChannelCount = self.outputBusses[0].format.channelCount
 
-    dspKernel.setMusicalContextBlock(self.musicalContextBlock)
-    dspKernel.initialize(Int32(outputChannelCount), outputBus!.format.sampleRate)
+    dspRoute.setMusicalContextBlock(self.musicalContextBlock)
+    dspRoute.initialize(Int32(outputChannelCount), outputBus!.format.sampleRate)
 
-    processHelper?.setChannelCount(0, self.outputBusses[0].format.channelCount)
+    dspRoute.setChannelCount(0, self.outputBusses[0].format.channelCount)
 
     try super.allocateRenderResources()
   }
@@ -116,7 +114,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   public override func deallocateRenderResources() {
 
     // Deallocate your resources.
-    dspKernel.deInitialize()
+    dspRoute.deInitialize()
 
     super.deallocateRenderResources()
   }
@@ -126,14 +124,14 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
     for param in parameterTree.allParameters {
       parameterStore.set(param.address, param.value)
-      dspKernel.setParameter(param.address, param.value)
+      dspRoute.setParameter(param.address, param.value)
     }
     parameterStore.stateKnownKeysInserted()
 
     parameterTree.implementorValueObserver = { [weak self] param, value -> Void in
       // logger.log("parameter changed: \(param.address) \(value)")
       parameterStore.set(param.address, value)
-      self?.dspKernel.pushParameterChange(param.address, value)
+      self?.dspRoute.pushParameterChange(param.address, value)
     }
     parameterTree.implementorValueProvider = { param in
       parameterStore.get(param.address)
@@ -193,7 +191,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   }
 
   func updateParameterRandomization() {
-    if dspKernel.extraLogic_pullRandomizeRequestFlag() {
+    if dspRoute.extraLogic_pullRandomizeRequestFlag() {
       parametersService.randomizeParameters()
     }
   }

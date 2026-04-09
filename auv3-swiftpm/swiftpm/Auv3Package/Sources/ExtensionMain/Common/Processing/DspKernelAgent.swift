@@ -1,9 +1,9 @@
 import DspRoute
 
 class DspKernelAgent {
-  private let dspKernel: UnsafeMutablePointer<PluginDSPKernel>
+  private let dspKernel: UnsafeMutablePointer<DspRouteEntry>
 
-  init(dspKernel: UnsafeMutablePointer<PluginDSPKernel>) {
+  init(dspKernel: UnsafeMutablePointer<DspRouteEntry>) {
     self.dspKernel = dspKernel
   }
 

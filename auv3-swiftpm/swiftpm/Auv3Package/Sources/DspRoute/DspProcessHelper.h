@@ -2,17 +2,17 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 
-#include "PluginDSPKernel.hpp"
+#include "DspKernel.h"
 #include <vector>
 
-// MARK:- AUProcessHelper Utility Class
-class AUProcessHelper {
+// MARK:- DspProcessHelper Utility Class
+class DspProcessHelper {
 private:
-  PluginDSPKernel &mKernel;
+  DspKernel &mKernel;
   std::vector<float *> mOutputBuffers;
 
 public:
-  AUProcessHelper(PluginDSPKernel &kernel) : mKernel{kernel} {}
+  DspProcessHelper(DspKernel &kernel) : mKernel{kernel} {}
 
   void setChannelCount(UInt32 inputChannelCount, UInt32 outputChannelCount) {
     mOutputBuffers.resize(outputChannelCount);
