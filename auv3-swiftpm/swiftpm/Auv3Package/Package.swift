@@ -24,9 +24,6 @@ let package = Package(
       dependencies: ["DspRoute"],
       resources: [
         .copy("Resources/pages")
-      ],
-      swiftSettings: [
-        .interoperabilityMode(.Cxx)
       ]
     ),
     .target(

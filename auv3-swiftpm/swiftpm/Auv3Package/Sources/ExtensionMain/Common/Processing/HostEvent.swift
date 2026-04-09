@@ -7,13 +7,13 @@ enum HostEvent {
   case hostPlayState(Bool)
 }
 
-func mapHostEventFromRtHostEvent(_ e: RtHostEvent) -> HostEvent? {
+func mapHostEventFromDspRouteHostEvent(_ e: DspRouteHostEvent) -> HostEvent? {
   switch e.type {
-  case .None: return nil
-  case .NoteOn: return .hostNoteOn(Int(e.noteOn.noteNumber))
-  case .NoteOff: return .hostNoteOff(Int(e.noteOff.noteNumber))
-  case .Tempo: return .hostTempo(e.tempo.tempo)
-  case .PlayState: return .hostPlayState(e.playState.isPlaying)
+  case .none: return nil
+  case .noteOn: return .hostNoteOn(Int(e.noteNumber))
+  case .noteOff: return .hostNoteOff(Int(e.noteNumber))
+  case .tempo: return .hostTempo(e.tempo)
+  case .playState: return .hostPlayState(e.isPlaying)
   default: return nil
   }
 }

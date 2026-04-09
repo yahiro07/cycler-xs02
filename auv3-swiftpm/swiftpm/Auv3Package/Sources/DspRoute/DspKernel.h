@@ -94,8 +94,6 @@ public:
     mMusicalContextBlock = contextBlock;
   }
 
-  MIDIProtocolID AudioUnitMIDIProtocol() const { return kMIDIProtocol_2_0; }
-
   void process(std::span<float *> outputBuffers,
                AUEventSampleTime bufferStartTime,
                AUAudioFrameCount frameCount) {

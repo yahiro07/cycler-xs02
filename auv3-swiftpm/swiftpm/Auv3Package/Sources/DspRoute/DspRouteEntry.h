@@ -1,63 +1,32 @@
 #pragma once
-#include "DspKernel.h"
-#include "DspProcessHelper.h"
+#include "./DspRouteHostEvent.h"
 #import <AudioToolbox/AudioToolbox.h>
+#include <objc/NSObject.h>
 
-class DspRouteEntry {
-private:
-  DspKernel dspKernel;
-  DspProcessHelper dspProcessHelper{dspKernel};
-
-public:
-  DspRouteEntry() {}
-
-  void setChannelCount(UInt32 inputChannelCount, UInt32 outputChannelCount) {
-    dspProcessHelper.setChannelCount(inputChannelCount, outputChannelCount);
-  }
-  AUInternalRenderBlock internalRenderBlock() {
-    return dspProcessHelper.internalRenderBlock();
-  }
-
-  void initialize(int channelCount, double inSampleRate) {
-    dspKernel.initialize(channelCount, inSampleRate);
-  }
-
-  void deInitialize() {}
-
-  bool popRtHostEvent(RtHostEvent &outEvent) {
-    return dspKernel.popRtHostEvent(outEvent);
-  }
-
-  void pushParameterChange(uint64_t address, float value) {
-    dspKernel.pushParameterChange(address, value);
-  }
-
-  void pushInternalNote(int noteNumber, float velocity) {
-    dspKernel.pushInternalNote(noteNumber, velocity);
-  }
-
-  void pushCustomCommand(uint64_t id, float value) {
-    dspKernel.pushCustomCommand(id, value);
-  }
-
-  bool isBypassed() { return dspKernel.isBypassed(); }
-  void setBypass(bool shouldBypass) { dspKernel.setBypass(shouldBypass); }
-
-  void setParameter(AUParameterAddress address, AUValue value) {
-    dspKernel.setParameter(address, value);
-  }
-  AUAudioFrameCount maximumFramesToRender() const {
-    return dspKernel.maximumFramesToRender();
-  }
-  void setMaximumFramesToRender(const AUAudioFrameCount &maxFrames) {
-    dspKernel.setMaximumFramesToRender(maxFrames);
-  }
-  void setMusicalContextBlock(AUHostMusicalContextBlock contextBlock) {
-    dspKernel.setMusicalContextBlock(contextBlock);
-  }
-  MIDIProtocolID AudioUnitMIDIProtocol() const { return kMIDIProtocol_2_0; }
-
-  bool extraLogic_pullRandomizeRequestFlag() {
-    return dspKernel.extraLogic_pullRandomizeRequestFlag();
-  }
-};
+@interface DspRouteEntry : NSObject
+- (void)setChannelCount:(UInt32)inputChannelCount
+     outputChannelCount:(UInt32)outputChannelCount
+    NS_SWIFT_NAME(setChannelCount(_:_:));
+- (void)initialize:(int)channelCount
+      inSampleRate:(double)inSampleRate NS_SWIFT_NAME(initialize(_:_:));
+- (void)deInitialize;
+- (AUInternalRenderBlock)internalRenderBlock;
+- (bool)popHostEvent:(DspRouteHostEvent *)outEvent
+    NS_SWIFT_NAME(popHostEvent(_:));
+- (void)pushParameterChange:(uint64_t)address
+                      value:(float)value
+    NS_SWIFT_NAME(pushParameterChange(_:_:));
+- (void)pushInternalNote:(int)noteNumber
+                velocity:(float)velocity NS_SWIFT_NAME(pushInternalNote(_:_:));
+- (void)pushCustomCommand:(uint64_t)id
+                    value:(float)value NS_SWIFT_NAME(pushCustomCommand(_:_:));
+- (bool)isBypassed;
+- (void)setBypass:(bool)shouldBypass;
+- (void)setParameter:(AUParameterAddress)address
+               value:(AUValue)value NS_SWIFT_NAME(setParameter(_:_:));
+- (AUAudioFrameCount)maximumFramesToRender;
+- (void)setMaximumFramesToRender:(AUAudioFrameCount)maxFrames
+    NS_SWIFT_NAME(setMaximumFramesToRender(_:));
+- (void)setMusicalContextBlock:(AUHostMusicalContextBlock)contextBlock;
+- (bool)extraLogic_pullRandomizeRequestFlag;
+@end

@@ -1,5 +1,5 @@
 class ControllerPivot: ControllerPivotProtocol {
-  private let dspKernelAgent: DspKernelAgent
+  private let dspRouteAgent: DspRouteAgent
   private let parametersService: ParametersService
   private let storageFileIoService: StorageFileIoService
   private let stateKvsService: StateKvsService
@@ -9,12 +9,12 @@ class ControllerPivot: ControllerPivotProtocol {
   private var isStandalone: Bool = false
 
   init(
-    dspKernelAgent: DspKernelAgent,
+    dspRouteAgent: DspRouteAgent,
     parametersService: ParametersService,
     storageFileIoService: StorageFileIoService,
     stateKvsService: StateKvsService,
   ) {
-    self.dspKernelAgent = dspKernelAgent
+    self.dspRouteAgent = dspRouteAgent
     self.parametersService = parametersService
     self.storageFileIoService = storageFileIoService
     self.stateKvsService = stateKvsService
@@ -60,16 +60,16 @@ class ControllerPivot: ControllerPivotProtocol {
     parametersService.loadFullParametersSuit(parameters)
   }
   func requestNoteOn(_ noteNumber: Int, _ velocity: Float) {
-    dspKernelAgent.pushInternalNote(noteNumber, velocity)
+    dspRouteAgent.pushInternalNote(noteNumber, velocity)
   }
   func requestNoteOff(_ noteNumber: Int) {
-    dspKernelAgent.pushInternalNote(noteNumber, 0)
+    dspRouteAgent.pushInternalNote(noteNumber, 0)
   }
   func applyCommandFromUi(_ commandKey: String, _ value: Float) {
     if commandKey == "randomizeParameters" {
       parametersService.randomizeParameters()
     } else if commandKey == "setPlayState" {
-      dspKernelAgent.pushCustomCommand(commandIds.setPlayState, value)
+      dspRouteAgent.pushCustomCommand(commandIds.setPlayState, value)
     }
   }
 

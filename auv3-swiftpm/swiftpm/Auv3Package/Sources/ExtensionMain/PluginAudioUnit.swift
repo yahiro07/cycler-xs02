@@ -7,7 +7,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   private var _outputBusses: AUAudioUnitBusArray!
   private let format: AVAudioFormat
 
-  private let dspKernelAgent: DspKernelAgent
+  private let dspRouteAgent: DspRouteAgent
   private let parametersService: ParametersService
   private let storageFileIoService = StorageFileIoService()
   private let stateKvsService = StateKvsService()
@@ -21,11 +21,11 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
   ) throws {
-    dspKernelAgent = DspKernelAgent(dspKernel: &dspRoute)
+    dspRouteAgent = DspRouteAgent(dspRoute: dspRoute)
     let parameterTree = buildPluginParameterSpecs().createAUParameterTree()
     parametersService = ParametersService(parameterTree: parameterTree)
     controllerPivot = ControllerPivot(
-      dspKernelAgent: dspKernelAgent,
+      dspRouteAgent: dspRouteAgent,
       parametersService: parametersService,
       storageFileIoService: storageFileIoService,
       stateKvsService: stateKvsService)
@@ -86,12 +86,10 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     }
   }
 
-  // MARK: - MIDI
   public override var audioUnitMIDIProtocol: MIDIProtocolID {
-    return dspRoute.AudioUnitMIDIProtocol()
+    return ._2_0
   }
 
-  // MARK: - Rendering
   public override var internalRenderBlock: AUInternalRenderBlock {
     return dspRoute.internalRenderBlock()
   }
@@ -197,7 +195,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   }
 
   func drainHostEvents() {
-    dspKernelAgent.drainHostEvents { event in
+    dspRouteAgent.drainHostEvents { event in
       self.controllerPivot.broadcastHostEvent(event)
       switch event {
       case .hostTempo(let bpm):
