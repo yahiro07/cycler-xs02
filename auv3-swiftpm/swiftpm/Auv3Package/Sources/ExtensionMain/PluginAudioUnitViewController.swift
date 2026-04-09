@@ -50,7 +50,7 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   nonisolated public func createAudioUnit(with componentDescription: AudioComponentDescription)
     throws -> AUAudioUnit
   {
-    logger.trace("createAudioUnit 1347")
+    logger.trace("createAudioUnit 1329")
     showEntryInfo(componentDescription)
     SharedContainer.setAppGroupId("group.net.miqsel.myau2.v2-swiftpm")
 

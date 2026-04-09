@@ -38,6 +38,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
       audioUnit: self, busType: AUAudioUnitBusType.output, busses: [outputBus!])
     processHelper = AUProcessHelper(&dspKernel)
     setupParameterStore(parameterTree)
+    intervalTimerManager.setTimerCallbackFn(onIntervalTimerTick)
     intervalTimerManager.start()
     setupSubscriptions()
   }
@@ -177,16 +178,17 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     }
   }
 
-  private let isStandalone = true
+  // private let isStandalone = false
 
   private func handleHostBpmChange(_ bpm: Float) {
-    if isStandalone {
-      //standalone
-    } else {
-      //executed in host app
-      //Host bpm --> DSP, UI
-      parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
-    }
+    logger.log("host bpm change: \(bpm)")
+    // if isStandalone {
+    //   //standalone
+    // } else {
+    //executed in host app
+    //Host bpm --> DSP, UI
+    parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
+    // }
   }
 
   func updateParameterRandomization() {

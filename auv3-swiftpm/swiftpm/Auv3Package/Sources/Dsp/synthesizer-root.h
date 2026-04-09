@@ -2,7 +2,7 @@
 #include "./api.h"
 #include "parameter-id.h"
 #include <cmath>
-// #include <cstdio>
+#include <cstdio>
 
 enum class OscWave : int {
   Saw = 0,
