@@ -1,35 +1,51 @@
 import Combine
 import SwiftUI
 
-class WebViewBridge: ObservableObject, WebViewBridgeProtocol {
+class WebViewBridge: NSObject, ObservableObject, WebViewBridgeProtocol {
   private let controllerPivot: ControllerPivotProtocol
   private var webViewIo: WebViewIoProtocol?
   private var webViewIoSubscription: AnyCancellable?
 
   init(_ controllerPivot: ControllerPivotProtocol) {
     self.controllerPivot = controllerPivot
+    super.init()
+  }
+
+  @objc private func sendMessageOnMainThread(_ message: NSString) {
+    webViewIo?.sendMessage(message as String)
+  }
+
+  private func sendMessageToUI(_ message: String) {
+    if Thread.isMainThread {
+      webViewIo?.sendMessage(message)
+      return
+    }
+    performSelector(
+      onMainThread: #selector(sendMessageOnMainThread(_:)),
+      with: message as NSString,
+      waitUntilDone: false)
   }
 
   func sendParameter(_ paramKey: String, _ value: Float) {
     let json = mapMessageFromApp_toJsonString(.setParameter(paramKey: paramKey, value: value))
-    webViewIo?.sendMessage(json)
+    sendMessageToUI(json)
   }
 
   func bulkSendParameters(_ parameters: [String: Float]) {
     let json = mapMessageFromApp_toJsonString(.bulkSendParameters(parameters: parameters))
-    webViewIo?.sendMessage(json)
+    sendMessageToUI(json)
   }
 
   func sendHostEvent(_ event: HostEvent) {
     let msg = mapHostEventToMessage(event)
     let json = mapMessageFromApp_toJsonString(msg)
-    webViewIo?.sendMessage(json)
+    sendMessageToUI(json)
   }
 
   func sendCommandFromApp(_ commandKey: String, _ value: Float) {
     let json = mapMessageFromApp_toJsonString(
       .applyCommand(commandKey: commandKey, value: value))
-    webViewIo?.sendMessage(json)
+    sendMessageToUI(json)
   }
 
   private func handleMessageFromUI(msg: MessageFromUI) {
@@ -61,22 +77,22 @@ class WebViewBridge: ObservableObject, WebViewBridgeProtocol {
       let content = controllerPivot.readFile(path: path, skipIfNotExist: skipIfNotExists)
       let msg = mapMessageFromApp_toJsonString(
         .rpcReadFileResponse(rpcId: rpcId, success: content != nil, content: content ?? ""))
-      webViewIo?.sendMessage(msg)
+      sendMessageToUI(msg)
     case .rpcWriteFileRequest(let rpcId, let path, let content, let append):
       let success = controllerPivot.writeFile(path: path, content: content, append: append)
       let msg = mapMessageFromApp_toJsonString(
         .rpcWriteFileResponse(rpcId: rpcId, success: success))
-      webViewIo?.sendMessage(msg)
+      sendMessageToUI(msg)
     case .rpcDeleteFileRequest(let rpcId, let path):
       let success = controllerPivot.deleteFile(path: path)
       let msg = mapMessageFromApp_toJsonString(
         .rpcDeleteFileResponse(rpcId: rpcId, success: success))
-      webViewIo?.sendMessage(msg)
+      sendMessageToUI(msg)
     case .rpcLoadStateKvsItemsRequest(let rpcId):
       let items = controllerPivot.getStateKvsItems()
       let msg = mapMessageFromApp_toJsonString(
         .rpcLoadStateKvsItemsResponse(rpcId: rpcId, items: items))
-      webViewIo?.sendMessage(msg)
+      sendMessageToUI(msg)
     case .writeStateKvsItem(let key, let value):
       controllerPivot.writeStateKvsItem(key: key, value: value)
     case .deleteStateKvsItem(let key):
