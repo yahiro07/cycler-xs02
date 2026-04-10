@@ -473,7 +473,7 @@ export type SynthParametersSuit = {
   looped: boolean;
   masterVolume: number;
   clockingOn: boolean;
-  baseOctave: number;
+  // baseOctave: number;
   baseNoteIndex: number;
   //
   internalBpm: number;
@@ -551,7 +551,7 @@ export const defaultSynthParameters: SynthParametersSuit = {
   looped: false,
   masterVolume: masterGainConfig.levelCenter,
   clockingOn: true,
-  baseOctave: 3,
+  // baseOctave: 3,
   baseNoteIndex: 9, //A
   //
   internalBpm: 130,

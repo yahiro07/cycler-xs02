@@ -19,6 +19,9 @@ function createProcessorClass() {
         } else if (type === "noteOff") {
           const { noteNumber } = event.data;
           this.dspCore.noteOff(noteNumber);
+        } else if (type === "applyCommand") {
+          const { id, value } = event.data;
+          this.dspCore.applyCommand(id, value);
         }
       };
     }

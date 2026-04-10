@@ -183,6 +183,8 @@ export const ParameterId = {
 
   //
   internalBpm: hash("internalBpm"),
+  autoRandomizeOnLoop: hash("autoRandomizeOnLoop"),
+  randomizeLevel: hash("randomizeLevel"),
 };
 
 export const CommandId = {

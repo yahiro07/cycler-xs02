@@ -1,6 +1,6 @@
+import workletUrl from "./worklet.ts?worker&url";
 import { createWorkletNodeWrapper } from "./worklet-node-wrapper";
 import { WorkletInputMessage, WorkletWrapper } from "./worklet-types";
-import workletUrl from "./worklet.ts?worker&url";
 
 export function createDspCoreWorkletWrapper(): WorkletWrapper {
   const _navigator = navigator as { audioSession?: { type: string } };
@@ -26,6 +26,9 @@ export function createDspCoreWorkletWrapper(): WorkletWrapper {
     },
     noteOff(noteNumber: number) {
       nodeWrapper.sendMessage({ type: "noteOff", noteNumber });
+    },
+    applyCommand(id: number, value: number) {
+      nodeWrapper.sendMessage({ type: "applyCommand", id, value });
     },
   };
 }

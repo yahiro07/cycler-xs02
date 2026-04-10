@@ -1,3 +1,5 @@
+import { CommandKeyFromApp, CommandKeyFromUi } from "@/base/command-keys";
+
 export type MessageFromUi =
   | { type: "uiLoaded" }
   | { type: "beginEdit"; paramKey: string }
@@ -6,7 +8,7 @@ export type MessageFromUi =
   | { type: "instantEdit"; paramKey: string; value: number }
   | { type: "noteOnRequest"; noteNumber: number }
   | { type: "noteOffRequest"; noteNumber: number }
-  | { type: "applyCommand"; commandKey: string; value: number }
+  | { type: "applyCommand"; commandKey: CommandKeyFromUi; value: number }
   | { type: "loadFullParameters"; parameters: Record<string, number> }
   //
   | {
@@ -32,7 +34,7 @@ export type MessageFromApp =
   | { type: "bulkSendParameters"; parameters: Record<string, number> }
   | { type: "hostNoteOn"; noteNumber: number }
   | { type: "hostNoteOff"; noteNumber: number }
-  | { type: "applyCommand"; commandKey: string; value: number }
+  | { type: "applyCommand"; commandKey: CommandKeyFromApp; value: number }
   //
   | {
       type: "rpcReadFileResponse";

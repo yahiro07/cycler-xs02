@@ -1,4 +1,4 @@
-import { CommandKeyFromApp, CommandKeyFromUi } from "@/base/command-keys";
+import { CommandKeyFromUi } from "@/base/command-keys";
 import {
   defaultSynthParameters,
   ParameterKey,
@@ -109,8 +109,7 @@ export function createEditorBridge(coreBridge: CoreBridge): EditorBridge {
             store.mutations.setHostNoteNumber(-1);
           }
         } else if (msg.type === "applyCommand") {
-          const commandKey = msg.commandKey as CommandKeyFromApp;
-          if (commandKey === "setStandaloneFlag") {
+          if (msg.commandKey === "setStandaloneFlag") {
             store.mutations.setIsStandalone(true);
           }
         }
