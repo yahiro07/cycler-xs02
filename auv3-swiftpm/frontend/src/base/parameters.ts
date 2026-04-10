@@ -50,7 +50,7 @@ export enum OscPitchMode {
 }
 export const oscPitchModeOptions = createEnumOptions<OscPitchMode>([
   [OscPitchMode.octave, "octave"],
-  [OscPitchMode.oct_x, "oct_x"],
+  [OscPitchMode.oct_x, "oct-x"],
   [OscPitchMode.linear, "linear"],
   [OscPitchMode.ratio, "ratio"],
   [OscPitchMode.semi, "semi"],
@@ -389,11 +389,11 @@ type FlatMotionParams<Mo extends MoId> = {
 
 function flatMotionParamsDefault<Mo extends MoId>(
   mo: Mo,
-  moType: MoType,
+  moTypeDefault: MoType,
 ): FlatMotionParams<Mo> {
   return {
     [`${mo}_moOn`]: false,
-    [`${mo}_moType`]: moType,
+    [`${mo}_moType`]: moTypeDefault,
     [`${mo}_moAmount`]: 0.5,
     [`${mo}_rndStride`]: MotionStride.gate,
     [`${mo}_rndMode`]: MoRndMode.sh,
