@@ -8,6 +8,14 @@ func calcParameterIdHash(_ str: String) -> UInt64 {
 }
 private let hash = calcParameterIdHash
 
+struct ParameterIds {
+  //define fields only for parameters referenced in swift side
+  let internalBpm = hash("internalBpm")
+  let autoRandomizeOnLoop = hash("autoRandomizeOnLoop")
+  let randomizeLevel = hash("randomizeLevel")
+}
+let parameterIds = ParameterIds()
+
 struct CommandIds {
   let setPlayState = hash("setPlayState")
 }
