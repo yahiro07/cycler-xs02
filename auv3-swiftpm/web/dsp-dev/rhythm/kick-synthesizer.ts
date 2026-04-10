@@ -241,9 +241,7 @@ function voicingAmp_processSamples(bus: StateBus, buffer: Float32Array) {
   }
 }
 
-export type KickSynth = StateBus;
-
-export function createKickSynth(): KickSynth {
+export function createStateBus(): StateBus {
   return {
     parameters: defaultKickParameters,
     sampleRate: 0,
@@ -268,54 +266,48 @@ export function createKickSynth(): KickSynth {
   };
 }
 
-export function kickSynth_prepare(
-  self: KickSynth,
-  sampleRate: number,
-  maxFrames: number,
-) {
-  const bus = self;
-  bus.sampleRate = sampleRate;
-  if (!(bus.workBuffer && bus.workBuffer.length === maxFrames)) {
-    bus.workBuffer = new Float32Array(maxFrames);
+export class KickSynth {
+  bus: StateBus = createStateBus();
+
+  prepare(sampleRate: number, maxFrames: number) {
+    const { bus } = this;
+    bus.sampleRate = sampleRate;
+    if (!(bus.workBuffer && bus.workBuffer.length === maxFrames)) {
+      bus.workBuffer = new Float32Array(maxFrames);
+    }
   }
-}
 
-export function kickSynth_applyPreset(
-  self: KickSynth,
-  presetKey: KickPresetKey,
-) {
-  const bus = self;
-  Object.assign(bus.parameters, kickPresets[presetKey]);
-}
+  applyPreset(presetKey: KickPresetKey) {
+    const { bus } = this;
+    Object.assign(bus.parameters, kickPresets[presetKey]);
+  }
 
-export function kickSynth_processSamples(
-  self: KickSynth,
-  destBuffer: Float32Array,
-) {
-  const bus = self;
-  if (bus.sampleRate === 0 || !bus.workBuffer) return;
-  const buffer = bus.workBuffer;
-  buffer.fill(0);
-  const timeLength = buffer.length / bus.sampleRate;
-  pitchEg_advance(bus);
-  ampEg_advance(bus);
-  osc_processSamples(bus, buffer);
-  voicingAmp_processSamples(bus, buffer);
-  writeBuffer(destBuffer, buffer);
-  bus.currentTime += timeLength;
-  bus.gateTriggered = false;
-}
+  processSamples(destBuffer: Float32Array) {
+    const { bus } = this;
+    if (bus.sampleRate === 0 || !bus.workBuffer) return;
+    const buffer = bus.workBuffer;
+    buffer.fill(0);
+    const timeLength = buffer.length / bus.sampleRate;
+    pitchEg_advance(bus);
+    ampEg_advance(bus);
+    osc_processSamples(bus, buffer);
+    voicingAmp_processSamples(bus, buffer);
+    writeBuffer(destBuffer, buffer);
+    bus.currentTime += timeLength;
+    bus.gateTriggered = false;
+  }
 
-export function kickSynth_playTone(self: KickSynth) {
-  const bus = self;
-  bus.noteNumber = 32;
-  bus.currentTime = 0;
-  bus.gateOn = true;
-  bus.gateTriggered = true;
-}
+  playTone() {
+    const { bus } = this;
+    bus.noteNumber = 32;
+    bus.currentTime = 0;
+    bus.gateOn = true;
+    bus.gateTriggered = true;
+  }
 
-export function kickSynth_stopTone(self: KickSynth) {
-  const bus = self;
-  bus.gateOn = false;
-  bus.currentTime = 0;
+  stopTone() {
+    const { bus } = this;
+    bus.gateOn = false;
+    bus.currentTime = 0;
+  }
 }

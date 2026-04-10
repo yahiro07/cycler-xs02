@@ -245,9 +245,9 @@ function voicingAmp_processSamples(bus: StateBus, buffer: Float32Array) {
   }
 }
 
-export type BassSynth = StateBus;
+// export type BassSynth = StateBus;
 
-export function createBassSynth(): BassSynth {
+export function createStateBus(): StateBus {
   return {
     parameters: defaultParameters,
     sampleRate: 0,
@@ -271,68 +271,56 @@ export function createBassSynth(): BassSynth {
   };
 }
 
-export function bassSynth_prepare(
-  self: BassSynth,
-  sampleRate: number,
-  maxFrames: number,
-) {
-  const bus = self;
-  bus.sampleRate = sampleRate;
-  if (!(bus.workBuffer && bus.workBuffer.length === maxFrames)) {
-    bus.workBuffer = new Float32Array(maxFrames);
+export class BassSynth {
+  bus: StateBus = createStateBus();
+
+  prepare(sampleRate: number, maxFrames: number) {
+    this.bus.sampleRate = sampleRate;
+    if (!(this.bus.workBuffer && this.bus.workBuffer.length === maxFrames)) {
+      this.bus.workBuffer = new Float32Array(maxFrames);
+    }
   }
-}
 
-export function bassSynth_applyPreset(
-  self: BassSynth,
-  presetKey: BassPresetKey,
-) {
-  const bus = self;
-  Object.assign(bus.parameters, bassPresets[presetKey]);
-}
+  applyPreset(presetKey: BassPresetKey) {
+    Object.assign(this.bus.parameters, bassPresets[presetKey]);
+  }
 
-export function bassSynth_processSamples(
-  self: BassSynth,
-  destBuffer: Float32Array,
-) {
-  const bus = self;
-  if (bus.sampleRate === 0 || !bus.workBuffer) return;
-  const buffer = bus.workBuffer;
-  buffer.fill(0);
-  const timeLength = buffer.length / bus.sampleRate;
-  osc_processSamples(bus, buffer);
-  voicingAmp_processSamples(bus, buffer);
-  writeBuffer(destBuffer, buffer);
-  bus.uptime += timeLength;
-  bus.noteOffUptime += timeLength;
-  if (
-    bus.gateOn &&
-    bus.noteDurationSec !== undefined &&
-    bus.uptime > bus.noteDurationSec
-  ) {
+  processSamples(destBuffer: Float32Array) {
+    const bus = this.bus;
+    if (bus.sampleRate === 0 || !bus.workBuffer) return;
+    const buffer = bus.workBuffer;
+    buffer.fill(0);
+    const timeLength = buffer.length / bus.sampleRate;
+    osc_processSamples(bus, buffer);
+    voicingAmp_processSamples(bus, buffer);
+    writeBuffer(destBuffer, buffer);
+    bus.uptime += timeLength;
+    bus.noteOffUptime += timeLength;
+    if (
+      bus.gateOn &&
+      bus.noteDurationSec !== undefined &&
+      bus.uptime > bus.noteDurationSec
+    ) {
+      bus.gateOn = false;
+      bus.noteOffUptime = 0;
+    }
+    bus.gateTriggered = false;
+  }
+
+  playTone(noteNumber: number, noteDurationSec?: number) {
+    const bus = this.bus;
+    if (noteDurationSec !== undefined && noteDurationSec <= 1e-6) return;
+    bus.noteNumber = noteNumber;
+    bus.uptime = 0;
+    bus.noteOffUptime = 0;
+    bus.gateOn = true;
+    bus.noteDurationSec = noteDurationSec;
+    bus.gateTriggered = true;
+  }
+
+  stopTone() {
+    const bus = this.bus;
     bus.gateOn = false;
     bus.noteOffUptime = 0;
   }
-  bus.gateTriggered = false;
-}
-
-export function bassSynth_playTone(
-  self: BassSynth,
-  noteNumber: number,
-  noteDurationSec?: number,
-) {
-  const bus = self;
-  if (noteDurationSec !== undefined && noteDurationSec <= 1e-6) return;
-  bus.noteNumber = noteNumber;
-  bus.uptime = 0;
-  bus.noteOffUptime = 0;
-  bus.gateOn = true;
-  bus.noteDurationSec = noteDurationSec;
-  bus.gateTriggered = true;
-}
-
-export function bassSynth_stopTone(self: BassSynth) {
-  const bus = self;
-  bus.gateOn = false;
-  bus.noteOffUptime = 0;
 }
