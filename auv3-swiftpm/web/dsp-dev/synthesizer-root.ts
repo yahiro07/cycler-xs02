@@ -1,7 +1,7 @@
 import { IDspCore } from "@core/api";
 import { CommandId } from "@core/parameter-id";
-import { ControlCommand } from "./synthesizer/control_command";
-import { parameterAssigner_applyParameter } from "./synthesizer/parameter_assigner";
+import { ControlCommand } from "./synthesizer/control-command";
+import { parameterAssigner_applyParameter } from "./synthesizer/parameter-assigner";
 import {
   createSynthesizerHub,
   synthesizerHub_playNote,
@@ -11,7 +11,7 @@ import {
   synthesizerHub_setGroovePlaying,
   synthesizerHub_setupBlWaveTable,
   synthesizerHub_stopNote,
-} from "./synthesizer/synthesizer_hub";
+} from "./synthesizer/synthesizer-hub";
 
 export function createSynthesizerRoot(): IDspCore {
   const synthesizerHub = createSynthesizerHub();

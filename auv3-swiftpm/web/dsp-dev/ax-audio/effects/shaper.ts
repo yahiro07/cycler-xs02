@@ -3,8 +3,8 @@ import {
   mixValue,
   power2,
   tunableSigmoid,
-} from "@core/ax/number_utils";
-import { HalfPi } from "@core/ax-audio/basic/synthesis_helper";
+} from "@core/ax/number-utils";
+import { HalfPi } from "@core/ax-audio/basic/synthesis-helper";
 
 export function applyShaperCore(
   y: number,
