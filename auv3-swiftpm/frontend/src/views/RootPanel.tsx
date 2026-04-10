@@ -26,10 +26,16 @@ import { appFontSpecs } from "@/common/font-specs";
 import { Icons } from "@/common/icons";
 import { CyclerLogoWithText } from "@/components/brand/CyclerLogo";
 import { MachineNameLabel } from "@/components/brand/MachineNameLabel";
-import { FullscreenButton } from "@/components/general/FullscreenButton";
 import { FlexSpacer, Spacer } from "@/components/general/Spacer";
 import { ScreenUiScaler } from "@/components/general/UiScaler";
+import { FullscreenButton } from "@/components/screen/FullscreenButton";
+import { TouchPointerView } from "@/components/screen/TouchPointerView";
 import {
+  cssSectionFrame2U,
+  cssSectionFrameBlank,
+  cssSectionFrameBottom,
+  cssSectionFrameLower,
+  cssSectionFrameUpper,
   FeBpmControlDisplay,
   FeBpmControlDisplayReadonly,
   FeButtonContentTwoColumn,
@@ -39,14 +45,8 @@ import {
   FePadButtonRawSize,
   FeSelectorPad,
   FeWaveDisplay,
-  feColorDefs,
-  feCssBlankSectionFrame,
-  feCssSectionFrameF2_2U,
-  feCssSectionFrameF2B,
-  feCssSectionFrameF2D,
-  feCssSectionFrameF2U,
-  TouchPointerView,
 } from "@/components/synth";
+import { feColorDefs } from "@/components/synth/common/color-defs";
 import { pitchModeTickStepMap } from "@/logic/additional";
 import { oscWaveFunctions } from "@/logic/unit-waves";
 import { MotionSection } from "@/views/MotionSection";
@@ -63,7 +63,7 @@ const OscSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div className="relative" css={feCssSectionFrameF2_2U}>
+    <div className="relative" css={cssSectionFrame2U}>
       <div className="absolute left-0 top-0 p-4">
         <FeModuleHeader
           label="OSC"
@@ -157,7 +157,7 @@ const FilterSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div css={feCssSectionFrameF2U}>
+    <div css={cssSectionFrameUpper}>
       <FeModuleHeader
         label="Filter"
         active={st.filterOn}
@@ -188,7 +188,7 @@ const AmplifierSection = () => {
   const mt = store.mutations;
   const waveFn = useAmpEgWaveFn(st.ampEgHold, st.ampEgDecay);
   return (
-    <div css={feCssSectionFrameF2U}>
+    <div css={cssSectionFrameUpper}>
       <div className="flex-hs gap-2">
         <FeModuleHeader
           label="Amp"
@@ -222,7 +222,7 @@ const ShaperSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div css={feCssSectionFrameF2D}>
+    <div css={cssSectionFrameLower}>
       <FeModuleHeader
         label="Shaper"
         active={st.shaperOn}
@@ -253,7 +253,7 @@ const PhaserSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div css={feCssSectionFrameF2D}>
+    <div css={cssSectionFrameLower}>
       <FeModuleHeader
         label="Phaser"
         active={st.phaserOn}
@@ -277,7 +277,7 @@ const FlangerSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div css={feCssSectionFrameF2D}>
+    <div css={cssSectionFrameLower}>
       <FeModuleHeader
         label="Flanger"
         active={st.delayOn}
@@ -307,7 +307,7 @@ const StepDelaySection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div css={feCssSectionFrameF2D}>
+    <div css={cssSectionFrameLower}>
       <div className="flex-hs gap-2">
         <FeModuleHeader
           label="Delay"
@@ -346,7 +346,7 @@ const GaterSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div className="flex-v gap-2" css={feCssSectionFrameF2B}>
+    <div className="flex-v gap-2" css={cssSectionFrameBottom}>
       <div className="flex-hs gap-2">
         <FeModuleHeader label="Gate" />
         <FlexSpacer />
@@ -395,7 +395,7 @@ const ExStepsSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div className="flex-v gap-2" css={feCssSectionFrameF2B}>
+    <div className="flex-v gap-2" css={cssSectionFrameBottom}>
       <div className="flex-hs gap-2">
         <FeModuleHeader label="EX Steps" />
         <FlexSpacer />
@@ -417,7 +417,7 @@ const KickSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div className="flex-v gap-1" css={feCssSectionFrameF2B}>
+    <div className="flex-v gap-1" css={cssSectionFrameBottom}>
       <FeModuleHeader label="Kick" />
       <div className="flex-c gap-4 grow">
         <FeSelectorPad
@@ -442,7 +442,7 @@ const BassSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div className="flex-v gap-1" css={feCssSectionFrameF2B}>
+    <div className="flex-v gap-1" css={cssSectionFrameBottom}>
       <FeModuleHeader label="Bass" />
       <div className="flex-c gap-3">
         <div className="flex-v gap-1">
@@ -483,7 +483,7 @@ const VolumesSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div className="flex-ha justify-around px-5" css={feCssBlankSectionFrame}>
+    <div className="flex-ha justify-around px-5" css={cssSectionFrameBlank}>
       <FeKnob
         label="volume"
         value={st.synthVolume}
@@ -509,7 +509,7 @@ const VolumesSection = () => {
 const MachineLogoSection = () => {
   const logoColor = feColorDefs.machineLogo;
   return (
-    <div className="relative mt-5" css={feCssBlankSectionFrame}>
+    <div className="relative mt-5" css={cssSectionFrameBlank}>
       <div className="h-full flex-vc gap-1">
         <CyclerLogoWithText height={36} color={logoColor} />
         <MachineNameLabel label="XS02" color={logoColor} size={60} />
@@ -528,7 +528,7 @@ const PlayControlSection = () => {
   const mt = store.mutations;
   const bpmEditable = st.isStandalone;
   return (
-    <div className="flex-v gap-0" css={feCssSectionFrameF2B}>
+    <div className="flex-v gap-0" css={cssSectionFrameBottom}>
       <div className="flex-h gap-2 items-start">
         <FePadButton
           children={<Icons.Loop size={22} />}
@@ -582,7 +582,7 @@ const RandomControlSection = () => {
   const st = store.useSnapshot();
   const mt = store.mutations;
   return (
-    <div className="flex-v gap-2" css={feCssSectionFrameF2B}>
+    <div className="flex-v gap-2" css={cssSectionFrameBottom}>
       <div className="flex-h justify-between">
         <div className="flex-h gap-3">
           <FePadButton

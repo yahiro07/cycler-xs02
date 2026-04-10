@@ -2,21 +2,22 @@ import { css } from "@emotion/react";
 import clsx from "clsx";
 import { borderSpec2 } from "@/common/ui-helper";
 import { npx } from "@/common/utility-styles";
-import { sxHoldCommon } from "@/components/synth/hold-effect";
-import { feColorDefs } from "@/components/synth/ui-defs";
+import { feColorDefs } from "@/components/synth/common/color-defs";
+import { sxHoldCommon } from "@/components/synth/common/hold-effect-styles";
 import { usePointerHold } from "@/hooks/use-pointer-hold";
 
+type Props = {
+  value: number;
+  width?: number;
+  height?: number;
+  active?: boolean;
+};
 export const FeGaugeView = ({
   value: normValue,
   width = 30,
   height: baseHeight = 82,
   active,
-}: {
-  value: number;
-  width?: number;
-  height?: number;
-  active?: boolean;
-}) => {
+}: Props) => {
   const { hold, handlers } = usePointerHold();
   const knobSize = width;
   const travel = baseHeight - knobSize;

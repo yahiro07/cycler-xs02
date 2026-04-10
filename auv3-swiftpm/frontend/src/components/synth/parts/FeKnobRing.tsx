@@ -29,7 +29,7 @@ function getKnobRingPath(
   return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`;
 }
 
-export const KnobRing = ({
+export const FeKnobRing = ({
   radius,
   lineWidth,
   color,

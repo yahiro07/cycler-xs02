@@ -1,14 +1,6 @@
 import { OscPitchMode } from "@/base/parameters";
 import { mapUnaryToInt } from "@/logic/number-helper";
 
-// export type MoId =
-//   | "oscPitch"
-//   | "oscColor"
-//   | "filterCutoff"
-//   | "shaperLevel"
-//   | "phaserLevel"
-//   | "delayTime";
-
 export function getLfoStepPeriodDisplay(
   lfoRate: number,
   lfoRateStepped: boolean,

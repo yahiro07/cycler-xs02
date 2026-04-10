@@ -6,35 +6,15 @@ import {
   npx,
   sxGridLayeringBaseFull,
 } from "@/common/utility-styles";
+import { uiSizes } from "@/components/synth/common/ui-sizes";
 import { usePointerHold } from "@/hooks/use-pointer-hold";
 import { mapUnaryTo } from "@/utils/number-utils";
-import { KnobRing } from "./KnobRing";
-import { feColorDefs, uiSizes } from "./ui-defs";
 
-const knobRingConfigs = {
-  ringThickness: 8,
-  radius: uiSizes.knobMain / 2 + 8 - 1,
-};
-
-export const FeMotionKnobRing = ({
-  arcRange,
-}: {
-  arcRange: [number, number];
-}) => {
-  const { ringThickness, radius } = knobRingConfigs;
-  return (
-    <KnobRing
-      radius={radius}
-      lineWidth={ringThickness}
-      color={feColorDefs.knobIndicator}
-      arcRange={arcRange}
-      tickHalfAngle={140}
-    />
-  );
-};
-export const FeMotionKnobRingDummy = () => {
-  const size = knobRingConfigs.radius * 2;
-  return <div style={{ width: npx(size), height: npx(size) }} />;
+type Props = {
+  label: string;
+  value: number;
+  diameter?: number;
+  altBkColor?: boolean;
 };
 
 export const FeKnobView = ({
@@ -42,33 +22,28 @@ export const FeKnobView = ({
   value,
   diameter = uiSizes.knobMain,
   altBkColor = false,
-}: {
-  label: string;
-  value: number;
-  diameter?: number;
-  altBkColor?: boolean;
-}) => {
+}: Props) => {
   const { hold, handlers } = usePointerHold();
   const tickAngle = mapUnaryTo(value, -140, 140);
   return (
     <div
-      css={styleFeKnobView.base}
+      css={styles.base}
       style={{ width: npx(diameter), height: npx(diameter) }}
       className={clsx(altBkColor && "--alt-bk-color", hold && "--hold")}
       {...handlers}
     >
-      <div css={styleFeKnobView.body} />
-      <div css={styleFeKnobView.labelLayer}>{label}</div>
+      <div css={styles.body} />
+      <div css={styles.labelLayer}>{label}</div>
       <div
-        css={styleFeKnobView.tickLayer}
+        css={styles.tickLayer}
         style={{ transform: `rotate(${tickAngle}deg)` }}
       >
-        <div css={styleFeKnobView.tick} />
+        <div css={styles.tick} />
       </div>
     </div>
   );
 };
-const styleFeKnobView = {
+const styles = {
   base: css({
     borderRadius: "50%",
     border: "inset 1px #fff1",

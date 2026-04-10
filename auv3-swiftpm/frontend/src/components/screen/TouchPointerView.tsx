@@ -52,10 +52,10 @@ export const TouchPointerView = () => {
   }, []);
 
   return (
-    <div css={styleTouchPointerView.base}>
+    <div css={styles.base}>
       {pt && (
         <div
-          css={styleTouchPointerView.pointer}
+          css={styles.pointer}
           style={{
             left: pt.x,
             top: pt.y,
@@ -65,7 +65,7 @@ export const TouchPointerView = () => {
     </div>
   );
 };
-const styleTouchPointerView = {
+const styles = {
   base: css({
     position: "fixed",
     inset: 0,

@@ -24,6 +24,8 @@ import { store } from "@/central/store";
 import { Icons } from "@/common/icons";
 import { FlexSpacer } from "@/components/general/Spacer";
 import {
+  cssSectionFrameMotionLower,
+  cssSectionFrameMotionUpper,
   FeKnob,
   FeMoArrowButton,
   FeMoHeader,
@@ -31,9 +33,7 @@ import {
   FeSelectorPad,
   FeSliderGauge,
   FeWaveDisplay,
-  feCssSectionFrameF2MD,
-  feCssSectionFrameF2MU,
-  sxFeSectionFrameF3,
+  sxFeSectionFrameWithEdge,
 } from "@/components/synth";
 import { rndWavePreviewFn } from "@/logic/rnd-wave-preview";
 import { lfoWaveFunctions } from "@/logic/unit-waves";
@@ -108,7 +108,7 @@ const styleMotionHeaderBar = {
     position: "relative",
   }),
   panel: css({
-    ...sxFeSectionFrameF3,
+    ...sxFeSectionFrameWithEdge,
   }),
 };
 
@@ -278,7 +278,9 @@ const MotionUnitView = () => {
       <div
         className="relative"
         css={
-          placement === "upper" ? feCssSectionFrameF2MU : feCssSectionFrameF2MD
+          placement === "upper"
+            ? cssSectionFrameMotionUpper
+            : cssSectionFrameMotionLower
         }
       >
         {mo.moType === MoType.rnd && <MotionUnitViewRnd />}

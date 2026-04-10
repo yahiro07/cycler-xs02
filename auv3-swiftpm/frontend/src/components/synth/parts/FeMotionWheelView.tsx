@@ -3,20 +3,19 @@ import clsx from "clsx";
 import { cssKeyFrameSpin } from "@/common/ui-helper";
 import { flexCentered } from "@/common/utility-styles";
 import { usePointerHold } from "@/hooks/use-pointer-hold";
-import { sxHoldCommon } from "./hold-effect";
+import { sxHoldCommon } from "../common/hold-effect-styles";
 import { WheelSvg } from "./WheelSvg";
 
-export const FeMotionWheelView = ({
-  active,
-  spinSpeed,
-}: {
+type Props = {
   active?: boolean;
   spinSpeed?: number;
-}) => {
+};
+
+export const FeMotionWheelView = ({ active, spinSpeed }: Props) => {
   const { hold, handlers } = usePointerHold();
   return (
     <div
-      css={styleFeMotionWheelView.base}
+      css={styles}
       style={{
         animation: spinSpeed ? `spin ${spinSpeed}s linear infinite` : undefined,
       }}
@@ -27,19 +26,17 @@ export const FeMotionWheelView = ({
     </div>
   );
 };
-const styleFeMotionWheelView = {
-  base: css({
-    width: "36px",
-    height: "36px",
-    ...flexCentered(),
-    ...cssKeyFrameSpin,
-    "> svg": {
-      width: "100%",
-      height: "100%",
-      objectFit: "contain",
-    },
-    "&.--hold": {
-      ...sxHoldCommon,
-    },
-  }),
-};
+const styles = css({
+  width: "36px",
+  height: "36px",
+  ...flexCentered(),
+  ...cssKeyFrameSpin,
+  "> svg": {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+  },
+  "&.--hold": {
+    ...sxHoldCommon,
+  },
+});

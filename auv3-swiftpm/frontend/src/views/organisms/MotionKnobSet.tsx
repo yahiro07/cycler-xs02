@@ -13,13 +13,15 @@ import { store } from "@/central/store";
 import { SnapStoreSetterFn } from "@/common/snap-store-ex-types";
 import { sxGridLayeringBase } from "@/common/utility-styles";
 import {
-  applyKnobValueTickDisplayStep,
   FeKnob,
   FeMotionKnobRing,
   FeMotionKnobRingDummy,
   FeMotionOnButton,
-  TickDisplayStepsSpec,
 } from "@/components/synth";
+import {
+  applyKnobValueTickDisplayStep,
+  TickDisplayStepsSpec,
+} from "@/components/synth/common/use-knob-model";
 
 export const MotionKnobLayout = ({
   knobUi,

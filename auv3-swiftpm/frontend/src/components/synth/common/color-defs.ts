@@ -1,12 +1,5 @@
 import { assignFields } from "@/utils/general-utils";
 
-export const uiSizes = {
-  knobMain: 88,
-  knobSmall: 78,
-  knobXs: 74,
-  waveDisplay: 36,
-};
-
 export const feColorDefs = {
   // panelBg: "#687494",
   panelBg: "#568",
