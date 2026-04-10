@@ -1,5 +1,7 @@
 import { IDspCore } from "@core/api";
+import { getLoopBarsFromKey } from "@core/motions/funcs/steps-common";
 import { CommandId } from "@core/parameter-id";
+import { applyRandomizeParameters } from "@core/parameter-randomizer";
 import { ControlCommand } from "./synthesizer/control-command";
 import { parameterAssigner_applyParameter } from "./synthesizer/parameter-assigner";
 import { SynthesizerHub } from "./synthesizer/synthesizer-hub";
@@ -47,5 +49,23 @@ export class SynthesizerRoot implements IDspCore {
     } else if (id === ControlCommand.kcSetBpm) {
       this.synthesizerHub.setBpm(value);
     }
+  }
+
+  prevBar = 0;
+
+  extraLogic_pullRandomizeRequestFlag(): boolean {
+    const bus = this.synthesizerHub.bus;
+    const bar = this.synthesizerHub.getBarPosition();
+    const loopBars = getLoopBarsFromKey(bus.sp.loopBars);
+    const res =
+      bus.sp.autoRandomizeOnLoop &&
+      bar > 0 &&
+      bar > this.prevBar &&
+      bar % loopBars === 0;
+    this.prevBar = bar;
+    return res;
+  }
+  extraLogic_randomizeParameters(parameters: Map<number, number>): void {
+    applyRandomizeParameters(parameters);
   }
 }

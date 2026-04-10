@@ -9,4 +9,7 @@ export interface IDspCore {
     frames: number,
   ): void;
   applyCommand(id: number, value: number): void;
+  //
+  extraLogic_pullRandomizeRequestFlag(): boolean;
+  extraLogic_randomizeParameters(parameters: Map<number, number>): void;
 }

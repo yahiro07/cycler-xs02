@@ -179,6 +179,15 @@ export type MotionParams = {
   egInvert: boolean;
 };
 
+export enum RandomizeLevel {
+  rnd1,
+  rnd2,
+  rnd5,
+  rnd10,
+  rnd20,
+  rndFull,
+}
+
 export type SynthParametersSuit = {
   oscOn: boolean;
   oscWave: OscWave;
@@ -246,6 +255,10 @@ export type SynthParametersSuit = {
   masterVolume: number;
   clockingOn: boolean;
   baseNoteIndex: number;
+  //
+  internalBpm: number;
+  autoRandomizeOnLoop: boolean;
+  randomizeLevel: RandomizeLevel;
 };
 
 const motionParamsDefault: MotionParams = {
@@ -343,5 +356,9 @@ export function createSynthParametersSuit(): SynthParametersSuit {
     masterVolume: masterGainConfig.levelCenter,
     clockingOn: true,
     baseNoteIndex: 9, //A
+    //
+    internalBpm: 120,
+    autoRandomizeOnLoop: false,
+    randomizeLevel: RandomizeLevel.rnd10,
   };
 }

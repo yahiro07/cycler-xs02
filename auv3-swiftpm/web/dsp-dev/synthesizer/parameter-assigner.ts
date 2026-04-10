@@ -220,4 +220,9 @@ export function parameterAssigner_applyParameter(
   if (id === pk.masterVolume) sp.masterVolume = value;
   if (id === pk.clockingOn) sp.clockingOn = floatToBool(value);
   if (id === pk.baseNoteIndex) sp.baseNoteIndex = value;
+  if (id === pk.internalBpm) sp.internalBpm = value;
+  if (id === pk.autoRandomizeOnLoop)
+    sp.autoRandomizeOnLoop = floatToBool(value);
+  if (id === pk.randomizeLevel)
+    sp.randomizeLevel = floatToEnum<RandomizeLevel>(value);
 }
