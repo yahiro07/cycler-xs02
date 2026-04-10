@@ -6,7 +6,6 @@
     "lib": [
       "ESNext"
     ],
-    "preserveSymlinks": true,
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,

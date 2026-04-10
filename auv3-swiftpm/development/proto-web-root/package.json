@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "test": "vitest run"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -26,6 +27,7 @@
     "tailwindcss": "^4.2.2",
     "typescript": "~6.0.2",
     "vite": "^8.0.4",
-    "vite-tsconfig-paths": "^6.1.1"
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.4"
   }
 }

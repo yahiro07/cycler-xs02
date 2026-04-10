@@ -19,7 +19,10 @@
     "skipLibCheck": true,
     "paths": {
       "@/*": [
-        "../frontend/src/*"
+        "../../frontend/src/*"
+      ],
+      "@core/*": [
+        "../dsp-dev/*"
       ]
     }
   },
