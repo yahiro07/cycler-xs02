@@ -1,14 +1,14 @@
+import { defaultSynthParameters } from "@/base/parameters";
 import { parametersConverter } from "@/bridge/converter";
+import { CoreBridge } from "@/bridge/core-bridge";
 import { logger } from "@/bridge/logger";
+import { store } from "@/central/store";
 import { createFactoryPresetProvider } from "@/preset-manager/factory-preset-provider";
 import { PresetData } from "@/preset-manager/preset-data-types";
 import { PresetFilesIO } from "@/preset-manager/preset-manager-core-port-types";
 import { StateKvsAdapter } from "@/preset-manager/state-kvs-adapter";
-import { defaultSynthParameters } from "@/base/parameters";
-import { store } from "@/central/store";
 import { filterObjectMembers } from "@/utils/general-utils";
 import { createPresetManagerCore } from "./preset-manager-core";
-import { CoreBridge } from "@/bridge/core-bridge";
 
 export function createPresetManager(
   coreBridge: CoreBridge,

@@ -4,6 +4,7 @@ import {
   ParameterKey,
   SynthParametersSuit,
 } from "@/base/parameters";
+import { PresetListItem } from "@/preset-manager/preset-data-types";
 
 export type StoreState = SynthParametersSuit & {
   //instant state, emitting
@@ -16,6 +17,10 @@ export type StoreState = SynthParametersSuit & {
   touchPointerVisible: boolean;
   //instant state, UI local
   altBottomUi: boolean;
+  //
+  presetItems: PresetListItem[];
+  latestParametersVersion: number;
+  lastLoadedPresetKey: string | null;
 };
 
 const storeInitialState: StoreState = {
@@ -29,6 +34,10 @@ const storeInitialState: StoreState = {
   touchPointerVisible: false,
   //
   altBottomUi: false,
+  //
+  presetItems: [],
+  latestParametersVersion: 0,
+  lastLoadedPresetKey: null,
 };
 
 export const store = createStore<StoreState>(storeInitialState);
