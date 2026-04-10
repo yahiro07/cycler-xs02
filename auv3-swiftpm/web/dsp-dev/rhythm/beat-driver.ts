@@ -1,9 +1,9 @@
+import { BassTailAccentPatternKey } from "@core/base/parameter-defs";
+import { Bus } from "@core/base/synthesis-bus";
 import {
   calcNumStepsForSamples,
   calcStepTimeSec,
-} from "@core/ax-audio/basic/sequence-helper";
-import { BassTailAccentPatternKey } from "@core/base/parameter-defs";
-import { Bus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/basic/sequence-helper";
 import { BassSynth, bassSynth_playTone } from "@core/rhythm/bass-synthesizer";
 import {
   KickSynth,

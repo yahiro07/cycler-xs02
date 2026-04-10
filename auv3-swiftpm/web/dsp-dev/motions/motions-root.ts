@@ -1,6 +1,6 @@
-import { calcNumStepsForSamples } from "@core/ax-audio/basic/sequence-helper";
 import { GateStride } from "@core/base/parameter-defs";
 import { Bus } from "@core/base/synthesis-bus";
+import { calcNumStepsForSamples } from "@core/dsp-modules/basic/sequence-helper";
 import {
   getAmpEgLevel,
   wrapGetStepRamp,

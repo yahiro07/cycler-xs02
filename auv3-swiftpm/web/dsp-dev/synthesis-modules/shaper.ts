@@ -1,12 +1,12 @@
+import { Bus } from "@core/base/synthesis-bus";
 import {
   createInterpolator,
   Interpolator,
-} from "@core/ax-audio/basic/interpolator";
+} from "@core/dsp-modules/basic/interpolator";
 import {
   createOversamplingStage,
   OversamplingStage,
-} from "@core/ax-audio/filters/oversampling-stage";
-import { Bus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/filters/oversampling-stage";
 import { applyShaper } from "@core/synthesis-modules/funcs/shaper-funcs";
 
 export type Shaper = {

@@ -1,4 +1,4 @@
-import { linearInterpolate, mixValue } from "@core/ax/number-utils";
+import { linearInterpolate, mixValue } from "@core/utils/number-utils";
 
 type OscWave = "saw" | "rect" | "tri" | "sine";
 

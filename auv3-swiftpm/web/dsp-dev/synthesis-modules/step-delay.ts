@@ -1,11 +1,11 @@
-import { clampValue, mixValue, power2 } from "@core/ax/number-utils";
-import { calcNumSamplesForSteps } from "@core/ax-audio/basic/sequence-helper";
+import { Bus } from "@core/base/synthesis-bus";
+import { calcNumSamplesForSteps } from "@core/dsp-modules/basic/sequence-helper";
 import {
   createDelayLineRingBuffer,
   IDelayLineRingBuffer,
-} from "@core/ax-audio/effects/delay-line-ring-buffer";
-import { Bus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/effects/delay-line-ring-buffer";
 import { getStepPeriodForDelay } from "@core/motions/funcs/steps-common";
+import { clampValue, mixValue, power2 } from "@core/utils/number-utils";
 
 export type StepDelay = {
   bus: Bus;

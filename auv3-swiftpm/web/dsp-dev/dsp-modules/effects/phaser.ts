@@ -1,5 +1,5 @@
-import { seqNumbers } from "@core/ax/arrays";
-import { mixValue } from "@core/ax/number-utils";
+import { seqNumbers } from "@core/utils/arrays";
+import { mixValue } from "@core/utils/number-utils";
 
 function createAllPassFilter() {
   let in1 = 0;

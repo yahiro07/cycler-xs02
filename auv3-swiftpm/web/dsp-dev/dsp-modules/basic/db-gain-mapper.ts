@@ -1,4 +1,4 @@
-import { linearInterpolate } from "@core/ax/number-utils";
+import { linearInterpolate } from "@core/utils/number-utils";
 
 export function mapDbGain(
   level: number,

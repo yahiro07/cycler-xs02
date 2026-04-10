@@ -1,10 +1,10 @@
-import { mapUnaryBipolar, power2 } from "@core/ax/number-utils";
 import { MoId, MoType, MotionParams } from "@core/base/parameter-defs";
 import { Bus } from "@core/base/synthesis-bus";
 import { mixMotionPartValues } from "@core/motions/funcs/motion-mux";
 import { mapParamOscPitchToRelativeNote } from "@core/motions/funcs/pitch-mapping";
 import { MotionPartValues } from "@core/motions/impl/motion-common";
 import { processMotionWrapper } from "@core/motions/impl/motion-wrapper";
+import { mapUnaryBipolar, power2 } from "@core/utils/number-utils";
 
 function mapMotionPartValuesToTargetParameter(
   partValues: MotionPartValues,

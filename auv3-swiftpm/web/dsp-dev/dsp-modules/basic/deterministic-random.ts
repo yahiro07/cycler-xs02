@@ -1,4 +1,4 @@
-import { seqNumbers } from "@core/ax/arrays";
+import { seqNumbers } from "@core/utils/arrays";
 
 const randomSequence = seqNumbers(1000).map(() => Math.random());
 

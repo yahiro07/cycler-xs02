@@ -1,12 +1,10 @@
-import { seqNumbers } from "@core/ax/arrays";
-import { power3 } from "@core/ax/number-utils";
-import { midiToFrequency } from "@core/ax-audio/basic/synthesis-helper";
+import { OscPitchMode, OscUnisonMode } from "@core/base/parameter-defs";
+import { Bus } from "@core/base/synthesis-bus";
+import { midiToFrequency } from "@core/dsp-modules/basic/synthesis-helper";
 import {
   createOversamplingStage,
   OversamplingStage,
-} from "@core/ax-audio/filters/oversampling-stage";
-import { OscPitchMode, OscUnisonMode } from "@core/base/parameter-defs";
-import { Bus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/filters/oversampling-stage";
 import {
   mapParamOscPitchToOctXCrossMixRateKey,
   mapParamOscPitchToRelativeNote,
@@ -17,6 +15,8 @@ import {
   oscillatorCore_processSamples,
   oscillatorCore_reset,
 } from "@core/synthesis-modules/oscillator-core";
+import { seqNumbers } from "@core/utils/arrays";
+import { power3 } from "@core/utils/number-utils";
 
 type VoiceSpec = { octaveRatio: number; detune: number; gain: number };
 

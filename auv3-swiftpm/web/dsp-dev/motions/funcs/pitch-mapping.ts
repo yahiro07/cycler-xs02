@@ -1,10 +1,10 @@
+import { OscPitchMode } from "@core/base/parameter-defs";
 import {
   clampValue,
   mapUnaryTo,
   mapUnaryToInt,
   mapUnaryToValues,
-} from "@core/ax/number-utils";
-import { OscPitchMode } from "@core/base/parameter-defs";
+} from "@core/utils/number-utils";
 
 const dn = -12;
 const noteMapperConstants = {

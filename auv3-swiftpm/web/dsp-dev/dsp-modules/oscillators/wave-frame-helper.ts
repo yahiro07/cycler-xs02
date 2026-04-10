@@ -1,4 +1,4 @@
-import { clampValue, mixValue } from "@core/ax/number-utils";
+import { clampValue, mixValue } from "@core/utils/number-utils";
 
 export function calculateWaveFrameSize(numHarmonics: number) {
   const n = Math.pow(2, Math.ceil(Math.log2(numHarmonics)));

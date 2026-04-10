@@ -1,10 +1,10 @@
 // Biquad Lowpass Filter (12dB/oct, 2-pole)
 // Standard cookbook implementation
 
-import { clampValue, invPower2, power2 } from "@core/ax/number-utils";
-import { createMultiInterpolator } from "@core/ax-audio/basic/multi-interpolator";
-import { applySoftClipAt } from "@core/ax-audio/effects/soft-clip-shaper";
-import { createFilterOnePoleHighPass } from "@core/ax-audio/filters/filter-onepole-highpass";
+import { createMultiInterpolator } from "@core/dsp-modules/basic/multi-interpolator";
+import { applySoftClipAt } from "@core/dsp-modules/effects/soft-clip-shaper";
+import { createFilterOnePoleHighPass } from "@core/dsp-modules/filters/filter-onepole-highpass";
+import { clampValue, invPower2, power2 } from "@core/utils/number-utils";
 
 export interface IFilter {
   reset(): void;

@@ -1,4 +1,4 @@
-import { invPower2 } from "@core/ax/number-utils";
+import { invPower2 } from "@core/utils/number-utils";
 
 export const curveMapper = {
   riseSine(x: number) {

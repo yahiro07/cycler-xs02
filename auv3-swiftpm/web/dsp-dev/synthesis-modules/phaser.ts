@@ -1,9 +1,9 @@
-import { mapUnaryTo, power2 } from "@core/ax/number-utils";
+import { Bus } from "@core/base/synthesis-bus";
 import {
   createPhaserAllPass4,
   PhaserAllPass4,
-} from "@core/ax-audio/effects/phaser";
-import { Bus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/effects/phaser";
+import { mapUnaryTo, power2 } from "@core/utils/number-utils";
 
 export type Phaser = {
   bus: Bus;

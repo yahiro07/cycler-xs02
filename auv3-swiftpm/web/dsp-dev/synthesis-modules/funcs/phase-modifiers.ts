@@ -1,4 +1,6 @@
-import { seqNumbers } from "@core/ax/arrays";
+import { OscColorMode } from "@core/base/parameter-defs";
+import { HalfPi, Pi, TwoPi } from "@core/dsp-modules/basic/synthesis-helper";
+import { seqNumbers } from "@core/utils/arrays";
 import {
   clampValueZeroOne,
   fracPart,
@@ -6,9 +8,7 @@ import {
   mapUnaryTo,
   mixValue,
   power2,
-} from "@core/ax/number-utils";
-import { HalfPi, Pi, TwoPi } from "@core/ax-audio/basic/synthesis-helper";
-import { OscColorMode } from "@core/base/parameter-defs";
+} from "@core/utils/number-utils";
 
 const randomSequence = seqNumbers(200).map(() => Math.random());
 

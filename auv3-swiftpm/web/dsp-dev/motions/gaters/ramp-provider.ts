@@ -1,4 +1,3 @@
-import { fracPart } from "@core/ax/number-utils";
 import {
   GaterType,
   GateStride,
@@ -11,6 +10,7 @@ import { getStepPeriod } from "@core/motions/funcs/steps-common";
 import { gaterExSeqMode_getRampSpec } from "@core/motions/gaters/gater-ex-seq";
 import { gaterMinLaxMode_getRampCodeCached } from "@core/motions/gaters/gater-main-lax";
 import { gaterMainSeqMode_getRampCode } from "@core/motions/gaters/gater-main-seq";
+import { fracPart } from "@core/utils/number-utils";
 
 export function getGaterStepRamp(
   stepPos: number,

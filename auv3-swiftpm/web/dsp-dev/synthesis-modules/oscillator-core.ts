@@ -1,15 +1,15 @@
-import { fracPart } from "@core/ax/number-utils";
+import { OscWave } from "@core/base/parameter-defs";
+import { Bus } from "@core/base/synthesis-bus";
 import {
   createInterpolator,
   Interpolator,
-} from "@core/ax-audio/basic/interpolator";
+} from "@core/dsp-modules/basic/interpolator";
 import {
   BlWave2AWaveform,
   blWave2A_getWaveformSample,
-} from "@core/ax-audio/oscillators/bl-wave-2a";
-import { OscWave } from "@core/base/parameter-defs";
-import { Bus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/oscillators/bl-wave-2a";
 import { modifyPhaseWithColor } from "@core/synthesis-modules/funcs/phase-modifiers";
+import { fracPart } from "@core/utils/number-utils";
 
 export type OscillatorCore = {
   bus: Bus;

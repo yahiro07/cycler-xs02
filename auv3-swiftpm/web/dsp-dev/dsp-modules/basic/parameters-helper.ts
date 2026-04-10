@@ -1,5 +1,5 @@
-import { raiseInvalidCondition } from "@core/ax/errors";
-import { roundFloat } from "@core/ax/number-utils";
+import { raiseInvalidCondition } from "@core/utils/errors";
+import { roundFloat } from "@core/utils/number-utils";
 
 export function shiftArrayItemNext<T>(items: T[], item: T): T {
   const index = items.indexOf(item);

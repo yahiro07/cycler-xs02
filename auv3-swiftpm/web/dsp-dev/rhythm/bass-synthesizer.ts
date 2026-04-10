@@ -1,3 +1,13 @@
+import { BassPresetKey } from "@core/base/parameter-defs";
+import { writeBuffer } from "@core/dsp-modules/basic/buffer-functions";
+import { curveMapper, mapExpCurve } from "@core/dsp-modules/basic/curves";
+import {
+  createInterpolator,
+  Interpolator,
+} from "@core/dsp-modules/basic/interpolator";
+import { midiToFrequency } from "@core/dsp-modules/basic/synthesis-helper";
+import { applySoftClip } from "@core/dsp-modules/effects/soft-clip-shaper";
+import { getOscWaveformPd } from "@core/dsp-modules/oscillators/pd-waves";
 import {
   clampValue,
   fracPart,
@@ -5,17 +15,7 @@ import {
   mapUnaryTo,
   power3,
   tunableSigmoid,
-} from "@core/ax/number-utils";
-import { writeBuffer } from "@core/ax-audio/basic/buffer-functions";
-import { curveMapper, mapExpCurve } from "@core/ax-audio/basic/curves";
-import {
-  createInterpolator,
-  Interpolator,
-} from "@core/ax-audio/basic/interpolator";
-import { midiToFrequency } from "@core/ax-audio/basic/synthesis-helper";
-import { applySoftClip } from "@core/ax-audio/effects/soft-clip-shaper";
-import { getOscWaveformPd } from "@core/ax-audio/oscillators/pd-waves";
-import { BassPresetKey } from "@core/base/parameter-defs";
+} from "@core/utils/number-utils";
 
 export enum BassEgWave {
   ds,

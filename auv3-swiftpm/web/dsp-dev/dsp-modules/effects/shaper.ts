@@ -1,10 +1,10 @@
+import { HalfPi } from "@core/dsp-modules/basic/synthesis-helper";
 import {
   mapUnaryTo,
   mixValue,
   power2,
   tunableSigmoid,
-} from "@core/ax/number-utils";
-import { HalfPi } from "@core/ax-audio/basic/synthesis-helper";
+} from "@core/utils/number-utils";
 
 export function applyShaperCore(
   y: number,

@@ -1,5 +1,5 @@
-import { randF } from "@core/ax-audio/basic/parameters-helper";
-import { TwoPi } from "@core/ax-audio/basic/synthesis-helper";
+import { randF } from "@core/dsp-modules/basic/parameters-helper";
+import { TwoPi } from "@core/dsp-modules/basic/synthesis-helper";
 
 export function fillErrorSound(buffer: Float32Array) {
   for (let i = 0; i < buffer.length; i++) {

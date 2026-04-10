@@ -4,7 +4,7 @@ import {
   invPower4,
   linearInterpolate,
   mapUnaryTo,
-} from "@core/ax/number-utils";
+} from "@core/utils/number-utils";
 
 export const softClipShapers = {
   soft1(_x) {

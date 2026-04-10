@@ -1,5 +1,5 @@
-import { createOvsFilterSimple } from "@core/ax-audio/filters/ovs-filter";
-import { createOvsFilterButterworth } from "@core/ax-audio/filters/ovs-filter-butterworth";
+import { createOvsFilterSimple } from "@core/dsp-modules/filters/ovs-filter";
+import { createOvsFilterButterworth } from "@core/dsp-modules/filters/ovs-filter-butterworth";
 
 export type OversamplingStage = {
   ensureAllocated(maxFrames: number): void;

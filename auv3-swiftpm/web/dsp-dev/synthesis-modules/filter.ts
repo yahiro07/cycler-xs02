@@ -1,10 +1,10 @@
-import { clampValue, invPower2, mapUnaryTo } from "@core/ax/number-utils";
-import { midiToFrequency } from "@core/ax-audio/basic/synthesis-helper";
+import { Bus } from "@core/base/synthesis-bus";
+import { midiToFrequency } from "@core/dsp-modules/basic/synthesis-helper";
 import {
   createFilterBiquadLp12,
   IFilter,
-} from "@core/ax-audio/filters/filter-biquad-lp12";
-import { Bus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/filters/filter-biquad-lp12";
+import { clampValue, invPower2, mapUnaryTo } from "@core/utils/number-utils";
 
 export type Filter = {
   bus: Bus;

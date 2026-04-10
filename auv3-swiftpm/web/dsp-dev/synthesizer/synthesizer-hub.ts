@@ -1,15 +1,13 @@
-import { konsole } from "@core/ax/konsole";
-import { power2 } from "@core/ax/number-utils";
+import { Bus, createSynthesisBus } from "@core/base/synthesis-bus";
 import {
   applyBufferGain,
   applyBufferGainRms,
   applyBufferSoftClip,
   writeBuffer,
-} from "@core/ax-audio/basic/buffer-functions";
-import { mapDbGain } from "@core/ax-audio/basic/db-gain-mapper";
-import { masterGainConfig } from "@core/ax-audio/basic/master-gain-config";
-import { blWave2A_buildWaveTables } from "@core/ax-audio/oscillators/bl-wave-2a";
-import { Bus, createSynthesisBus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/basic/buffer-functions";
+import { mapDbGain } from "@core/dsp-modules/basic/db-gain-mapper";
+import { masterGainConfig } from "@core/dsp-modules/basic/master-gain-config";
+import { blWave2A_buildWaveTables } from "@core/dsp-modules/oscillators/bl-wave-2a";
 import { getLoopBarsFromKey } from "@core/motions/funcs/steps-common";
 import { gaterExSeqMode_setupLocalState } from "@core/motions/gaters/gater-ex-seq";
 import { gaterMinLaxMode_setupLocalState } from "@core/motions/gaters/gater-main-lax";
@@ -39,6 +37,8 @@ import {
   mainSynthesisLine_processSamples,
   mainSynthesisLine_reset,
 } from "@core/synthesizer/main-synthesis-line";
+import { konsole } from "@core/utils/konsole";
+import { power2 } from "@core/utils/number-utils";
 import {
   createTriggerManager,
   TriggerManager,

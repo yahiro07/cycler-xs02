@@ -1,4 +1,3 @@
-import { mapUnaryToInt } from "@core/ax/number-utils";
 import {
   DelayStep,
   GaterExSourceStride,
@@ -6,6 +5,7 @@ import {
   LoopBarsKey,
   PureStride,
 } from "@core/base/parameter-defs";
+import { mapUnaryToInt } from "@core/utils/number-utils";
 
 export function getLfoStepPeriod(lfoRate: number, lfoRateStepped: boolean) {
   let k = 0;

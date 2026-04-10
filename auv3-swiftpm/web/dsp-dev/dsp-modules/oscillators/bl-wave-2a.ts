@@ -1,9 +1,9 @@
-import { seqNumbers } from "@core/ax/arrays";
-import { clampValue } from "@core/ax/number-utils";
 import {
   calculateWaveFrameSize,
   readWaveFrameInterpolated,
-} from "@core/ax-audio/oscillators/wave-frame-helper";
+} from "@core/dsp-modules/oscillators/wave-frame-helper";
+import { seqNumbers } from "@core/utils/arrays";
+import { clampValue } from "@core/utils/number-utils";
 
 export enum BlWave2AWaveform {
   saw,

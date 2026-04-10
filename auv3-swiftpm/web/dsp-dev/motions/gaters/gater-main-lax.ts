@@ -1,8 +1,8 @@
-import { seqNumbers } from "@core/ax/arrays";
-import { randF } from "@core/ax-audio/basic/parameters-helper";
 import { Bus } from "@core/base/synthesis-bus";
 import { StepRampCode } from "@core/base/synthesis-types";
+import { randF } from "@core/dsp-modules/basic/parameters-helper";
 import { getStepPeriodForGaterMain } from "@core/motions/funcs/steps-common";
+import { seqNumbers } from "@core/utils/arrays";
 
 type GaterMainLaxState = {
   stepRampCodes: StepRampCode[];

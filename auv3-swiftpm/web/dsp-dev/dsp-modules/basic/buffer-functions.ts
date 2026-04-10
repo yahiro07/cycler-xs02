@@ -1,8 +1,8 @@
-import { mixValue } from "@core/ax/number-utils";
 import {
   applyHardClip,
   applySoftClip,
-} from "@core/ax-audio/effects/soft-clip-shaper";
+} from "@core/dsp-modules/effects/soft-clip-shaper";
+import { mixValue } from "@core/utils/number-utils";
 
 export function readBufferInterpolated(
   buffer: number[] | Float32Array,

@@ -1,6 +1,6 @@
-import { power3 } from "@core/ax/number-utils";
-import { shaperCore } from "@core/ax-audio/effects/shaper";
 import { ShaperMode } from "@core/base/parameter-defs";
+import { shaperCore } from "@core/dsp-modules/effects/shaper";
+import { power3 } from "@core/utils/number-utils";
 
 export function applyShaper(
   x: number,

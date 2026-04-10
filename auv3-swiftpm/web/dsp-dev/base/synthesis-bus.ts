@@ -1,11 +1,11 @@
 import {
-  BlWave2A,
-  createBlWave2A,
-} from "@core/ax-audio/oscillators/bl-wave-2a";
-import {
   createSynthParametersSuit,
   SynthParametersSuit,
 } from "@core/base/parameter-defs";
+import {
+  BlWave2A,
+  createBlWave2A,
+} from "@core/dsp-modules/oscillators/bl-wave-2a";
 
 export type SynthesisIntermediateState = {
   pmxOscRelNote: number;

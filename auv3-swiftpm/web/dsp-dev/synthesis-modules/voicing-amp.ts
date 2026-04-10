@@ -1,8 +1,8 @@
+import { Bus } from "@core/base/synthesis-bus";
 import {
   createInterpolator,
   Interpolator,
-} from "@core/ax-audio/basic/interpolator";
-import { Bus } from "@core/base/synthesis-bus";
+} from "@core/dsp-modules/basic/interpolator";
 
 export type VoicingAmp = {
   bus: Bus;

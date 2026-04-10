@@ -1,4 +1,4 @@
-import { raiseError } from "@core/ax/errors";
+import { raiseError } from "@core/utils/errors";
 
 export type Interpolator = {
   feed(nextValue: number, n: number): void;

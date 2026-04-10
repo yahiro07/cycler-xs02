@@ -3,7 +3,7 @@ import {
   linearInterpolate,
   lowClipZero,
   mapUnaryBipolar,
-} from "@core/ax/number-utils";
+} from "@core/utils/number-utils";
 
 export function mixMotionPartValues(attrs: {
   //0~1

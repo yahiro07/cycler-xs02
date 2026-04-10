@@ -1,6 +1,3 @@
-import { invPower2Weak, lowClipZero, mixValue } from "@core/ax/number-utils";
-import { glideCurves } from "@core/ax-audio/basic/curves";
-import { deterministicRandom } from "@core/ax-audio/basic/deterministic-random";
 import {
   GateStride,
   MoRndMode,
@@ -10,11 +7,14 @@ import {
 } from "@core/base/parameter-defs";
 import { SynthesisBus } from "@core/base/synthesis-bus";
 import { RampSpec } from "@core/base/synthesis-types";
+import { glideCurves } from "@core/dsp-modules/basic/curves";
+import { deterministicRandom } from "@core/dsp-modules/basic/deterministic-random";
 import * as eg_curves from "@core/motions/funcs/eg-curves";
 import * as lfo_waves from "@core/motions/funcs/lfo-waves";
 import * as steps_common from "@core/motions/funcs/steps-common";
 import * as ramp_provider from "@core/motions/gaters/ramp-provider";
 import { RandomValueMapperFn } from "@core/motions/impl/motion-common";
+import { invPower2Weak, lowClipZero, mixValue } from "@core/utils/number-utils";
 
 const moPartSeed = {
   rnd: 1,
