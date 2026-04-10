@@ -67,13 +67,13 @@ inline void applySynthesisParameter(SynthesisParameters &sp, uint64_t id,
   // printf("applySynthesisParameter %llu %f\n", id, value);
   if (id == PK::parametersVersion) {
     sp.parametersVersion = static_cast<int>(std::lround(value));
-  } else if (id == PK::osc1On) {
+  } else if (id == PK::oscOn) {
     sp.oscOn = paramToBool(value);
-  } else if (id == PK::osc1Wave) {
+  } else if (id == PK::oscWave) {
     sp.osc1Wave = paramToEnum<OscWave>(value);
-  } else if (id == PK::osc1Octave) {
+  } else if (id == PK::oscOctave) {
     sp.osc1Octave = value;
-  } else if (id == PK::osc1Volume) {
+  } else if (id == PK::synthVolume) {
     sp.osc1Volume = value;
   }
 }
