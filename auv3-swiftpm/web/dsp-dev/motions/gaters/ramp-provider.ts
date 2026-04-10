@@ -5,8 +5,8 @@ import {
   MotionStride,
   PureStride,
 } from "@core/base/parameter-defs";
-import { RampSpec, StepRampCode } from "@core/base/synthesis_types";
 import { Bus } from "@core/base/synthesis-bus";
+import { RampSpec, StepRampCode } from "@core/base/synthesis-types";
 import { getStepPeriod } from "@core/motions/funcs/steps-common";
 import { gaterExSeqMode_getRampSpec } from "@core/motions/gaters/gater-ex-seq";
 import { gaterMinLaxMode_getRampCodeCached } from "@core/motions/gaters/gater-main-lax";

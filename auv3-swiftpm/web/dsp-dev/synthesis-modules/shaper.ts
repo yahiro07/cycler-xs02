@@ -7,7 +7,7 @@ import {
   OversamplingStage,
 } from "@core/ax-audio/filters/oversampling-stage";
 import { Bus } from "@core/base/synthesis-bus";
-import { applyShaper } from "@core/synthesis_modules/funcs/shaper_funcs";
+import { applyShaper } from "@core/synthesis-modules/funcs/shaper-funcs";
 
 export type Shaper = {
   bus: Bus;

@@ -1,8 +1,8 @@
 import { checkArrayItemsEquivalent, seqNumbers } from "@core/ax/arrays";
 import { raiseError } from "@core/ax/errors";
 import { ExGaterCode } from "@core/base/parameter-defs";
-import { RampSpec } from "@core/base/synthesis_types";
 import { Bus } from "@core/base/synthesis-bus";
+import { RampSpec } from "@core/base/synthesis-types";
 import { getStepPeriodForExGater } from "@core/motions/funcs/steps-common";
 
 type PreAllocatedArray<T> = {

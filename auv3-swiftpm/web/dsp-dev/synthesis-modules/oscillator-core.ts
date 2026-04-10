@@ -9,7 +9,7 @@ import {
 } from "@core/ax-audio/oscillators/bl-wave-2a";
 import { OscWave } from "@core/base/parameter-defs";
 import { Bus } from "@core/base/synthesis-bus";
-import { modifyPhaseWithColor } from "@core/synthesis_modules/funcs/phase_modifiers";
+import { modifyPhaseWithColor } from "@core/synthesis-modules/funcs/phase-modifiers";
 
 export type OscillatorCore = {
   bus: Bus;

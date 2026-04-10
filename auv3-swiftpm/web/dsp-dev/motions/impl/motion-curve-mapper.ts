@@ -8,8 +8,8 @@ import {
   MotionParams,
   MotionStride,
 } from "@core/base/parameter-defs";
-import { RampSpec } from "@core/base/synthesis_types";
 import { SynthesisBus } from "@core/base/synthesis-bus";
+import { RampSpec } from "@core/base/synthesis-types";
 import * as eg_curves from "@core/motions/funcs/eg-curves";
 import * as lfo_waves from "@core/motions/funcs/lfo-waves";
 import * as steps_common from "@core/motions/funcs/steps-common";

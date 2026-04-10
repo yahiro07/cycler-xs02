@@ -16,7 +16,7 @@ import {
   OscillatorCore,
   oscillatorCore_processSamples,
   oscillatorCore_reset,
-} from "@core/synthesis_modules/oscillator_core";
+} from "@core/synthesis-modules/oscillator-core";
 
 type VoiceSpec = { octaveRatio: number; detune: number; gain: number };
 

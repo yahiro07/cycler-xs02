@@ -1,10 +1,10 @@
-import { GateSequencerCode } from "@core/base/parameter_defs";
-import { StepRampCode } from "@core/base/synthesis_types";
+import { GateSequencerCode } from "@core/base/parameter-defs";
+import { StepRampCode } from "@core/base/synthesis-types";
 import {
   _getRampCodeFromEx2PatternBits,
   _mapCodesToBits,
   _replaceContinuousTiesN,
-} from "@core/motions/gaters/gater_main_seq";
+} from "@core/motions/gaters/gater-main-seq";
 import { describe, expect, it } from "vitest";
 
 describe("_mapCodesToBits", () => {
