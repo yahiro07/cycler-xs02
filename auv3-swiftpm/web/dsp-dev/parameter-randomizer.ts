@@ -479,6 +479,9 @@ function randomizeParameters(
   randomCount: number,
 ) {
   const numParameters = Object.keys(parameters).length;
+  if (randomCount === -1) {
+    randomCount = numParameters;
+  }
   const effectiveFlags = buildEffectiveFlags(parameters);
   const parameterIds = buildParameterIdsRandomOrder(parameters);
 
@@ -501,32 +504,22 @@ function randomizeParameters(
   }
 }
 
-function getParameterRandomCount(
-  randomizeLevel: RandomizeLevel,
-  numParameters: number,
-) {
+function getParameterRandomCount(randomizeLevel: RandomizeLevel) {
   return {
     [RandomizeLevel.rnd1]: 1,
     [RandomizeLevel.rnd2]: 2,
     [RandomizeLevel.rnd5]: 5,
     [RandomizeLevel.rnd10]: 10,
     [RandomizeLevel.rnd20]: 20,
-    [RandomizeLevel.rndFull]: numParameters,
+    [RandomizeLevel.rndFull]: -1,
   }[randomizeLevel];
 }
 
 export function applyRandomizeParameters(
-  parameters: Map<number, number>,
+  parameters: Record<number, number>,
 ): void {
   const randomizeLevel =
-    parameters.get(pk.randomizeLevel) ?? RandomizeLevel.rndFull;
-  const randomCount = getParameterRandomCount(randomizeLevel, parameters.size);
-  const parametersRecord: Record<number, number> = {};
-  for (const [key, value] of parameters.entries()) {
-    parametersRecord[key] = value;
-  }
-  randomizeParameters(parametersRecord, randomCount);
-  for (const key of parameters.keys()) {
-    parameters.set(key, parametersRecord[key]);
-  }
+    parameters[pk.randomizeLevel] ?? RandomizeLevel.rndFull;
+  const randomCount = getParameterRandomCount(randomizeLevel);
+  randomizeParameters(parameters, randomCount);
 }

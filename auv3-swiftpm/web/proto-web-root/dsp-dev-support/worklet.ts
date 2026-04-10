@@ -1,5 +1,5 @@
 import { createDspCoreInstance, IDspCore } from "../../dsp-dev/dsp-core-entry";
-import { WorkletInputMessage } from "./worklet-types";
+import { WorkletInputMessage, WorkletOutputMessage } from "./worklet-types";
 
 function createProcessorClass() {
   return class extends AudioWorkletProcessor {
@@ -8,6 +8,10 @@ function createProcessorClass() {
     constructor() {
       super();
       this.dspCore = createDspCoreInstance();
+
+      const replyMessage = (msg: WorkletOutputMessage) => {
+        this.port.postMessage(msg);
+      };
       this.port.onmessage = (event: { data: WorkletInputMessage }) => {
         const { type } = event.data;
         if (type === "setParameter") {
@@ -22,6 +26,16 @@ function createProcessorClass() {
         } else if (type === "applyCommand") {
           const { id, value } = event.data;
           this.dspCore.applyCommand(id, value);
+        } else if (type === "pullRandomizeRequestFlag") {
+          const flag = this.dspCore.extraLogic_pullRandomizeRequestFlag();
+          replyMessage({
+            type: "pullRandomizeRequestFlag_response",
+            value: flag,
+          });
+        } else if (type === "randomizeParameters") {
+          const { parameters } = event.data;
+          this.dspCore.extraLogic_randomizeParameters(parameters);
+          replyMessage({ type: "randomizeParameters_response", parameters });
         }
       };
     }

@@ -11,5 +11,5 @@ export interface IDspCore {
   applyCommand(id: number, value: number): void;
   //
   extraLogic_pullRandomizeRequestFlag(): boolean;
-  extraLogic_randomizeParameters(parameters: Map<number, number>): void;
+  extraLogic_randomizeParameters(parameters: Record<number, number>): void;
 }

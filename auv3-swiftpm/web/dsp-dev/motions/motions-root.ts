@@ -46,6 +46,9 @@ function updateLoopOnFrameEnd(bus: Bus) {
     if (!sp.looped) {
       bus.loopSeed = Math.random();
     }
+    if (sp.autoRandomizeOnLoop) {
+      bus.randomizationRequestFlag = true;
+    }
   }
 }
 

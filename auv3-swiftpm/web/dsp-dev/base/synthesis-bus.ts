@@ -43,6 +43,7 @@ export type SynthesisBus = {
   loopBars: number;
   beatActive: boolean;
   paramVer: number;
+  randomizationRequestFlag: boolean; //atomic in c++
 };
 
 export type Bus = SynthesisBus;
@@ -79,5 +80,6 @@ export function createSynthesisBus(): SynthesisBus {
     loopBars: 2,
     beatActive: false,
     paramVer: 0,
+    randomizationRequestFlag: false,
   };
 }

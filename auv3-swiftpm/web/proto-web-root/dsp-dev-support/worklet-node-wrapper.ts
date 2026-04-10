@@ -1,13 +1,15 @@
-export function createWorkletNodeWrapper<TMessage extends object>(
-  audioContext: AudioContext,
-  workerUrl: string,
-) {
+export function createWorkletNodeWrapper<
+  TMessageIn extends object,
+  TMessageOut extends object,
+>(audioContext: AudioContext, workerUrl: string) {
   const outputNode = audioContext.createGain();
   outputNode.gain.value = 1;
 
   let worklet: AudioWorkletNode | undefined;
-  const messageQueue: TMessage[] = [];
+  const messageQueue: TMessageIn[] = [];
   let loaded = false;
+
+  let eventReceiver: ((ev: TMessageOut) => void) | undefined;
 
   async function loadWorklet() {
     try {
@@ -15,6 +17,7 @@ export function createWorkletNodeWrapper<TMessage extends object>(
       worklet = new AudioWorkletNode(audioContext, "my-processor", {
         channelCount: 2,
       });
+      worklet.port.onmessage = (ev) => eventReceiver?.(ev.data);
       worklet.connect(outputNode);
       for (const message of messageQueue) {
         worklet.port.postMessage(message);
@@ -44,7 +47,7 @@ export function createWorkletNodeWrapper<TMessage extends object>(
     outputNode,
     initialize,
     resumeIfNeed,
-    sendMessage(message: TMessage) {
+    sendMessage(message: TMessageIn) {
       if (worklet) {
         worklet.port.postMessage(message);
       } else if (!loaded) {
@@ -52,6 +55,9 @@ export function createWorkletNodeWrapper<TMessage extends object>(
       } else {
         console.warn("message ignored, worklet is not ready");
       }
+    },
+    setEventReceiver(fn: (ev: TMessageOut) => void) {
+      eventReceiver = fn;
     },
   };
 }

@@ -1,6 +1,10 @@
 import workletUrl from "./worklet.ts?worker&url";
 import { createWorkletNodeWrapper } from "./worklet-node-wrapper";
-import { WorkletInputMessage, WorkletWrapper } from "./worklet-types";
+import {
+  WorkletInputMessage,
+  WorkletOutputMessage,
+  WorkletWrapper,
+} from "./worklet-types";
 
 export function createDspCoreWorkletWrapper(): WorkletWrapper {
   const _navigator = navigator as { audioSession?: { type: string } };
@@ -9,10 +13,10 @@ export function createDspCoreWorkletWrapper(): WorkletWrapper {
   }
   const audioContext = new AudioContext();
 
-  const nodeWrapper = createWorkletNodeWrapper<WorkletInputMessage>(
-    audioContext,
-    workletUrl,
-  );
+  const nodeWrapper = createWorkletNodeWrapper<
+    WorkletInputMessage,
+    WorkletOutputMessage
+  >(audioContext, workletUrl);
   nodeWrapper.outputNode.connect(audioContext.destination);
 
   void nodeWrapper.initialize();
@@ -29,6 +33,12 @@ export function createDspCoreWorkletWrapper(): WorkletWrapper {
     },
     applyCommand(id: number, value: number) {
       nodeWrapper.sendMessage({ type: "applyCommand", id, value });
+    },
+    sendMessage(msg: WorkletInputMessage) {
+      nodeWrapper.sendMessage(msg);
+    },
+    subscribeMessage(fn: (ev: WorkletOutputMessage) => void) {
+      nodeWrapper.setEventReceiver(fn);
     },
   };
 }

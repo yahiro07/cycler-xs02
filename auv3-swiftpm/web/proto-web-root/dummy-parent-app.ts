@@ -40,6 +40,29 @@ const windowTyped = window as unknown as {
   pluginEditorCallback?: (msg: MessageFromApp) => void;
 };
 
+const parametersRecordConverter = {
+  mapKeysToIds(parameters: Record<string, number>): Record<number, number> {
+    const result: Record<number, number> = {};
+    for (const [key, value] of Object.entries(parameters)) {
+      const id = parameterKeyToIdMap[key];
+      if (id !== undefined) {
+        result[id] = value;
+      }
+    }
+    return result;
+  },
+  mapIdsToKeys(parameters: Record<number, number>): Record<string, number> {
+    const result: Record<string, number> = {};
+    for (const [id, value] of Object.entries(parameters)) {
+      const key = parameterIdToKeyMap[Number(id)];
+      if (key !== undefined) {
+        result[key] = value;
+      }
+    }
+    return result;
+  },
+};
+
 const workletWrapper = createDspCoreWorkletWrapper();
 
 const PK = ParameterId;
@@ -69,7 +92,7 @@ function motionParameterDefs(
   ];
 }
 
-const draftParameterDefs: ParameterDefItem[] = [
+const parameterDefs: ParameterDefItem[] = [
   [PK.parametersVersion, "parametersVersion", 1],
   //
   [PK.oscOn, "oscOn", true],
@@ -155,11 +178,32 @@ const draftParameterDefs: ParameterDefItem[] = [
 ];
 
 const parameterKeyToIdMap: Record<string, number> = Object.fromEntries(
-  draftParameterDefs.map(([id, key]) => [key, id]),
+  parameterDefs.map(([id, key]) => [key, id]),
+);
+const parameterIdToKeyMap: Record<number, string> = Object.fromEntries(
+  parameterDefs.map(([id, key]) => [id, key]),
 );
 
 function sendMessageToUi(msg: MessageFromApp) {
   windowTyped.pluginEditorCallback?.(msg);
+}
+
+function getInitialParameterValues() {
+  const parameters: Record<string, number> = {};
+  parameterDefs.forEach(([_id, key, value]) => {
+    parameters[key] = typeof value === "number" ? value : value ? 1 : 0;
+  });
+  return parameters;
+}
+
+const localParameters = getInitialParameterValues();
+
+function emitRandomizationRequest() {
+  const params = parametersRecordConverter.mapKeysToIds(localParameters);
+  workletWrapper.sendMessage({
+    type: "randomizeParameters",
+    parameters: params,
+  });
 }
 
 function onMessageFromUi(msg: MessageFromUi) {
@@ -170,15 +214,13 @@ function onMessageFromUi(msg: MessageFromUi) {
       commandKey: "setStandaloneFlag",
       value: 1,
     });
-    const parameters: Record<string, number> = {};
-    draftParameterDefs.forEach(([_id, key, value]) => {
-      parameters[key] = typeof value === "number" ? value : value ? 1 : 0;
-    });
+    const parameters = getInitialParameterValues();
     sendMessageToUi({ type: "bulkSendParameters", parameters });
   } else if (msg.type === "performEdit") {
     const id = parameterKeyToIdMap[msg.paramKey];
     if (id !== undefined) {
       workletWrapper.setParameter(id, msg.value);
+      localParameters[msg.paramKey] = msg.value;
     }
   } else if (msg.type === "noteOnRequest") {
     workletWrapper.noteOn(msg.noteNumber, 1);
@@ -190,12 +232,35 @@ function onMessageFromUi(msg: MessageFromUi) {
     if (msg.commandKey === "setPlayState") {
       workletWrapper.applyCommand(CommandId.setPlayState, msg.value);
     } else if (msg.commandKey === "resetParameters") {
-      //reset parameters here
+      const parameters = getInitialParameterValues();
+      sendMessageToUi({ type: "bulkSendParameters", parameters });
     } else if (msg.commandKey === "randomizeParameters") {
-      //randomize parameters here
+      emitRandomizationRequest();
     }
   }
 }
+
+function startAutoRandomizationTask() {
+  workletWrapper.subscribeMessage((msg) => {
+    if (msg.type === "pullRandomizeRequestFlag_response") {
+      if (msg.value) {
+        emitRandomizationRequest();
+      }
+    } else if (msg.type === "randomizeParameters_response") {
+      for (const [id, value] of Object.entries(msg.parameters)) {
+        workletWrapper.setParameter(Number(id), value);
+      }
+      const parameters = parametersRecordConverter.mapIdsToKeys(msg.parameters);
+      sendMessageToUi({ type: "bulkSendParameters", parameters });
+      Object.assign(localParameters, parameters);
+    }
+  });
+  setInterval(() => {
+    workletWrapper.sendMessage({ type: "pullRandomizeRequestFlag" });
+  }, 50);
+}
+
+startAutoRandomizationTask();
 
 windowTyped.webkit = {
   messageHandlers: {
