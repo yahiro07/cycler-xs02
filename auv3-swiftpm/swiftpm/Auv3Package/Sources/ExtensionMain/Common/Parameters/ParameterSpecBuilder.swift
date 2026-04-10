@@ -8,7 +8,12 @@ let flagsInternal: AudioUnitParameterOptions = [
 ]
 
 class ParameterSpecBuilder {
-  init() {}
+  let addressHashFn: (String) -> UInt64
+
+  init(_ addressHashFn: @escaping (String) -> UInt64) {
+    self.addressHashFn = addressHashFn
+  }
+
   func Raw(
     address: UInt64,
     identifier: String,
@@ -35,11 +40,11 @@ class ParameterSpecBuilder {
     )
   }
   func Linear(
-    _ address: UInt64, _ identifier: String, _ name: String, _ defaultValue: AUValue,
+    _ identifier: String, _ name: String, _ defaultValue: AUValue,
     _ minValue: AUValue, _ maxValue: AUValue, isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
-      address: address,
+      address: addressHashFn(identifier),
       identifier: identifier,
       name: name,
       units: .generic,
@@ -49,11 +54,11 @@ class ParameterSpecBuilder {
     )
   }
   func Unary(
-    _ address: UInt64, _ identifier: String, _ name: String, _ defaultValue: AUValue,
+    _ identifier: String, _ name: String, _ defaultValue: AUValue,
     isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
-      address: address,
+      address: addressHashFn(identifier),
       identifier: identifier,
       name: name,
       units: .generic,
@@ -63,11 +68,11 @@ class ParameterSpecBuilder {
     )
   }
   func Bool(
-    _ address: UInt64, _ identifier: String, _ name: String, _ defaultValue: Bool,
+    _ identifier: String, _ name: String, _ defaultValue: Bool,
     isInternal: Bool = false
   ) -> ParameterSpec {
     return ParameterSpec(
-      address: address,
+      address: addressHashFn(identifier),
       identifier: identifier,
       name: name,
       units: .boolean,
@@ -77,12 +82,11 @@ class ParameterSpecBuilder {
     )
   }
   func Enum(
-    _ address: UInt64, _ identifier: String, _ name: String, _ defaultString: String,
+    _ identifier: String, _ name: String, _ defaultIndex: Int,
     _ valueStrings: [String], isInternal: Bool = false
   ) -> ParameterSpec {
-    let defaultIndex = valueStrings.firstIndex(of: defaultString) ?? 0
     return ParameterSpec(
-      address: address,
+      address: addressHashFn(identifier),
       identifier: identifier,
       name: name,
       units: .indexed,

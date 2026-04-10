@@ -14,7 +14,9 @@ extension NodeSpec {
 
 @resultBuilder struct ParameterGroupBuilder {
   static func buildBlock() -> [NodeSpec] { [] }
-  static func buildBlock(_ nodes: NodeSpec...) -> [NodeSpec] { nodes }
+  static func buildBlock(_ components: [NodeSpec]...) -> [NodeSpec] { components.flatMap { $0 } }
+  static func buildExpression(_ expression: NodeSpec) -> [NodeSpec] { [expression] }
+  static func buildExpression(_ expression: [NodeSpec]) -> [NodeSpec] { expression }
 }
 
 /// Specification for a group of parameters.
