@@ -1,18 +1,23 @@
 #pragma once
 #include <cstdint>
+#include <map>
 
 class IDspCore {
 public:
   virtual ~IDspCore() = default;
+  // main thread
   virtual void prepareProcessing(double sampleRate, uint32_t maxFrames) = 0;
+
+  // audio thread
   virtual void setParameter(uint64_t id, double value) = 0;
   virtual void noteOn(int noteNumber, double velocity) = 0;
   virtual void noteOff(int noteNumber) = 0;
   virtual void processAudio(float *bufferL, float *bufferR,
                             uint32_t frames) = 0;
   virtual void applyCommand(uint64_t id, double value) = 0;
-  // called on main thread
+
+  // main thread
   virtual bool extraLogic_pullRandomizeRequestFlag() = 0;
-  // virtual void
-  // extraLogic_randomizeParameters(std::map<uint64_t, double> &parameters) = 0;
+  virtual void
+  extraLogic_randomizeParameters(std::map<uint64_t, double> &parameters) = 0;
 };

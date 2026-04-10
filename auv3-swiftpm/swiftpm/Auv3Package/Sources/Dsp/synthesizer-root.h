@@ -162,6 +162,9 @@ public:
   bool extraLogic_pullRandomizeRequestFlag() override {
     return bus.needRandomize.exchange(false, std::memory_order_acq_rel);
   }
-  // void extraLogic_randomizeParameters(
-  //     std::map<uint64_t, double> &parameters) override {}
+  void extraLogic_randomizeParameters(
+      std::map<uint64_t, double> &parameters) override {
+    parameters[PK::oscWave] = 1;
+    parameters[PK::oscOctave] = rand() / (double)RAND_MAX;
+  }
 };

@@ -67,10 +67,19 @@ class ControllerPivot: ControllerPivotProtocol {
   }
   func applyCommandFromUi(_ commandKey: String, _ value: Float) {
     if commandKey == "randomizeParameters" {
-      parametersService.randomizeParameters()
+      randomizeParameters()
     } else if commandKey == "setPlayState" {
       dspRouteAgent.pushCustomCommand(commandIds.setPlayState, value)
     }
+  }
+
+  func randomizeParameters() {
+    var parameters = parametersService.getAllParameterValues()
+    // applyRandomizeParameters(&parameters)  //in swift side
+    applyParameterSuitOperationMapped(&parameters) { mapped in
+      dspRouteAgent.extraLogic_randomizeParameters(&mapped)
+    }
+    loadFullParametersSuit(parameters)
   }
 
   func broadcastParameterChange(_ paramKey: String, _ value: Float) {
@@ -109,4 +118,19 @@ class ControllerPivot: ControllerPivotProtocol {
     stateKvsService.delete(key)
   }
 
+}
+
+func applyParameterSuitOperationMapped(
+  _ parameters: inout [String: Float], _ operationFn: (inout [UInt64: Float]) -> Void
+) {
+  var mapped: [UInt64: Float] = [:]
+  for key in parameters.keys {
+    let address = calcParameterIdHash(key)
+    mapped[address] = parameters[key]
+  }
+  operationFn(&mapped)
+  for key in parameters.keys {
+    let address = calcParameterIdHash(key)
+    parameters[key] = mapped[address]
+  }
 }

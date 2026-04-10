@@ -29,4 +29,5 @@
     NS_SWIFT_NAME(setMaximumFramesToRender(_:));
 - (void)setMusicalContextBlock:(AUHostMusicalContextBlock)contextBlock;
 - (bool)extraLogic_pullRandomizeRequestFlag;
+- (void)extraLogic_randomizeParameters:(NSMutableDictionary<NSNumber *, NSNumber *> *)parameters;
 @end

@@ -13,8 +13,6 @@ protocol ParameterServiceProtocol {
   func loadFullParametersSuit(_ parameters: [String: Float])
 
   func setInternalParameterFromHost(_ paramId: ParamId, _ value: Float)
-
-  func randomizeParameters()
 }
 
 class ParametersService: ParameterServiceProtocol {
@@ -113,11 +111,4 @@ class ParametersService: ParameterServiceProtocol {
     guard let parameter = getAuParameterByParamId(paramId) else { return }
     parameter.value = value
   }
-
-  func randomizeParameters() {
-    var parameters = getAllParameterValues()
-    applyRandomizeParameters(&parameters)
-    loadFullParametersSuit(parameters)
-  }
-
 }

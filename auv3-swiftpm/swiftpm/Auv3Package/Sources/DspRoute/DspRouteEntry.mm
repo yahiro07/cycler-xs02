@@ -99,4 +99,14 @@ DspRouteHostEvent mapRtHostEvent(const RtHostEvent &event) {
 - (bool)extraLogic_pullRandomizeRequestFlag {
   return dspKernel.extraLogic_pullRandomizeRequestFlag();
 }
+- (void)extraLogic_randomizeParameters:(NSMutableDictionary<NSNumber *, NSNumber *> *)parameters {
+  std::map<uint64_t, double> params;
+  for (NSNumber *key in [parameters allKeys]) {
+    params[key.unsignedLongLongValue] = [parameters objectForKey:key].doubleValue;
+  }
+  dspKernel.extraLogic_randomizeParameters(params);
+  for (const auto& pair : params) {
+    parameters[@(pair.first)] = @(pair.second);
+  }
+}
 @end

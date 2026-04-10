@@ -190,7 +190,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   func updateParameterRandomization() {
     if dspRoute.extraLogic_pullRandomizeRequestFlag() {
-      parametersService.randomizeParameters()
+      controllerPivot.randomizeParameters()
     }
   }
 

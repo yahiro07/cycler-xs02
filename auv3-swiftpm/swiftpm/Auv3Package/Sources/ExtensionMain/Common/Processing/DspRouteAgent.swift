@@ -23,6 +23,19 @@ class DspRouteAgent {
     return dspRoute.extraLogic_pullRandomizeRequestFlag()
   }
 
+  func extraLogic_randomizeParameters(_ parameters: inout [UInt64: Float]) {
+    let nsDict = NSMutableDictionary()
+    for (k, v) in parameters {
+      nsDict[NSNumber(value: k)] = NSNumber(value: v)
+    }
+    dspRoute.extraLogic_randomizeParameters(nsDict)
+    for (k, v) in nsDict {
+      if let keyNum = k as? NSNumber, let valNum = v as? NSNumber {
+        parameters[keyNum.uint64Value] = valNum.floatValue
+      }
+    }
+  }
+
   func drainHostEvents(fn: (HostEvent) -> Void) {
     var rawEvent = DspRouteHostEvent()
     while dspRoute.popHostEvent(&rawEvent) {
