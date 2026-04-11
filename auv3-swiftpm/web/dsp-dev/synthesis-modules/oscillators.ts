@@ -44,16 +44,16 @@ export class Oscillators {
     this.ovsStage.ensureAllocated(this.bus.maxFrames);
   }
 
-  _calcNormFreq() {
+  calcNormFreq() {
     const { bus } = this;
     const { sp, interm } = bus;
 
     let noteNumber = 0;
     if (sp.oscPitchMoSmooth) {
-      //MOの連続量をノート間の中間音としてスムーズにマッピング
+      //Smoothly map the MO's continuous values to the intermediate notes between notes
       noteNumber = bus.noteNumber + interm.pmxOscRelNote + sp.oscOctave * 12;
     } else {
-      //パラメタを変化をそのままノートの値にマッピング
+      //Map parameter changes directly to note values
       noteNumber =
         bus.noteNumber +
         mapParamOscPitchToRelativeNote(interm.pmxOscPrPitch, sp.oscPitchMode) +
@@ -63,11 +63,11 @@ export class Oscillators {
     return midiToFrequency(noteNumber) / oscSampleRate;
   }
 
-  _resetVoiceAssigns() {
+  resetVoiceAssigns() {
     this.voiceIndex = 0;
   }
 
-  _addVoice(octaveRatio: number, detune: number, gain: number) {
+  addVoice(octaveRatio: number, detune: number, gain: number) {
     const { voiceSpecs } = this;
     const vo = voiceSpecs[this.voiceIndex];
     vo.octaveRatio = octaveRatio;
@@ -78,7 +78,7 @@ export class Oscillators {
     }
   }
 
-  _assignVoices() {
+  assignVoices() {
     const { bus, voiceSpecs } = this;
     const { sp, interm } = bus;
     const { oscUnisonMode: pileMode } = sp;
@@ -89,28 +89,28 @@ export class Oscillators {
         ? mapParamOscPitchToOctXCrossMixRateKey(interm.pmxOscPrPitch)
         : -1;
 
-    this._resetVoiceAssigns();
+    this.resetVoiceAssigns();
 
-    //unison detuneの対応
+    //Support for unison detune
     if (pileMode === OscUnisonMode.one) {
-      this._addVoice(1, 0, 1);
+      this.addVoice(1, 0, 1);
     } else if (pileMode === OscUnisonMode.det2) {
-      this._addVoice(1, -det, 0.5);
-      this._addVoice(1, det, 0.5);
+      this.addVoice(1, -det, 0.5);
+      this.addVoice(1, det, 0.5);
     } else if (pileMode === OscUnisonMode.det3) {
-      this._addVoice(1, -det, 0.1);
-      this._addVoice(1, 0, 0.8);
-      this._addVoice(1, det, 0.1);
+      this.addVoice(1, -det, 0.1);
+      this.addVoice(1, 0, 0.8);
+      this.addVoice(1, det, 0.1);
     } else if (pileMode === OscUnisonMode.sub) {
-      this._addVoice(1, -det, 0.5);
-      this._addVoice(0.5, det, 0.5);
+      this.addVoice(1, -det, 0.5);
+      this.addVoice(0.5, det, 0.5);
     } else if (pileMode === OscUnisonMode.fifth) {
-      this._addVoice(1, -det, 0.5);
-      this._addVoice(1.5, det, 0.5);
+      this.addVoice(1, -det, 0.5);
+      this.addVoice(1.5, det, 0.5);
     }
 
     if (crossMixRateKey !== -1) {
-      //pitch mode octave cross mixの対応
+      //Support for pitch mode octave cross mix
       const isOdd = (crossMixRateKey >>> 0) & 1;
       const upperMix = crossMixRateKey % 1;
       const wa = Math.sqrt(1 - upperMix);
@@ -118,7 +118,7 @@ export class Oscillators {
       const numVoices = this.voiceIndex;
       for (let i = 0; i < numVoices; i++) {
         const vo = voiceSpecs[i];
-        this._addVoice(vo.octaveRatio, vo.detune, vo.gain);
+        this.addVoice(vo.octaveRatio, vo.detune, vo.gain);
       }
       const formerVoices = voiceSpecs.slice(0, numVoices);
       const latterVoices = voiceSpecs.slice(numVoices);
@@ -142,7 +142,7 @@ export class Oscillators {
     }
   }
 
-  _processSamplesInternal(buffer: Float32Array, normFreq: number) {
+  processSamplesInternal(buffer: Float32Array, normFreq: number) {
     const { oscs, voiceIndex, voiceSpecs } = this;
     for (let i = 0; i < voiceIndex; i++) {
       const vo = voiceSpecs[i];
@@ -159,13 +159,13 @@ export class Oscillators {
     const { sp } = bus;
     if (!sp.oscOn) return;
 
-    this._assignVoices();
+    this.assignVoices();
 
-    const normFreq = this._calcNormFreq();
+    const normFreq = this.calcNormFreq();
 
     const highResBuffer = ovsStage.readIn(buffer);
     if (!highResBuffer) return;
-    this._processSamplesInternal(highResBuffer, normFreq);
+    this.processSamplesInternal(highResBuffer, normFreq);
     ovsStage.writeOut();
   }
 }
