@@ -19,7 +19,7 @@ export class SynthesizerRoot implements IDspCore {
     this.synthesizerHub.prepare(sampleRate);
   }
   setParameter(id: number, value: number): void {
-    parameterAssigner_applyParameter(this.synthesizerHub.bus.sp, id, value);
+    parameterAssigner_applyParameter(this.synthesizerHub.bus, id, value);
   }
   noteOn(noteNumber: number, _velocity: number): void {
     this.synthesizerHub.playNote(noteNumber);

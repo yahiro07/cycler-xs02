@@ -189,6 +189,7 @@ export enum RandomizeLevel {
 }
 
 export type SynthParametersSuit = {
+  // parametersVersion: number    //held in bus
   oscOn: boolean;
   oscWave: OscWave;
   oscPitch: number;
@@ -256,7 +257,7 @@ export type SynthParametersSuit = {
   clockingOn: boolean;
   baseNoteIndex: number;
   //
-  internalBpm: number;
+  // internalBpm: number; //held in bus
   autoRandomizeOnLoop: boolean;
   randomizeLevel: RandomizeLevel;
 };
@@ -357,7 +358,6 @@ export function createSynthParametersSuit(): SynthParametersSuit {
     clockingOn: true,
     baseNoteIndex: 9, //A
     //
-    internalBpm: 120,
     autoRandomizeOnLoop: false,
     randomizeLevel: RandomizeLevel.rnd10,
   };
