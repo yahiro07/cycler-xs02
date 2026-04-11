@@ -1,3 +1,3 @@
 export const rpcIdCounter = {
-  count: 0,
+  count: 1,
 };

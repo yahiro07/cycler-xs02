@@ -1,6 +1,12 @@
 import { CommandKeyFromApp, CommandKeyFromUi } from "@/base/command-keys";
-
 export type MessageFromUi =
+  | {
+      type: "log";
+      timestamp: number;
+      subsystem: string;
+      logKind: string;
+      message: string;
+    }
   | { type: "uiLoaded" }
   | { type: "beginEdit"; paramKey: string }
   | { type: "performEdit"; paramKey: string; value: number }

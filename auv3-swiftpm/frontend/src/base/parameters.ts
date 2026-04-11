@@ -410,6 +410,8 @@ function flatMotionParamsDefault<Mo extends MoId>(
 }
 
 export type SynthParametersSuit = {
+  parametersVersion: number;
+  //
   oscOn: boolean;
   oscWave: OscWave;
   oscPitch: number;
@@ -487,6 +489,8 @@ export type SynthParametersSuit = {
   FlatMotionParams<"moDelayTime">;
 
 export const defaultSynthParameters: SynthParametersSuit = {
+  parametersVersion: 1,
+  //
   oscOn: true,
   oscWave: OscWave.saw,
   oscOctave: 0,

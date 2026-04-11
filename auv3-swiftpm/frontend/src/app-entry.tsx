@@ -1,18 +1,24 @@
 import { actions } from "@/central/actions";
 import { setupKeyboardHandlerForTonePreview } from "@/common/keyboard-handler";
 import "./bridge/core-bridge";
+import { useEffect } from "react";
 import { mountAppRoot } from "@/.local/mount-app-root";
 import { logger } from "@/bridge/logger";
+import { agents } from "@/central/agents";
 import { RootPanel } from "@/views/RootPanel";
 
-function startApp() {
-  logger.trace("----ui startApp----");
-  mountAppRoot(<RootPanel />, "app");
-  // setupBridgeWiring();
-  // setupParamsScheduler();
-  setupKeyboardHandlerForTonePreview(actions.setPlayState);
-  // setupAutoRandomizeOnLoop();
-}
+const App = () => {
+  useEffect(() => {
+    logger.trace("frontend app mounted");
+    agents.setup();
+    void agents.initialLoad();
+    setupKeyboardHandlerForTonePreview(actions.setPlayState);
+  }, []);
 
-// setTimeout(startApp, 500);
+  return <RootPanel />;
+};
+
+function startApp() {
+  mountAppRoot(<App />, "app");
+}
 startApp();

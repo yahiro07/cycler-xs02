@@ -1,3 +1,4 @@
+import { CommandId, ParameterId } from "@core/parameter-id";
 import {
   BassPresetKey,
   BassTailAccentPatternKey,
@@ -20,25 +21,42 @@ import {
   OscUnisonMode,
   RandomizeLevel,
   ShaperMode,
-} from "../../frontend/src/base/parameters";
-import {
-  MessageFromApp,
-  MessageFromUi,
-} from "../../frontend/src/bridge/message-types";
-import { masterGainConfig } from "../../frontend/src/logic/master-gain-config";
-import { CommandId, ParameterId } from "../dsp-dev/parameter-id";
+} from "@frontend/base/parameters";
+import { createLogger } from "@frontend/bridge/logger";
+import { MessageFromApp, MessageFromUi } from "@frontend/bridge/message-types";
+import { masterGainConfig } from "@frontend/logic/master-gain-config";
 import { createDspCoreWorkletWrapper } from "./dsp-dev-support/worklet-wrapper";
+import { LogItem, writeLogItemToConsole } from "./log-emitter";
 
-const windowTyped = window as unknown as {
-  webkit?: {
-    messageHandlers: {
-      pluginEditor?: {
-        postMessage: (msg: string | object) => void;
+function createParentSideBridge() {
+  const windowTyped = window as unknown as {
+    webkit?: {
+      messageHandlers: {
+        pluginEditor?: {
+          postMessage: (msg: string | object) => void;
+        };
       };
     };
+    pluginEditorCallback?: (msg: MessageFromApp) => void;
   };
-  pluginEditorCallback?: (msg: MessageFromApp) => void;
-};
+
+  return {
+    sendMessageToUi(msg: MessageFromApp) {
+      windowTyped.pluginEditorCallback?.(msg);
+    },
+    setReceiverForMessageFromUi(receiver: (msg: MessageFromUi) => void) {
+      windowTyped.webkit = {
+        messageHandlers: {
+          pluginEditor: {
+            postMessage: (msg: string | object) => {
+              receiver(msg as MessageFromUi);
+            },
+          },
+        },
+      };
+    },
+  };
+}
 
 const parametersRecordConverter = {
   mapKeysToIds(parameters: Record<string, number>): Record<number, number> {
@@ -62,8 +80,6 @@ const parametersRecordConverter = {
     return result;
   },
 };
-
-const workletWrapper = createDspCoreWorkletWrapper();
 
 const PK = ParameterId;
 
@@ -184,10 +200,6 @@ const parameterIdToKeyMap: Record<number, string> = Object.fromEntries(
   parameterDefs.map(([id, key]) => [id, key]),
 );
 
-function sendMessageToUi(msg: MessageFromApp) {
-  windowTyped.pluginEditorCallback?.(msg);
-}
-
 function getInitialParameterValues() {
   const parameters: Record<string, number> = {};
   parameterDefs.forEach(([_id, key, value]) => {
@@ -196,79 +208,80 @@ function getInitialParameterValues() {
   return parameters;
 }
 
-const localParameters = getInitialParameterValues();
+export function setupDummyParentApp() {
+  const logger = createLogger("app");
 
-function emitRandomizationRequest() {
-  const params = parametersRecordConverter.mapKeysToIds(localParameters);
-  workletWrapper.sendMessage({
-    type: "randomizeParameters",
-    parameters: params,
-  });
-}
+  const { sendMessageToUi, setReceiverForMessageFromUi } =
+    createParentSideBridge();
+  const workletWrapper = createDspCoreWorkletWrapper();
+  const localParameters = getInitialParameterValues();
 
-function onMessageFromUi(msg: MessageFromUi) {
-  console.log("msg received in dummyParentApp", msg);
-  if (msg.type === "uiLoaded") {
-    sendMessageToUi({
-      type: "applyCommand",
-      commandKey: "setStandaloneFlag",
-      value: 1,
+  function emitRandomizationRequest() {
+    const params = parametersRecordConverter.mapKeysToIds(localParameters);
+    workletWrapper.sendMessage({
+      type: "randomizeParameters",
+      parameters: params,
     });
-    const parameters = getInitialParameterValues();
-    sendMessageToUi({ type: "bulkSendParameters", parameters });
-  } else if (msg.type === "performEdit") {
-    const id = parameterKeyToIdMap[msg.paramKey];
-    if (id !== undefined) {
-      workletWrapper.setParameter(id, msg.value);
-      localParameters[msg.paramKey] = msg.value;
-    }
-  } else if (msg.type === "noteOnRequest") {
-    workletWrapper.noteOn(msg.noteNumber, 1);
-    sendMessageToUi({ type: "hostNoteOn", noteNumber: msg.noteNumber });
-  } else if (msg.type === "noteOffRequest") {
-    workletWrapper.noteOff(msg.noteNumber);
-    sendMessageToUi({ type: "hostNoteOff", noteNumber: msg.noteNumber });
-  } else if (msg.type === "applyCommand") {
-    if (msg.commandKey === "setPlayState") {
-      workletWrapper.applyCommand(CommandId.setPlayState, msg.value);
-    } else if (msg.commandKey === "resetParameters") {
+  }
+
+  function onMessageFromUi(msg: MessageFromUi) {
+    if (msg.type === "log") {
+      writeLogItemToConsole(msg as LogItem);
+    } else if (msg.type === "uiLoaded") {
+      sendMessageToUi({
+        type: "applyCommand",
+        commandKey: "setStandaloneFlag",
+        value: 1,
+      });
       const parameters = getInitialParameterValues();
       sendMessageToUi({ type: "bulkSendParameters", parameters });
-    } else if (msg.commandKey === "randomizeParameters") {
-      emitRandomizationRequest();
-    }
-  }
-}
-
-function startAutoRandomizationTask() {
-  workletWrapper.subscribeMessage((msg) => {
-    if (msg.type === "pullRandomizeRequestFlag_response") {
-      if (msg.value) {
+    } else if (msg.type === "performEdit") {
+      const id = parameterKeyToIdMap[msg.paramKey];
+      if (id !== undefined) {
+        workletWrapper.setParameter(id, msg.value);
+        localParameters[msg.paramKey] = msg.value;
+      }
+    } else if (msg.type === "noteOnRequest") {
+      workletWrapper.noteOn(msg.noteNumber, 1);
+      sendMessageToUi({ type: "hostNoteOn", noteNumber: msg.noteNumber });
+    } else if (msg.type === "noteOffRequest") {
+      workletWrapper.noteOff(msg.noteNumber);
+      sendMessageToUi({ type: "hostNoteOff", noteNumber: msg.noteNumber });
+    } else if (msg.type === "applyCommand") {
+      if (msg.commandKey === "setPlayState") {
+        workletWrapper.applyCommand(CommandId.setPlayState, msg.value);
+      } else if (msg.commandKey === "resetParameters") {
+        const parameters = getInitialParameterValues();
+        sendMessageToUi({ type: "bulkSendParameters", parameters });
+      } else if (msg.commandKey === "randomizeParameters") {
         emitRandomizationRequest();
       }
-    } else if (msg.type === "randomizeParameters_response") {
-      for (const [id, value] of Object.entries(msg.parameters)) {
-        workletWrapper.setParameter(Number(id), value);
-      }
-      const parameters = parametersRecordConverter.mapIdsToKeys(msg.parameters);
-      sendMessageToUi({ type: "bulkSendParameters", parameters });
-      Object.assign(localParameters, parameters);
     }
-  });
-  setInterval(() => {
-    workletWrapper.sendMessage({ type: "pullRandomizeRequestFlag" });
-  }, 50);
+  }
+
+  function startAutoRandomizationTask() {
+    workletWrapper.subscribeMessage((msg) => {
+      if (msg.type === "pullRandomizeRequestFlag_response") {
+        if (msg.value) {
+          emitRandomizationRequest();
+        }
+      } else if (msg.type === "randomizeParameters_response") {
+        for (const [id, value] of Object.entries(msg.parameters)) {
+          workletWrapper.setParameter(Number(id), value);
+        }
+        const parameters = parametersRecordConverter.mapIdsToKeys(
+          msg.parameters,
+        );
+        sendMessageToUi({ type: "bulkSendParameters", parameters });
+        Object.assign(localParameters, parameters);
+      }
+    });
+    setInterval(() => {
+      workletWrapper.sendMessage({ type: "pullRandomizeRequestFlag" });
+    }, 50);
+  }
+
+  setReceiverForMessageFromUi(onMessageFromUi);
+  startAutoRandomizationTask();
+  logger.trace("dummy parent app initialized");
 }
-
-startAutoRandomizationTask();
-
-windowTyped.webkit = {
-  messageHandlers: {
-    pluginEditor: {
-      postMessage: (msg: string | object) => {
-        onMessageFromUi(msg as MessageFromUi);
-      },
-    },
-  },
-};
-console.log("dummy parent app initialized");
