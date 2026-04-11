@@ -1,7 +1,7 @@
 // Biquad Lowpass Filter (12dB/oct, 2-pole)
 // Standard cookbook implementation
 
-import { createMultiInterpolator } from "@dsp/dsp-modules/basic/multi-interpolator";
+import { createInterpolator } from "@dsp/dsp-modules/basic/interpolator";
 import { applySoftClipAt } from "@dsp/dsp-modules/effects/soft-clip-shaper";
 import { createFilterOnePoleHighPass } from "@dsp/dsp-modules/filters/filter-onepole-highpass";
 import { m_cos, m_sin, m_two_pi } from "@dsp/utils/math-utils";
@@ -35,15 +35,15 @@ export function createFilterBiquadLp12(sampleRate: number): IFilter {
     a2: number;
   };
 
-  const interpolator = createMultiInterpolator<{
-    paramCutoff: number;
-    paramPeak: number;
-    b0: number;
-    b1: number;
-    b2: number;
-    a1: number;
-    a2: number;
-  }>();
+  const interpolators = {
+    paramCutoff: createInterpolator(),
+    paramPeak: createInterpolator(),
+    b0: createInterpolator(),
+    b1: createInterpolator(),
+    b2: createInterpolator(),
+    a1: createInterpolator(),
+    a2: createInterpolator(),
+  };
 
   // Feedback-path HPF to prevent DC / very-low-frequency buildup.
   const highPass = createFilterOnePoleHighPass(sampleRate, 40);
@@ -94,18 +94,22 @@ export function createFilterBiquadLp12(sampleRate: number): IFilter {
     paramPeak *= 0.4;
 
     const coeffs = calculateCoefficients(cutoffNormFreq, paramPeak);
-    interpolator.feedNext({ paramCutoff, paramPeak, ...coeffs }, len);
+    interpolators.paramCutoff.feed(paramCutoff, len);
+    interpolators.paramPeak.feed(paramPeak, len);
+    interpolators.b0.feed(coeffs.b0, len);
+    interpolators.b1.feed(coeffs.b1, len);
+    interpolators.b2.feed(coeffs.b2, len);
+    interpolators.a1.feed(coeffs.a1, len);
+    interpolators.a2.feed(coeffs.a2, len);
 
     for (let i = 0; i < len; i++) {
-      const {
-        paramCutoff: prCutoff,
-        paramPeak: prPeak,
-        b0,
-        b1,
-        b2,
-        a1,
-        a2,
-      } = interpolator.advance();
+      const prCutoff = interpolators.paramCutoff.advance();
+      const prPeak = interpolators.paramPeak.advance();
+      const b0 = interpolators.b0.advance();
+      const b1 = interpolators.b1.advance();
+      const b2 = interpolators.b2.advance();
+      const a1 = interpolators.a1.advance();
+      const a2 = interpolators.a2.advance();
 
       // TeeBee-style external feedback with HPF (one-sample delay).
       // This is intentionally *outside* the cookbook biquad topology.
