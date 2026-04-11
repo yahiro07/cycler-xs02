@@ -38,12 +38,12 @@ export function wrapGetMoStepRamp(
   return ramp_provider.getMotionRamp(bus, lowClipZero(stepPos), stride);
 }
 
-function _rndCoverCurved(cover: number): number {
+function rndCoverCurved(cover: number): number {
   return invPower2Weak(cover, 0.7);
   // return tunableSigmoid(cover, -0.4);
 }
 
-function _getRandomWithCover(
+function getRandomWithCover(
   bus: SynthesisBus,
   moIdSeed: number,
   rampHeadPos: number,
@@ -52,7 +52,7 @@ function _getRandomWithCover(
   const rrA = deterministicRandom(
     bus.loopSeed + rampHeadPos + moIdSeed + moPartSeed.rndCover,
   );
-  if (rrA > _rndCoverCurved(rndCover)) {
+  if (rrA > rndCoverCurved(rndCover)) {
     return 0.5;
   }
   return deterministicRandom(
@@ -60,7 +60,7 @@ function _getRandomWithCover(
   );
 }
 
-function _getMappedValueWithRandom(
+function getMappedValueWithRandom(
   bus: SynthesisBus,
   moIdSeed: number,
   rampHeadPos: number,
@@ -70,7 +70,7 @@ function _getMappedValueWithRandom(
   const rrA = deterministicRandom(
     bus.loopSeed + rampHeadPos + moIdSeed + moPartSeed.rndCover,
   );
-  if (rrA > _rndCoverCurved(rndCover)) {
+  if (rrA > rndCoverCurved(rndCover)) {
     return mapperFn("rndSkip");
   }
   const rr = deterministicRandom(
@@ -79,7 +79,7 @@ function _getMappedValueWithRandom(
   return mapperFn(rr);
 }
 
-function _wrapGlide(pos: number): number {
+function wrapGlide(pos: number): number {
   return glideCurves.glide3(pos, 0.5);
 }
 
@@ -92,7 +92,7 @@ export function getRndMapped(
 ): number {
   if (mp.moType === MoType.rnd) {
     const ramp = wrapGetMoStepRamp(bus, mp.rndStride, stepPos);
-    const semiCurrent = _getMappedValueWithRandom(
+    const semiCurrent = getMappedValueWithRandom(
       bus,
       moIdSeed,
       ramp.headPos,
@@ -102,14 +102,14 @@ export function getRndMapped(
     const isSdMode = mp.rndMode === MoRndMode.sd;
     const applyGlide = mp.rndMode === MoRndMode.sg;
     if (applyGlide || isSdMode) {
-      const semiNext = _getMappedValueWithRandom(
+      const semiNext = getMappedValueWithRandom(
         bus,
         moIdSeed,
         ramp.headPos + ramp.duration,
         mp.rndCover,
         mapperFn,
       );
-      const m = applyGlide ? _wrapGlide(ramp.progress) : ramp.progress;
+      const m = applyGlide ? wrapGlide(ramp.progress) : ramp.progress;
       return mixValue(semiCurrent, semiNext, m);
     }
     return semiCurrent;
@@ -124,7 +124,7 @@ export function getRndMod(
 ): number {
   if (mp.moType === MoType.rnd) {
     const ramp = wrapGetMoStepRamp(bus, mp.rndStride, stepPos);
-    const rrCurrent = _getRandomWithCover(
+    const rrCurrent = getRandomWithCover(
       bus,
       moIdSeed,
       ramp.headPos,
@@ -133,13 +133,13 @@ export function getRndMod(
     const isSdMode = mp.rndMode === MoRndMode.sd;
     const applyGlide = mp.rndMode === MoRndMode.sg;
     if (applyGlide || isSdMode) {
-      const rrNext = _getRandomWithCover(
+      const rrNext = getRandomWithCover(
         bus,
         moIdSeed,
         ramp.headPos + ramp.duration,
         mp.rndCover,
       );
-      const m = applyGlide ? _wrapGlide(ramp.progress) : ramp.progress;
+      const m = applyGlide ? wrapGlide(ramp.progress) : ramp.progress;
       return mixValue(rrCurrent, rrNext, m);
     }
     return rrCurrent;

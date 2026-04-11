@@ -3,7 +3,7 @@ import { Bus } from "@core/base/synthesis-bus";
 import { StepRampCode } from "@core/base/synthesis-types";
 import { getStepPeriodForGaterMain } from "@core/motions/funcs/steps-common";
 
-export function _getRampCodeFromEx2PatternBits(
+export function getRampCodeFromEx2PatternBits(
   patternBits: number,
   index: number,
 ): StepRampCode {
@@ -30,7 +30,7 @@ const ex2PatternMap = [
   0b1001, //code5 >oo>
 ];
 
-export function _mapCodesToBits(codes: GateSequencerCode[]): number {
+export function mapCodesToBits(codes: GateSequencerCode[]): number {
   let res = 0;
   for (let i = 0; i < 4; i++) {
     const pattern = ex2PatternMap[codes[i]];
@@ -46,7 +46,7 @@ function getBit(value: number, bitPos: number) {
 function setBit(value: number, bitPos: number, bit: number) {
   return (value & ~(1 << bitPos)) | (bit << bitPos);
 }
-export function _replaceContinuousTiesN(pattern: number): number {
+export function replaceContinuousTiesN(pattern: number): number {
   // If there is a sequence of tie like 011, replace it with 010
   // It is safe to assume that there are no patterns in the input where tie appears three or more times in a row
   for (let i = 0; i < 16; i++) {
@@ -69,7 +69,7 @@ export function gaterMainSeqMode_getRampCode(
   const stepPeriod = getStepPeriodForGaterMain(gp.gaterStride);
   const scaledStep = stepPos / stepPeriod;
   const index = (scaledStep % 16) >>> 0;
-  let bits = _mapCodesToBits(gp.gaterSeqPatterns);
-  bits = _replaceContinuousTiesN(bits);
-  return _getRampCodeFromEx2PatternBits(bits, index);
+  let bits = mapCodesToBits(gp.gaterSeqPatterns);
+  bits = replaceContinuousTiesN(bits);
+  return getRampCodeFromEx2PatternBits(bits, index);
 }

@@ -7,7 +7,7 @@ import {
 } from "@core/motions/impl/motion-common";
 import * as motion_mapping_core_internal from "@core/motions/impl/motion-curve-mapper";
 
-function _getMotionParamsAndSeed(
+function getMotionParamsAndSeed(
   bus: Bus,
   moId: MoId,
 ): { mp: MotionParams; moIdSeed: number } {
@@ -27,7 +27,7 @@ function _getMotionParamsAndSeed(
 }
 
 function getRndOut(bus: Bus, moId: MoId, stepPos: number): number {
-  const { mp, moIdSeed } = _getMotionParamsAndSeed(bus, moId);
+  const { mp, moIdSeed } = getMotionParamsAndSeed(bus, moId);
   return motion_mapping_core_internal.getRndMod(bus, mp, moIdSeed, stepPos);
 }
 function getRandMapped(
@@ -37,7 +37,7 @@ function getRandMapped(
   randomValueMapperFn?: RandomValueMapperFn,
 ): number {
   if (!randomValueMapperFn) return 0;
-  const { mp, moIdSeed } = _getMotionParamsAndSeed(bus, moId);
+  const { mp, moIdSeed } = getMotionParamsAndSeed(bus, moId);
   return motion_mapping_core_internal.getRndMapped(
     bus,
     mp,
@@ -47,11 +47,11 @@ function getRandMapped(
   );
 }
 function getEgLevel(bus: Bus, moId: MoId, stepPos: number): number {
-  const { mp } = _getMotionParamsAndSeed(bus, moId);
+  const { mp } = getMotionParamsAndSeed(bus, moId);
   return motion_mapping_core_internal.getMoEgLevel(bus, mp, stepPos);
 }
 function getLfoOut(bus: Bus, moId: MoId, stepPos: number): number {
-  const { mp } = _getMotionParamsAndSeed(bus, moId);
+  const { mp } = getMotionParamsAndSeed(bus, moId);
   return motion_mapping_core_internal.getLfoOut(mp, stepPos);
 }
 
@@ -61,7 +61,7 @@ export function processMotionWrapper(
   stepPos: number,
   randomValueMapperFn?: RandomValueMapperFn,
 ): MotionPartValues {
-  const { mp } = _getMotionParamsAndSeed(bus, moId);
+  const { mp } = getMotionParamsAndSeed(bus, moId);
   const rndOut = getRndOut(bus, moId, stepPos); //0~1
   const rndMappedValue = getRandMapped(bus, moId, stepPos, randomValueMapperFn); //mapperFn出力による任意の範囲
   let egLevel = getEgLevel(bus, moId, stepPos); //0~1

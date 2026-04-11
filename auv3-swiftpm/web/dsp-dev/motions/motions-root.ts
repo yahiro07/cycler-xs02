@@ -7,12 +7,12 @@ import {
 } from "@core/motions/impl/motion-curve-mapper";
 import * as mo_mappers from "@core/motions/mo-mappers";
 
-function _getStepDeltaForFrame(bus: Bus) {
+function getStepDeltaForFrame(bus: Bus) {
   return calcNumStepsForSamples(bus.bpm, bus.sampleRate, bus.blockLength);
 }
 
 function updateGate(bus: Bus) {
-  const stepDelta = _getStepDeltaForFrame(bus);
+  const stepDelta = getStepDeltaForFrame(bus);
   const prevStep = bus.currentStep - stepDelta;
   const prevRamp = wrapGetStepRamp(bus, GateStride.gate, prevStep);
   const currRamp = wrapGetStepRamp(bus, GateStride.gate, bus.currentStep);
@@ -37,7 +37,7 @@ function updateMoValues(bus: Bus) {
 
 function updateLoopOnFrameEnd(bus: Bus) {
   const { sp } = bus;
-  const stepDelta = _getStepDeltaForFrame(bus);
+  const stepDelta = getStepDeltaForFrame(bus);
   bus.totalStep += stepDelta;
   bus.currentStep += stepDelta;
   const maxSteps = sp.loopBars * 16;
