@@ -186,7 +186,7 @@ public:
   bool extraLogic_pullRandomizeRequestFlag() {
     return mDspCore->extraLogic_pullRandomizeRequestFlag();
   }
-  void extraLogic_randomizeParameters(std::map<uint64_t, double> &parameters) {
+  void extraLogic_randomizeParameters(std::map<uint64_t, float> &parameters) {
     mDspCore->extraLogic_randomizeParameters(parameters);
   }
 };
