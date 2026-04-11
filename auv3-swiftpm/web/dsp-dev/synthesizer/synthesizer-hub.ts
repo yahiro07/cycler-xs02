@@ -82,20 +82,12 @@ export class SynthesizerHub {
     this.triggerManager.setGroovePlaying(playing);
   }
 
-  playNote(noteNumber: number) {
+  noteOn(noteNumber: number) {
     this.triggerManager.playNote(noteNumber);
   }
 
-  stopNote() {
-    this.triggerManager.stopNote();
-  }
-
-  setBpm(bpm: number) {
-    this.bus.bpm = bpm;
-  }
-
-  setParamVer(paramVer: number) {
-    this.bus.paramVer = paramVer;
+  noteOff(noteNumber: number) {
+    this.triggerManager.stopNote(noteNumber);
   }
 
   coreProcessSamples(buffer: Float32Array) {
@@ -171,9 +163,9 @@ export class SynthesizerHub {
     this.processSamplesWithChunks(buffer, len);
   }
 
-  getBarPosition(): number {
-    return (this.bus.totalStep / 16) >>> 0;
-  }
+  // getBarPosition(): number {
+  //   return (this.bus.totalStep / 16) >>> 0;
+  // }
 
   setupBlWaveTable() {
     blWave2A_buildWaveTables(this.bus.blWave2A);

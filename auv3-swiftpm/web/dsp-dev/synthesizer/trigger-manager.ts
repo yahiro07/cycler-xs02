@@ -24,8 +24,11 @@ export class TriggerManager {
     this.notePlayingOverrideNoteNumber = noteNumber;
   }
 
-  stopNote() {
-    this.notePlaying = false;
+  stopNote(noteNumber: number) {
+    if (this.notePlayingOverrideNoteNumber === noteNumber) {
+      this.notePlaying = false;
+      this.notePlayingOverrideNoteNumber = -1;
+    }
   }
 
   updateNoteStates() {

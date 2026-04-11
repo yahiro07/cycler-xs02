@@ -1,17 +1,14 @@
-import { IDspCore } from "@core/api";
-import { CommandId } from "@core/parameter-id";
-import { applyRandomizeParameters } from "@core/parameter-randomizer";
-import { ControlCommand } from "./synthesizer/control-command";
-import { parameterAssigner_applyParameter } from "./synthesizer/parameter-assigner";
+import { IDspCore } from "@core/base/api";
+import { CommandId } from "@core/base/parameter-id";
+import { applyRandomizeParameters } from "@core/parameters/parameter-randomizer";
+import { parameterAssigner_applyParameter } from "./parameters/parameter-assigner";
 import { SynthesizerHub } from "./synthesizer/synthesizer-hub";
 
 export class SynthesizerRoot implements IDspCore {
   synthesizerHub: SynthesizerHub;
-  playingNoteNumber: number;
 
   constructor() {
     this.synthesizerHub = new SynthesizerHub();
-    this.playingNoteNumber = -1;
   }
 
   prepareProcessing(sampleRate: number, _maxFrames: number): void {
@@ -22,14 +19,10 @@ export class SynthesizerRoot implements IDspCore {
     parameterAssigner_applyParameter(this.synthesizerHub.bus, id, value);
   }
   noteOn(noteNumber: number, _velocity: number): void {
-    this.synthesizerHub.playNote(noteNumber);
-    this.playingNoteNumber = noteNumber;
+    this.synthesizerHub.noteOn(noteNumber);
   }
   noteOff(noteNumber: number): void {
-    if (noteNumber === this.playingNoteNumber) {
-      this.synthesizerHub.stopNote();
-      this.playingNoteNumber = -1;
-    }
+    this.synthesizerHub.noteOff(noteNumber);
   }
   processAudio(
     bufferL: Float32Array,
@@ -45,8 +38,6 @@ export class SynthesizerRoot implements IDspCore {
     }
     if (id === CommandId.setPlayState) {
       this.synthesizerHub.setGroovePlaying(value > 0.5);
-    } else if (id === ControlCommand.kcSetBpm) {
-      this.synthesizerHub.setBpm(value);
     }
   }
 
