@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 
+namespace dsp {
+
 constexpr uint64_t hash(const char *str) {
   uint64_t _hash = 0x811c9dc5;
   for (int i = 0; str[i] != '\0'; i++) {
@@ -191,3 +193,5 @@ enum ParameterId : uint64_t {
 };
 
 enum CommandId : uint64_t { setPlayState = hash("setPlayState") };
+
+} // namespace dsp

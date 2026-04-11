@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <map>
 
+namespace dsp {
+
 class IDspCore {
 public:
   virtual ~IDspCore() = default;
@@ -21,3 +23,5 @@ public:
   virtual void
   extraLogic_randomizeParameters(std::map<uint64_t, double> &parameters) = 0;
 };
+
+} // namespace dsp

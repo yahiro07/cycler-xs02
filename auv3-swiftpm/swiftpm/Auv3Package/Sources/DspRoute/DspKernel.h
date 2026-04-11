@@ -21,8 +21,8 @@ private:
   AUAudioFrameCount mMaxFramesToRender = 1024;
   double mCurrentTempo = 0.0;
 
-  std::unique_ptr<IDspCore> mDspCore =
-      std::unique_ptr<IDspCore>(createDspCoreInstance());
+  std::unique_ptr<dsp::IDspCore> mDspCore =
+      std::unique_ptr<dsp::IDspCore>(dsp::createDspCoreInstance());
 
   SpscQueue<RtHostEvent, 256> rtHostEventQueue;
   SpscQueue<RtProcessorEvent, 256> rtProcessorEventQueue;

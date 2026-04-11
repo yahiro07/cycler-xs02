@@ -1,6 +1,8 @@
 #pragma once
 #include "./base/api.h"
 
+namespace dsp {
+
 class SynthesizerRoot : public IDspCore {
 
 public:
@@ -20,3 +22,4 @@ public:
   void extraLogic_randomizeParameters(
       std::map<uint64_t, double> &parameters) override {}
 };
+} // namespace dsp
