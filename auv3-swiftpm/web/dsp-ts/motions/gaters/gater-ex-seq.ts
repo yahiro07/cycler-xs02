@@ -2,7 +2,7 @@ import { ExGaterCode } from "@dsp/base/parameter-defs";
 import { RampSpec } from "@dsp/base/ramp-types";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForExGater } from "@dsp/motions/funcs/steps-common";
-import { checkArrayItemsEquivalent, seqNumbers } from "@dsp/utils/arrays";
+import { seqNumbers } from "@dsp/utils/arrays";
 
 type PreAllocatedArray<T> = {
   reset(): void;
@@ -66,13 +66,17 @@ type GaterExNotes = {
   length: number;
 };
 
+type ExGaterCodePacked = number;
+
 type GaterExCacheState = {
   tmpWorkingNotes: PreAllocatedArray<GaterExTemporalNote>;
   notes: GaterExNotes;
   cacheKeys: {
-    codes: ExGaterCode[]; //4 items allocated
+    codes: ExGaterCodePacked;
   };
 };
+
+const gaterExCodeLength = 4;
 
 function createNotesDefault(): GaterExNotes {
   return {
@@ -92,7 +96,7 @@ function createGaterExCacheState(): GaterExCacheState {
       duration: 1,
     })),
     notes: createNotesDefault(),
-    cacheKeys: { codes: seqNumbers(4).map(() => -1 as ExGaterCode) },
+    cacheKeys: { codes: 0 },
   };
 }
 
@@ -102,29 +106,23 @@ function buildNotesFromCodes(
   tmpWorkingNotes: PreAllocatedArray<GaterExTemporalNote>,
 ) {
   tmpWorkingNotes.reset();
-  for (let i = 0; i < codes.length; i++) {
+  for (let i = 0; i < gaterExCodeLength; i++) {
     const code = codes[i];
     if (code === ExGaterCode.off) {
       const note = tmpWorkingNotes.beginPush();
-      {
-        note.type = GaterExNoteType.off;
-        note.duration = 1;
-      }
+      note.type = GaterExNoteType.off;
+      note.duration = 1;
       tmpWorkingNotes.endPush();
     } else if (code === ExGaterCode.one) {
       const note = tmpWorkingNotes.beginPush();
-      {
-        note.type = GaterExNoteType.gate;
-        note.duration = 1;
-      }
+      note.type = GaterExNoteType.gate;
+      note.duration = 1;
       tmpWorkingNotes.endPush();
     } else if (code === ExGaterCode.double) {
       for (let i = 0; i < 2; i++) {
         const note = tmpWorkingNotes.beginPush();
-        {
-          note.type = GaterExNoteType.gate;
-          note.duration = 0.5;
-        }
+        note.type = GaterExNoteType.gate;
+        note.duration = 0.5;
         tmpWorkingNotes.endPush();
       }
     } else if (code === ExGaterCode.tie) {
@@ -140,11 +138,9 @@ function buildNotesFromCodes(
     const note = tmpWorkingNotes.at(i);
     if (!note) continue;
     const outNote = outNotes.items[i];
-    {
-      outNote.type = note.type;
-      outNote.offset = offset;
-      outNote.duration = note.duration;
-    }
+    outNote.type = note.type;
+    outNote.offset = offset;
+    outNote.duration = note.duration;
     offset += note.duration;
   }
   outNotes.length = tmpWorkingNotes.count;
@@ -163,20 +159,23 @@ export function gaterExSeq_buildNotesFromCodesForTest(
   return outNotes;
 }
 
-function copyArrayItems<T>(dst: T[], src: T[]) {
-  for (let i = 0; i < src.length; i++) {
-    dst[i] = src[i];
+function packExtGaterCodes(codes: ExGaterCode[]): ExGaterCodePacked {
+  let packed = 0;
+  for (let i = 0; i < gaterExCodeLength; i++) {
+    packed |= codes[i] << (i * 4);
   }
+  return packed;
 }
 
 function buildNotesCached(bus: Bus, codes: ExGaterCode[]): GaterExNotes {
   // bus.moduleLocals.gaterExSeq ??= createGaterExCacheState(); //for debug
 
   const cacheState = bus.moduleLocals.gaterExSeq as GaterExCacheState;
-  const same = checkArrayItemsEquivalent(cacheState.cacheKeys.codes, codes);
+  const packed = packExtGaterCodes(codes);
+  const same = cacheState.cacheKeys.codes === packed;
   if (!same) {
     buildNotesFromCodes(codes, cacheState.notes, cacheState.tmpWorkingNotes);
-    copyArrayItems(cacheState.cacheKeys.codes, codes);
+    cacheState.cacheKeys.codes = packed;
   }
   return cacheState.notes;
 }
