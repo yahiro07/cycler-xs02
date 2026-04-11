@@ -22,7 +22,7 @@
         "../../frontend/src/*"
       ],
       "@core/*": [
-        "../dsp-dev/*"
+        "../dsp-ts/*"
       ]
     }
   },
