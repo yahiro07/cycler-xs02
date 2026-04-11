@@ -55,10 +55,11 @@ export function getAmpEgCurvePL(
   stepDuration = 1,
 ) {
   if (duty < 0.05 && decay === 0) {
-    //無音になるのを回避
+    //Prevent silence
     duty = 0.05;
   }
-  //dutyが大きいほどタイでのhold時間が伸びる(末尾時間固定ベースの調整)になるようにする
+  //Ensure that increasing duty proportionally increases the hold time during a tie
+  //(adjustment based on a fixed end time)
   const bpShort = duty * stepDuration;
   const bpLong = stepDuration - (1 - duty);
   const bp = mixValue(bpShort, bpLong, duty);

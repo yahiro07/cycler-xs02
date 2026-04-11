@@ -4,7 +4,7 @@
 import { createMultiInterpolator } from "@core/dsp-modules/basic/multi-interpolator";
 import { applySoftClipAt } from "@core/dsp-modules/effects/soft-clip-shaper";
 import { createFilterOnePoleHighPass } from "@core/dsp-modules/filters/filter-onepole-highpass";
-import { clampValue, invPower2, power2 } from "@core/utils/number-utils";
+import { clampValue } from "@core/utils/number-utils";
 
 export interface IFilter {
   reset(): void;
@@ -119,26 +119,6 @@ export function createFilterBiquadLp12(sampleRate: number): IFilter {
       // Update state
       z2 = z1;
       z1 = w;
-
-      if (0) {
-        if (0) {
-          //鋸波の腹(phase=0.5)の下の部分を埋める
-          //フィルタ後の波形に位相の遅れがあるので微妙
-          const u = prPeak * (1 - prCutoff);
-          y -= input * invPower2(u) * 0.95;
-          //resonanceに応じてゲインを下げる
-          const gx = 1 + prPeak * 1.5;
-          y *= 1 / gx;
-        } else if (0) {
-          //カットオフとレゾナンスに連動したゲインスケーリング
-          const invCutoff = 1 - prCutoff;
-          const gx = 1 + prPeak * 0.7 * (1 + power2(invCutoff) * 8) * 0.5;
-          y /= gx;
-        } else if (0) {
-          const u = Math.max(1 - prCutoff, prPeak);
-          y *= 1 - Math.abs(input) * u * 0.5;
-        }
-      }
 
       //soft clip
       y = applySoftClipAt(y, 2);

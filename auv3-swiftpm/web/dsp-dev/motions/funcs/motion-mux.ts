@@ -30,8 +30,8 @@ export function mixMotionPartValues(attrs: {
   egLevel = mapUnaryBipolar(egLevel);
   lfoOut = mapUnaryBipolar(lfoOut);
   rndOut = mapUnaryBipolar(rndOut);
-  //片側の変動量を固定して調整
-  //muxScalingを手動で調整する想定
+  //Adjust by fixing the variation on one side
+  //Assumes manual adjustment of muxScaling
   const egm = egLevel * envMod;
   const rdm = rndOut * rndRange;
   const lfm = lfoOut * lfoDepth;

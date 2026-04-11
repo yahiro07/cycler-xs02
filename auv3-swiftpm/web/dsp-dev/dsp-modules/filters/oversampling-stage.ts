@@ -52,9 +52,9 @@ export function createOversamplingStage(
   const decimateOffset = Math.max(0, oversampleRatio >> 1);
 
   const state = {
-    //最大フレーム長ベースで事前に確保するバッファ(len=maxFrames*nx)
+    // Buffer allocated in advance based on the maximum frame length (len=maxFrames*nx)
     highResBuffer: undefined as Float32Array | undefined,
-    //フレームごとに入力バッファ(len<=maxFrames)
+    // Input buffer for each frame (len <= maxFrames)
     originalBuffer: undefined as Float32Array | undefined,
   };
   const self = {

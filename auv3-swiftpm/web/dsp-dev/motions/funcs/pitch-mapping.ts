@@ -8,9 +8,9 @@ import {
 
 const dn = -12;
 const noteMapperConstants = {
-  //ラドミラ
+  //la, do, mi, la
   map1Notes: [dn, dn + 3, dn + 7, 0, 3, 7, 12],
-  //ラシドレミファソラ
+  //la, si, do, re, mi, fa, so, la
   map2Notes: [
     dn + 0,
     dn + 2,
@@ -28,7 +28,7 @@ const noteMapperConstants = {
     10,
     12,
   ],
-  //ラシbド#レミファソラ, ゴアトランス風?
+  //la, si♭, do#, re, mi, fa, so, la
   map3Notes: [
     dn,
     dn + 1,
@@ -44,7 +44,7 @@ const noteMapperConstants = {
     10,
     12,
   ],
-  //ラドレミソ, 和風
+  //la, do, re, mi, so
   map4Notes: [dn, dn + 3, dn + 5, dn + 7, dn + 10, 0, 3, 5, 7, 10, 12],
 };
 
@@ -82,7 +82,7 @@ export function mapParamOscPitchToRelativeNote(
   return 0;
 }
 
-//0~4で連続
+//0–4 consecutively
 export function mapParamOscPitchToOctXCrossMixRateKey(prPitch: number) {
   const octave = mapUnaryTo(prPitch, -2, 2);
   return clampValue(octave + 2, 0, 4);

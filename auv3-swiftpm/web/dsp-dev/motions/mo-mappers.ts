@@ -54,8 +54,8 @@ export function getOscPitchRelNote(bus: Bus, stepPos: number) {
   if (!sp.moOscPitch.moOn) {
     return mapParamOscPitchToRelativeNote(sp.oscPitch, sp.oscPitchMode);
   }
-  //OSCピッチの相対ノート出力
-  //LFO/EGは1オクターブの範囲のモジュレーションとして相対ノート値を加算
+  //Relative note output for OSC pitch
+  //LFO/EG adds relative note values as modulation within a one-octave range
   const egm = egOnGain * mapUnaryBipolar(envMod) * power2(egLevel) * 12;
   const lfm = lfoOnGain * mapUnaryBipolar(lfoOut) * power2(lfoDepth) * 12;
   return baseRelNote + egm + lfm;
@@ -63,14 +63,14 @@ export function getOscPitchRelNote(bus: Bus, stepPos: number) {
 
 export function getOscPrPitch(bus: Bus, stepPos: number) {
   const { sp } = bus;
-  //OSCピッチのノブ値出力
+  //Output of OSC pitch knob value
   const partValues = processMotionWrapper(bus, MoId.oscPitch, stepPos);
   const { moOn, moType } = sp.moOscPitch;
-  //rndの場合ノブ中央fallbackでrnd mappingした値を返す
+  // When using rnd, return the value mapped by rnd using the knob center fallback
   if (moOn && moType === MoType.rnd) {
     return partValues.rndMappedValue;
   }
-  //lfo/egは他のノブオートメーションと同様に処理
+  //lfo/eg is handled in the same way as other knob automations
   return mapMotionPartValuesToTargetParameter(
     partValues,
     sp.oscPitch,

@@ -7,7 +7,6 @@ import { raiseError } from "@core/utils/errors";
 
 type PreAllocatedArray<T> = {
   reset(): void;
-  // push(item: T): void;
   beginPush(): T;
   endPush(): void;
   at(index: number): T | undefined;
@@ -30,10 +29,6 @@ function createPreAllocatedArray<T>(
     get count() {
       return length;
     },
-    // push(item) {
-    //   items[length] = item;
-    //   length++;
-    // },
     beginPush() {
       if (length >= items.length) {
         raiseError("PreAllocatedArray is full");
@@ -55,16 +50,16 @@ export enum GaterExNoteType {
   gate,
 }
 
-//ピッチを持たないゲートのタイミングを持ったノート
+//A note with timing but no pitch
 type GaterExNote = {
   type: GaterExNoteType;
   offset: number;
-  duration: number; //ステップに対する相対的な長さ
+  duration: number; //Relative length to the step
 };
 
 type GaterExTemporalNote = {
   type: GaterExNoteType;
-  duration: number; //ステップに対する相対的な長さ
+  duration: number; //Relative length to the step
 };
 
 type GaterExNotes = {
@@ -156,7 +151,7 @@ function buildNotesFromCodes(
   outNotes.length = tmpWorkingNotes.count;
 }
 
-//テスト用
+//for test
 export function gaterExSeq_buildNotesFromCodesForTest(
   codes: ExGaterCode[],
 ): GaterExNotes {
@@ -211,7 +206,7 @@ export function gaterExSeqMode_getRampSpec(
   const basePosition = (scaledStep / 4) >>> 0;
   const pos = scaledStep % 4;
   const notes = buildNotesCached(bus, gp.exGaterCodes);
-  //notesに対してposの位置でノートを検索してrampSpecにマッピングして返す
+  // Search for a note at the specified pos in the notes collection, map it to rampSpec, and return it
   const note = findNote(notes, pos);
   if (note) {
     const progress = (pos - note.offset) / note.duration;

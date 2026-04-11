@@ -156,7 +156,7 @@ function getModEgValue(bus: StateBus) {
 }
 
 function calcAttackEgValue(bus: StateBus) {
-  // noteOn直後のクリック抑制用の超短いアタック（0→1）
+  // Short attack (0→1) to suppress clicks immediately after a noteOn event
   const timeMaxMs = 2;
   const timeMaxSec = timeMaxMs / 1000;
   if (bus.uptime < timeMaxSec) {
@@ -245,15 +245,13 @@ function voicingAmp_processSamples(bus: StateBus, buffer: Float32Array) {
   }
 }
 
-// export type BassSynth = StateBus;
-
 export function createStateBus(): StateBus {
   return {
     parameters: defaultParameters,
     sampleRate: 0,
     gateOn: false,
-    uptime: 0, //ノートオンからの相対時間
-    noteOffUptime: 0, //ノートオフからの相対時間
+    uptime: 0, //Relative time from note on
+    noteOffUptime: 0, //Relative time from note off
     noteDurationSec: undefined,
     noteNumber: 24,
     gateTriggered: false,

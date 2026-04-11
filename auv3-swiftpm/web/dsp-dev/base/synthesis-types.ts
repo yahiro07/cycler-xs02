@@ -1,11 +1,14 @@
-//ノートやパラメタ変化の区間と位相を表す情報
+// Information indicating the intervals and phases of note and parameter changes
 
-//概ね16分音符単位のステップ境界に一致するが、ステップを連続変化で加速させたりすると非整数倍の境界になることもある
+//While it generally aligns with step boundaries in 16th-note increments,
+//if the step rate is accelerated through a continuous transition,
+//the boundary may become a non-integer multiple.
+
 export type RampSpec = {
-  headPos: number; //rampの開始位置, ループ先頭からのステップ単位のオフセット
+  headPos: number; //Start position of the ramp; offset in steps from the beginning of the loop
   relPos: number; //ramp内でのstep単位での経過時間 0~duration
-  progress: number; //ramp内での進行度 0~1
-  duration: number; //rampの長さ, ステップ単位
+  progress: number; //Progress within the ramp: 0–1
+  duration: number; //Ramp length, in steps
 };
 
 export enum StepRampCode {

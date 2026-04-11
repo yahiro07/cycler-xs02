@@ -51,7 +51,7 @@ function placeRandomTwoCellCodes(
   }
 }
 
-//ランダムタイパターンテスト確認用の関数
+// Function for verifying random pattern tests
 export function gaterMainLax_testGenerateStepRampCodes(
   stepLength: number,
   cover: number,

@@ -12,7 +12,6 @@ export function applyShaperCore(
 ) {
   let level = Math.abs(y);
   if (shaperMode === "foldHalf") {
-    //fold half
     const k = level % 2;
     if (k < 1) {
       level = k;
@@ -20,7 +19,6 @@ export function applyShaperCore(
       level = 2 - k;
     }
   } else if (shaperMode === "poly") {
-    //poly
     if (level < 1) {
     } else {
       const k = ((level % 4) / 2) >>> 0;
@@ -31,7 +29,6 @@ export function applyShaperCore(
       }
     }
   } else if (shaperMode === "foldFull") {
-    //fold full
     if (level <= 1) {
     } else {
       const k = ((level - 1) % 4) + 1;
@@ -40,7 +37,6 @@ export function applyShaperCore(
       } else {
         level = -1 + (k - 3);
       }
-      // level = mapCurved(Math.abs(level), "invCosineH") * Math.sign(level);
     }
   }
   return Math.sign(y) * level;
@@ -128,29 +124,21 @@ export const shaperCore = {
     const step = mapUnaryTo(a, 32, 1);
     return Math.round(x * step) / step;
   },
-  // 1) hard clip（最も基本）
   hardClip(x: number, a: number) {
     const g = mapUnaryTo(power2(a), 1, 20);
     x *= g;
     return Math.max(-1, Math.min(1, x));
   },
-
-  // 2) soft clip (atan) オーバードライブっぽい
   softAtan(x: number, a: number) {
     const g = mapUnaryTo(power2(a), 1, 30);
     const k = (2 / Math.PI) * Math.atan(x * g);
     return k;
   },
-
-  // 3) tanh 系（滑らか、音量も扱いやすい）
   softTanh(x: number, a: number) {
     const g = mapUnaryTo(power2(a), 1, 25);
-    // tanh近似: x/(1+|x|) よりもう少し柔らかくしたければこれ
     const y = Math.tanh(x * g);
     return y;
   },
-
-  // 4) diode-ish（片側が潰れやすい。倍音が増えやすい）
   diode(x: number, a: number) {
     const g = mapUnaryTo(power2(a), 1, 40);
     x *= g;
@@ -159,24 +147,19 @@ export const shaperCore = {
     const y = p / (1 + p) + (n / (1 + Math.abs(n))) * 0.4;
     return Math.max(-1, Math.min(1, y));
   },
-
-  // 5) asym clip（偶数次が増えてファズ寄り）
   asymClip(x: number, a: number) {
     const g = mapUnaryTo(power2(a), 1, 30);
     x *= g;
-    const pos = 0.6; // 正側だけ先に頭打ち
+    const pos = 0.6;
     const neg = 1.0;
     const y = x >= 0 ? Math.min(x, pos) : Math.max(x, -neg);
     return y;
   },
-
-  // 6) fuzz (power)（強め。音量補正込み）
   fuzzPow(x: number, a: number) {
     const g = mapUnaryTo(power2(a), 1, 60);
     x *= g;
     const s = Math.sign(x);
     const ax = Math.min(1, Math.abs(x));
-    // aが上がるほど角が立つ
     const p = mapUnaryTo(a, 0.7, 0.2);
     return s * Math.pow(ax, p);
   },

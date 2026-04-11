@@ -119,7 +119,7 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
     ),
   };
 
-  const numHarmonicsMax = tableHarmonicsSeries.at(-1)!;
+  const numHarmonicsMax = tableHarmonicsSeries[tableHarmonicsSeries.length - 1];
 
   const tableIndexMapper = seqNumbers(numHarmonicsMax + 1).map((nh) => {
     const idx = findIndexFromLast(tableHarmonicsSeries, (h) => h <= nh);

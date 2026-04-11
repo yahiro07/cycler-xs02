@@ -33,8 +33,10 @@ export type SynthesisBus = {
   noteNumber: number;
   gateOn: boolean;
   gateTriggered: boolean;
-  totalStep: number; //少数, 演奏開始時からの総ステップ, ループ境界でもリセットされない
-  currentStep: number; //小数, ループ境界でリセット, 0~64(最大4小節)
+  // Fractional, total steps since the start of playback, not reset at loop boundaries
+  totalStep: number;
+  // Fractional, reset at loop boundary, 0–64 (up to 4 bars)
+  currentStep: number;
   loopSeed: number;
   blockLength: number;
   gateStepAdvanced: boolean;

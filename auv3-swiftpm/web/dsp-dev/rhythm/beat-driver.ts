@@ -47,11 +47,11 @@ export class BeatDriver {
       const targetPattern = bassTailAccentPatterns[sp.bassTailAccentPatternKey];
       let pattern = "";
       if (sp.loopBars === 1) {
-        //targetを1小節単位でループ
+        // Loop through the target one bar at a time
         pattern = targetPattern;
         pos %= 16;
       } else {
-        //一小節目はデフォルトパターン、2小節目は対象パターン
+        // First bar is default pattern, second bar is target pattern
         pattern =
           pos < 16
             ? bassTailAccentPatterns[BassTailAccentPatternKey.off]

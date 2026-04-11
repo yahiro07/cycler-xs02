@@ -42,7 +42,7 @@ export const softClipShapers = {
   },
 } satisfies Record<string, (x: number) => number>;
 
-//硬い(線形/折れ) <-- hard, soft1, soft2, soft3 --> 柔らかい(曲線)
+//Hard (linear/angular) <-- hard, soft1, soft2, soft3 --> Soft (curved)
 type SoftClipType = keyof typeof softClipShapers;
 
 export function applyHardClip(x: number, a?: number) {

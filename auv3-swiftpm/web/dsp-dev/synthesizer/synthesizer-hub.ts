@@ -141,17 +141,17 @@ export class SynthesizerHub {
 
   processSamplesWithChunks(destBuffer: Float32Array, len: number) {
     if (len === 0) return;
-    // 出力要求数が少ないときでも常にチャンクサイズ単位で波形生成を行い、
-    // ノートやパラメタの状態を反映もチャンクサイズ境界でのみ行う
+    // Even when the number of output requests is small, waveforms are always generated in chunks,
+    // and changes to note and parameter states are applied only at chunk boundaries
 
     const outBuf = this.chunkBuffer;
     for (let i = 0; i < len; i++) {
-      //読み出し位置が先頭にあるときバッファ1面分の波形を生成
+      // Generate a waveform for one buffer page when the read position is at the beginning
       if (outBuf.readPos === 0) {
         outBuf.buffer.fill(0);
         this.coreProcessSamples(outBuf.buffer);
       }
-      //1サンプルずつとって出力バッファを埋める
+      //Fill the output buffer by taking one sample at a time
       destBuffer[i] = outBuf.buffer[outBuf.readPos++];
       if (outBuf.readPos >= outBuf.buffer.length) {
         outBuf.readPos = 0;

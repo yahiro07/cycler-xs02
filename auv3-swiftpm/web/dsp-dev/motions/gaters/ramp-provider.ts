@@ -68,12 +68,6 @@ export function getPlainRamp(
 ): RampSpec {
   const gp = bus.sp;
   if (inputStride === GateStride.gate) {
-    // if (0) {
-    //   //EGを単発でトリガー, 外部からのノート入力による演奏に対応
-    //   if (!gp.clockingOn) {
-    //     return rampProvider.getMasterDividedRamp(stepPos, 1, true);
-    //   }
-    // }
     const rampCode =
       gp.gaterType === GaterType.lax
         ? gaterMinLaxMode_getRampCodeCached(bus, stepPos)

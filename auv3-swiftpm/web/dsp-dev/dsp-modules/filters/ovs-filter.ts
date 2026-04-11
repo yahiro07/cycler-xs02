@@ -1,7 +1,7 @@
 export function createOvsFilterSimple(
   oversampleRatio: number,
-  //cutoffScale: 元のサンプリングレートのFs/2を1.0としたときのカットオフ周波数の比率
-  //特に音色を調整する必要がないときは１でよい
+  //cutoffScale: The ratio of the cutoff frequency when the original sampling rate Fs/2 is set to 1.0
+  //Set to 1 if no special adjustment to the timbre is required
   cutoffScale: number,
 ) {
   const alpha = 1 - Math.exp((-Math.PI * cutoffScale) / oversampleRatio);

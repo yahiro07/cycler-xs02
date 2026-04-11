@@ -21,7 +21,7 @@ export function _getRampCodeFromEx2PatternBits(
 }
 
 const ex2PatternMap = [
-  //0がON,1がタイ
+  //0 is ON, 1 is tie
   0b0000, //code0 oooo
   0b0001, //code1 ooo>
   0b0010, //code2 oo>o
@@ -47,8 +47,8 @@ function setBit(value: number, bitPos: number, bit: number) {
   return (value & ~(1 << bitPos)) | (bit << bitPos);
 }
 export function _replaceContinuousTiesN(pattern: number): number {
-  //011のようにタイが連続する場合010に置き換える
-  //入力でタイが3個以上続くパターンはない想定でよい
+  // If there is a sequence of tie like 011, replace it with 010
+  // It is safe to assume that there are no patterns in the input where tie appears three or more times in a row
   for (let i = 0; i < 16; i++) {
     const p0 = 15 - i;
     const p1 = 14 - i;
