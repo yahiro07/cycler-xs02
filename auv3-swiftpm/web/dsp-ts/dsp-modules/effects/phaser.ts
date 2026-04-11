@@ -34,16 +34,17 @@ function createAllPassFilter() {
   };
 }
 
-export type PhaserAllPass4 = {
-  processSamples(buffer: Float32Array, normFreq: number, prMix: number): void;
-};
-
-export function createPhaser(): PhaserAllPass4 {
+export function createPhaserAllPass4() {
   const allPasses = seqNumbers(4).map(createAllPassFilter);
 
   return {
-    processSamples(buffer: Float32Array, normFreq: number, prMix: number) {
-      for (let i = 0; i < buffer.length; i++) {
+    processSamples(
+      buffer: Float32Array,
+      len: number,
+      normFreq: number,
+      prMix: number,
+    ) {
+      for (let i = 0; i < len; i++) {
         const input = buffer[i];
         const dry = input;
         let y = input;
@@ -57,4 +58,3 @@ export function createPhaser(): PhaserAllPass4 {
     },
   };
 }
-export const createPhaserAllPass4 = createPhaser;

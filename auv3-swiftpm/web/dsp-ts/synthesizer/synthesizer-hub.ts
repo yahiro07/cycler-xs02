@@ -27,6 +27,7 @@ const configs = {
 type ChunkBuffer = {
   buffer: Float32Array;
   readPos: number;
+  size: number;
 };
 
 export class SynthesizerHub {
@@ -47,9 +48,10 @@ export class SynthesizerHub {
     const bassSynth = new BassSynth();
     const beatDriver = new BeatDriver(bus, kickSynth, bassSynth);
     const workBuffer = new Float32Array(0);
-    const chunkBuffer = {
+    const chunkBuffer: ChunkBuffer = {
       buffer: new Float32Array(configs.chunkSize),
       readPos: 0,
+      size: configs.chunkSize,
     };
     const triggerManager = new TriggerManager(bus);
     this.bus = bus;
@@ -93,7 +95,7 @@ export class SynthesizerHub {
     this.triggerManager.stopNote(noteNumber);
   }
 
-  private coreProcessSamples(buffer: Float32Array) {
+  private coreProcessSamples(buffer: Float32Array, len: number) {
     const { bus } = this;
     const { sp } = bus;
     const { workBuffer } = this;
@@ -121,27 +123,22 @@ export class SynthesizerHub {
     this.kickSynth.applyPreset(sp.kickPresetKey);
     this.bassSynth.applyPreset(sp.bassPresetKey);
 
-    {
-      workBuffer.fill(0);
-      this.mainSynth.processSamples(workBuffer);
-      writeBuffer(buffer, workBuffer, power2(sp.synthVolume));
-    }
-    {
-      workBuffer.fill(0);
-      this.kickSynth.processSamples(workBuffer);
-      writeBuffer(buffer, workBuffer, power2(sp.kickVolume));
-    }
-    {
-      workBuffer.fill(0);
-      this.bassSynth.processSamples(workBuffer);
-      writeBuffer(buffer, workBuffer, power2(sp.bassVolume));
-    }
-    applyBufferGainRms(buffer, 3);
+    workBuffer.fill(0);
+    this.mainSynth.processSamples(workBuffer, len);
+    writeBuffer(buffer, workBuffer, power2(sp.synthVolume));
+    workBuffer.fill(0);
+    this.kickSynth.processSamples(workBuffer, len);
+    writeBuffer(buffer, workBuffer, power2(sp.kickVolume));
+    workBuffer.fill(0);
+    this.bassSynth.processSamples(workBuffer, len);
+    writeBuffer(buffer, workBuffer, len, power2(sp.bassVolume));
 
-    applyBufferGain(buffer, masterGainConfig.prescale);
+    applyBufferGainRms(buffer, len, 3);
+
+    applyBufferGain(buffer, len, masterGainConfig.prescale);
     const masterGain = mapDbGain(sp.masterVolume, masterGainConfig);
-    applyBufferGain(buffer, masterGain);
-    applyBufferSoftClip(buffer);
+    applyBufferGain(buffer, len, masterGain);
+    applyBufferSoftClip(buffer, len);
     motions_root.processOnFrameEnd(bus);
   }
 
@@ -155,11 +152,11 @@ export class SynthesizerHub {
       // Generate a waveform for one buffer page when the read position is at the beginning
       if (outBuf.readPos === 0) {
         outBuf.buffer.fill(0);
-        this.coreProcessSamples(outBuf.buffer);
+        this.coreProcessSamples(outBuf.buffer, outBuf.size);
       }
       //Fill the output buffer by taking one sample at a time
       destBuffer[i] = outBuf.buffer[outBuf.readPos++];
-      if (outBuf.readPos >= outBuf.buffer.length) {
+      if (outBuf.readPos >= outBuf.size) {
         outBuf.readPos = 0;
       }
     }

@@ -141,18 +141,23 @@ export class Oscillators {
     }
   }
 
-  private processSamplesInternal(buffer: Float32Array, normFreq: number) {
+  private processSamplesInternal(
+    buffer: Float32Array,
+    len: number,
+    normFreq: number,
+  ) {
     for (let i = 0; i < this.voiceIndex; i++) {
       const vo = this.voiceSpecs[i];
       this.oscs[i].processSamples(
         buffer,
+        len,
         normFreq * vo.octaveRatio * (1 + vo.detune),
         vo.gain,
       );
     }
   }
 
-  processSamples(buffer: Float32Array) {
+  processSamples(buffer: Float32Array, len: number) {
     const { sp } = this.bus;
     if (!sp.oscOn) return;
 
@@ -160,9 +165,9 @@ export class Oscillators {
 
     const normFreq = this.calcNormFreq();
 
-    const highResBuffer = this.ovsStage.readIn(buffer);
+    const highResBuffer = this.ovsStage.readIn(buffer, len);
     if (!highResBuffer) return;
-    this.processSamplesInternal(highResBuffer, normFreq);
+    this.processSamplesInternal(highResBuffer, len * ovsRate, normFreq);
     this.ovsStage.writeOut();
   }
 }

@@ -22,7 +22,7 @@ export class StepDelay {
     this.delayLine.ensureSize(delayLineLength);
   }
 
-  processSamples(buffer: Float32Array) {
+  processSamples(buffer: Float32Array, len: number) {
     const { sp } = this.bus;
     if (!sp.stepDelayOn) return;
     if (this.bus.gateTriggered) {
@@ -30,7 +30,6 @@ export class StepDelay {
     }
     const delayLineLength = this.delayLine.size();
 
-    const n = buffer.length;
     const steps = getStepPeriodForDelay(sp.stepDelayStep);
     let delayPos = calcNumSamplesForSteps(
       this.bus.bpm,
@@ -39,7 +38,7 @@ export class StepDelay {
     );
     delayPos = clampValue(delayPos, 1, delayLineLength - 1);
 
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < len; i++) {
       let y = buffer[i];
       const dry = y;
       const yd = this.delayLine.take(delayPos);

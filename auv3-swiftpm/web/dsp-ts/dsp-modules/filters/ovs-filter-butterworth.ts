@@ -23,7 +23,7 @@ import {
 
 type IOvsFilter = {
   reset(): void;
-  processSamples(buffer: Float32Array): void;
+  processSamples(buffer: Float32Array, len: number): void;
 };
 
 function clamp(v: number, lo: number, hi: number) {
@@ -89,8 +89,8 @@ export function createOvsFilterButterworth(
   const z1 = new Array(sections.length).fill(0);
   const z2 = new Array(sections.length).fill(0);
 
-  function processSamples(buffer: Float32Array) {
-    for (let i = 0; i < buffer.length; i++) {
+  function processSamples(buffer: Float32Array, len: number) {
+    for (let i = 0; i < len; i++) {
       let x = buffer[i];
       for (let s = 0; s < sections.length; s++) {
         const { b0, b1, b2, a1, a2 } = sections[s];

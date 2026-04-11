@@ -9,6 +9,8 @@ import {
 } from "@dsp/dsp-modules/filters/oversampling-stage";
 import { applyShaper } from "@dsp/synthesis-modules/funcs/shaper-funcs";
 
+const ovsRate = 4;
+
 export class Shaper {
   private bus: Bus;
   private ovsStage: OversamplingStage;
@@ -16,7 +18,7 @@ export class Shaper {
 
   constructor(bus: Bus) {
     this.bus = bus;
-    this.ovsStage = createOversamplingStage(4);
+    this.ovsStage = createOversamplingStage(ovsRate);
     this.miLevel = createInterpolator();
   }
 
@@ -24,13 +26,14 @@ export class Shaper {
     this.ovsStage.ensureAllocated(this.bus.maxFrames);
   }
 
-  processSamples(buffer: Float32Array) {
+  processSamples(buffer: Float32Array, len: number) {
     const sp = this.bus.sp;
     if (!sp.shaperOn) return;
-    const highResBuffer = this.ovsStage.readIn(buffer, true);
+    const highResBuffer = this.ovsStage.readIn(buffer, len, true);
+    const hLen = len * ovsRate;
     if (!highResBuffer) return;
-    this.miLevel.feed(sp.shaperLevel, highResBuffer.length);
-    for (let i = 0; i < highResBuffer.length; i++) {
+    this.miLevel.feed(sp.shaperLevel, hLen);
+    for (let i = 0; i < hLen; i++) {
       const level = this.miLevel.advance();
       const input = highResBuffer[i];
       const y = applyShaper(input, level, sp.shaperMode);

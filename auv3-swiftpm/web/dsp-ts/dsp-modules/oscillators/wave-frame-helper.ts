@@ -8,12 +8,13 @@ export function calculateWaveFrameSize(numHarmonics: number) {
 
 export function readWaveFrameInterpolated(
   buffer: Float32Array,
+  size: number,
   pp: number,
 ): number {
   pp = pp - m_floor(pp);
-  const fIndex = pp * buffer.length;
+  const fIndex = pp * size;
   const idx0 = fIndex >> 0;
-  const idx1 = (idx0 + 1) % buffer.length;
+  const idx1 = (idx0 + 1) % size;
   const frac = fIndex - idx0;
   return mixValue(buffer[idx0], buffer[idx1], frac);
 }

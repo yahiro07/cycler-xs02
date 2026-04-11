@@ -29,7 +29,7 @@ export class Delay {
     this.delayLine.ensureSize(delayLineLength);
   }
 
-  processSamples(buffer: Float32Array) {
+  processSamples(buffer: Float32Array, len: number) {
     const { sp, interm } = this.bus;
     if (!sp.delayOn) return;
     if (this.bus.gateTriggered) {
@@ -37,7 +37,6 @@ export class Delay {
     }
     if (!sp.delayOn) return;
     const delayLineLength = this.delayLine.size();
-    const n = buffer.length;
     {
       const prFeed = sp.delayFeed;
       let delayPos = 0;
@@ -45,10 +44,10 @@ export class Delay {
       const maxNumSamples = delayMaxTimeSec * this.bus.sampleRate;
       delayPos = power2(prTime) * maxNumSamples;
       delayPos = clampValue(delayPos, 1, delayLineLength - 1);
-      this.miDelayPos.feed(delayPos, n);
-      this.miFeed.feed(prFeed, n);
+      this.miDelayPos.feed(delayPos, len);
+      this.miFeed.feed(prFeed, len);
     }
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < len; i++) {
       const delayPos = this.miDelayPos.advance();
       const feed = this.miFeed.advance();
       const input = buffer[i];

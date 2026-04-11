@@ -7,17 +7,21 @@ import { mixValue } from "@dsp/utils/number-utils";
 
 export function readBufferInterpolated(
   buffer: number[] | Float32Array,
+  len: number,
   fIndex: number,
 ): number {
-  const sz = buffer.length;
   const idx0 = fIndex >> 0;
-  const idx1 = (idx0 + 1) % sz;
+  const idx1 = (idx0 + 1) % len;
   const fraction = fIndex - idx0;
   return mixValue(buffer[idx0], buffer[idx1], fraction);
 }
 
-export function copyBuffer(dstBuffer: Float32Array, srcBuffer: Float32Array) {
-  for (let i = 0; i < dstBuffer.length; i++) {
+export function copyBuffer(
+  dstBuffer: Float32Array,
+  srcBuffer: Float32Array,
+  len: number,
+) {
+  for (let i = 0; i < len; i++) {
     dstBuffer[i] = srcBuffer[i];
   }
 }
@@ -25,38 +29,51 @@ export function copyBuffer(dstBuffer: Float32Array, srcBuffer: Float32Array) {
 export function writeBuffer(
   dstBuffer: Float32Array,
   srcBuffer: Float32Array,
+  len: number,
   volume: number = 1,
 ) {
-  for (let i = 0; i < dstBuffer.length; i++) {
+  for (let i = 0; i < len; i++) {
     dstBuffer[i] += srcBuffer[i] * volume;
   }
 }
 
-export function applyBufferGain(buffer: Float32Array, gain: number) {
-  for (let i = 0; i < buffer.length; i++) {
+export function applyBufferGain(
+  buffer: Float32Array,
+  len: number,
+  gain: number,
+) {
+  for (let i = 0; i < len; i++) {
     buffer[i] *= gain;
   }
 }
 
-export function applyBufferGainRms(buffer: Float32Array, numSources: number) {
+export function applyBufferGainRms(
+  buffer: Float32Array,
+  len: number,
+  numSources: number,
+) {
   const gain = 1 / m_sqrt(numSources);
-  applyBufferGain(buffer, gain);
+  applyBufferGain(buffer, len, gain);
 }
 
-export function applyBufferGainB(buffer: Float32Array, gains: Float32Array) {
-  for (let i = 0; i < buffer.length; i++) {
+export function applyBufferGainB(
+  buffer: Float32Array,
+  len: number,
+  gains: Float32Array,
+) {
+  for (let i = 0; i < len; i++) {
     buffer[i] *= gains[i];
   }
 }
 
-export function applyBufferSoftClip(buffer: Float32Array) {
-  for (let i = 0; i < buffer.length; i++) {
+export function applyBufferSoftClip(buffer: Float32Array, len: number) {
+  for (let i = 0; i < len; i++) {
     buffer[i] = applySoftClip(buffer[i]);
   }
 }
 
-export function applyBufferHardClip(buffer: Float32Array) {
-  for (let i = 0; i < buffer.length; i++) {
+export function applyBufferHardClip(buffer: Float32Array, len: number) {
+  for (let i = 0; i < len; i++) {
     buffer[i] = applyHardClip(buffer[i]);
   }
 }

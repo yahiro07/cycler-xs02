@@ -54,6 +54,7 @@ function writeWav(filename: string, buffer: Float32Array, sampleRate: number) {
       wavData.setInt16(i * 2, value, true);
     }
   } else {
+    //fill noise
     for (let i = 0; i < buffer.length; i++) {
       const value = Math.round(clampValue(buffer[i], -1, 1) * 32767);
       wavData.setInt16(i * 2, value, true);
@@ -90,8 +91,8 @@ function main() {
     blockBufferLeft.fill(0);
     blockBufferRight.fill(0);
     synth.processAudio(blockBufferLeft, blockBufferRight, chunkSize);
-    writeBuffer(blockBufferLeft, blockBufferRight);
-    applyBufferGain(blockBufferLeft, 0.5);
+    writeBuffer(blockBufferLeft, blockBufferRight, chunkSize);
+    applyBufferGain(blockBufferLeft, chunkSize, 0.5);
     outputBuffer.set(blockBufferLeft, i);
   }
 

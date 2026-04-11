@@ -1,17 +1,13 @@
 import { Bus } from "@dsp/base/synthesis-bus";
-import {
-  createPhaserAllPass4,
-  PhaserAllPass4,
-} from "@dsp/dsp-modules/effects/phaser";
+import { createPhaserAllPass4 } from "@dsp/dsp-modules/effects/phaser";
 import { mapUnaryTo, power2 } from "@dsp/utils/number-utils";
 
 export class Phaser {
   private bus: Bus;
-  private phaserCore: PhaserAllPass4;
+  private phaserCore = createPhaserAllPass4();
 
   constructor(bus: Bus) {
     this.bus = bus;
-    this.phaserCore = createPhaserAllPass4();
   }
 
   private getCutoffNormFreq(prLevel: number, sampleRate: number) {
@@ -19,11 +15,11 @@ export class Phaser {
     return freq / sampleRate;
   }
 
-  processSamples(buffer: Float32Array) {
+  processSamples(buffer: Float32Array, len: number) {
     const { sp, interm } = this.bus;
     if (!sp.phaserOn) return;
     const prLevel = interm.pmxPhaserLevel;
     const cutoffNormFreq = this.getCutoffNormFreq(prLevel, this.bus.sampleRate);
-    this.phaserCore.processSamples(buffer, cutoffNormFreq, 0.5);
+    this.phaserCore.processSamples(buffer, len, cutoffNormFreq, 0.5);
   }
 }

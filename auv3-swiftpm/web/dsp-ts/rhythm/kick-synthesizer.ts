@@ -157,7 +157,7 @@ type StateBus = {
   };
 };
 
-function osc_processSamples(bus: StateBus, buffer: Float32Array) {
+function osc_processSamples(bus: StateBus, buffer: Float32Array, len: number) {
   const { osc } = bus;
   const { miPhaseDelta, miShape } = osc;
   if (bus.gateTriggered) {
@@ -166,17 +166,16 @@ function osc_processSamples(bus: StateBus, buffer: Float32Array) {
     miShape.reset();
   }
   const sp = bus.parameters;
-  const n = buffer.length;
   const prPitch = clampValue(
     sp.oscPitch + bus.pitchEgValue * sp.pitchEgAmount,
     0,
     1,
   );
   const _phaseDelta = calcOscDelta(bus.noteNumber, prPitch, bus.sampleRate);
-  miPhaseDelta.feed(_phaseDelta, n);
-  miShape.feed(sp.oscShape, n);
+  miPhaseDelta.feed(_phaseDelta, len);
+  miShape.feed(sp.oscShape, len);
 
-  for (let i = 0; i < buffer.length; i++) {
+  for (let i = 0; i < len; i++) {
     const phaseDelta = miPhaseDelta.advance();
     const prShape = miShape.advance();
     osc.phaseAcc = fracPart(osc.phaseAcc + phaseDelta);
@@ -218,7 +217,11 @@ function ampEg_advance(bus: StateBus) {
   }
 }
 
-function voicingAmp_processSamples(bus: StateBus, buffer: Float32Array) {
+function voicingAmp_processSamples(
+  bus: StateBus,
+  buffer: Float32Array,
+  len: number,
+) {
   const { miGain, miDrive, miVolume } = bus.voicingAmp;
   if (bus.gateTriggered) {
     miGain.reset();
@@ -226,10 +229,10 @@ function voicingAmp_processSamples(bus: StateBus, buffer: Float32Array) {
     miVolume.reset();
   }
   const sp = bus.parameters;
-  miGain.feed(bus.ampEgValue, buffer.length);
-  miDrive.feed(sp.ampDrive, buffer.length);
-  miVolume.feed(sp.volume, buffer.length);
-  for (let i = 0; i < buffer.length; i++) {
+  miGain.feed(bus.ampEgValue, len);
+  miDrive.feed(sp.ampDrive, len);
+  miVolume.feed(sp.volume, len);
+  for (let i = 0; i < len; i++) {
     const gain = miGain.advance();
     const drive = miDrive.advance();
     const volume = miVolume.advance();
@@ -280,16 +283,16 @@ export class KickSynth {
     this.bus.parameters = kickPresets[presetKey];
   }
 
-  processSamples(destBuffer: Float32Array) {
+  processSamples(destBuffer: Float32Array, len: number) {
     if (this.bus.sampleRate === 0 || !this.bus.workBuffer) return;
     const buffer = this.bus.workBuffer;
     buffer.fill(0);
-    const timeLength = buffer.length / this.bus.sampleRate;
+    const timeLength = len / this.bus.sampleRate;
     pitchEg_advance(this.bus);
     ampEg_advance(this.bus);
-    osc_processSamples(this.bus, buffer);
-    voicingAmp_processSamples(this.bus, buffer);
-    writeBuffer(destBuffer, buffer);
+    osc_processSamples(this.bus, buffer, len);
+    voicingAmp_processSamples(this.bus, buffer, len);
+    writeBuffer(destBuffer, buffer, len);
     this.bus.currentTime += timeLength;
     this.bus.gateTriggered = false;
   }

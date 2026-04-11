@@ -39,13 +39,17 @@ export class OscillatorCore {
     this.phase = 0;
   }
 
-  processSamples(destBuffer: Float32Array, normFreq: number, gain: number) {
+  processSamples(
+    destBuffer: Float32Array,
+    len: number,
+    normFreq: number,
+    gain: number,
+  ) {
     const { sp, interm } = this.bus;
-    const numSamples = destBuffer.length;
-    this.miPhaseDelta.feed(normFreq, numSamples);
-    this.miColor.feed(interm.pmxOscColor, numSamples);
+    this.miPhaseDelta.feed(normFreq, len);
+    this.miColor.feed(interm.pmxOscColor, len);
 
-    for (let i = 0; i < numSamples; i++) {
+    for (let i = 0; i < len; i++) {
       const phaseDelta = this.miPhaseDelta.advance();
       const prColor = this.miColor.advance();
 

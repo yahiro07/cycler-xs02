@@ -11,6 +11,7 @@ export interface IFilter {
   reset(): void;
   processSamples(
     buffer: Float32Array,
+    len: number,
     cutoffNormFreq: number, // 0__0.5
     paramCutoff: number,
     paramPeak: number, // 0__1
@@ -85,6 +86,7 @@ export function createFilterBiquadLp12(sampleRate: number): IFilter {
 
   function processSamples(
     buffer: Float32Array,
+    len: number,
     cutoffNormFreq: number,
     paramCutoff: number,
     paramPeak: number,
@@ -92,9 +94,9 @@ export function createFilterBiquadLp12(sampleRate: number): IFilter {
     paramPeak *= 0.4;
 
     const coeffs = calculateCoefficients(cutoffNormFreq, paramPeak);
-    interpolator.feedNext({ paramCutoff, paramPeak, ...coeffs }, buffer.length);
+    interpolator.feedNext({ paramCutoff, paramPeak, ...coeffs }, len);
 
-    for (let i = 0; i < buffer.length; i++) {
+    for (let i = 0; i < len; i++) {
       const {
         paramCutoff: prCutoff,
         paramPeak: prPeak,

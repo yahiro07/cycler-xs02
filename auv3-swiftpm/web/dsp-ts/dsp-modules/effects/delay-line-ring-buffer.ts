@@ -39,7 +39,7 @@ export function createDelayLineRingBuffer(): IDelayLineRingBuffer {
         return 0;
       }
       const fIndex = (wi - 1 - i + bufferLength) % bufferLength;
-      return readBufferInterpolated(buffer, fIndex);
+      return readBufferInterpolated(buffer, bufferLength, fIndex);
     },
   };
 }

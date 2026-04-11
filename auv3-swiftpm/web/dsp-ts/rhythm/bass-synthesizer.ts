@@ -186,7 +186,7 @@ function getAmpEgValue(bus: StateBus) {
   return val;
 }
 
-function osc_processSamples(bus: StateBus, buffer: Float32Array) {
+function osc_processSamples(bus: StateBus, buffer: Float32Array, len: number) {
   const { osc } = bus;
   const { miPhaseDelta, miShape } = osc;
   if (bus.gateTriggered) {
@@ -195,23 +195,22 @@ function osc_processSamples(bus: StateBus, buffer: Float32Array) {
     miShape.reset();
   }
   {
-    const n = buffer.length;
     const sp = bus.parameters;
     const phaseDelta = calcOscDelta(
       bus.noteNumber,
       sp.oscOctave,
       bus.sampleRate,
     );
-    miPhaseDelta.feed(phaseDelta, n);
+    miPhaseDelta.feed(phaseDelta, len);
     const prShape = clampValue(
       sp.oscShape + getModEgValue(bus) * sp.modEgAmount,
       0,
       1,
     );
-    miShape.feed(prShape, n);
+    miShape.feed(prShape, len);
   }
 
-  for (let i = 0; i < buffer.length; i++) {
+  for (let i = 0; i < len; i++) {
     const phaseDelta = miPhaseDelta.advance();
     const prShape = miShape.advance();
     osc.phaseAcc = fracPart(osc.phaseAcc + phaseDelta);
@@ -220,7 +219,11 @@ function osc_processSamples(bus: StateBus, buffer: Float32Array) {
   }
 }
 
-function voicingAmp_processSamples(bus: StateBus, buffer: Float32Array) {
+function voicingAmp_processSamples(
+  bus: StateBus,
+  buffer: Float32Array,
+  len: number,
+) {
   const { miGain, miDrive, miVolume } = bus.voicingAmp;
   const sp = bus.parameters;
   if (bus.gateTriggered) {
@@ -229,10 +232,10 @@ function voicingAmp_processSamples(bus: StateBus, buffer: Float32Array) {
     miVolume.reset();
   }
   const apmEgValue = getAmpEgValue(bus);
-  miGain.feed(apmEgValue, buffer.length);
-  miDrive.feed(sp.ampDrive, buffer.length);
-  miVolume.feed(sp.volume, buffer.length);
-  for (let i = 0; i < buffer.length; i++) {
+  miGain.feed(apmEgValue, len);
+  miDrive.feed(sp.ampDrive, len);
+  miVolume.feed(sp.volume, len);
+  for (let i = 0; i < len; i++) {
     const gain = miGain.advance();
     const drive = miDrive.advance();
     const volume = miVolume.advance();
@@ -283,14 +286,14 @@ export class BassSynth {
     this.bus.parameters = bassPresets[presetKey];
   }
 
-  processSamples(destBuffer: Float32Array) {
+  processSamples(destBuffer: Float32Array, len: number) {
     if (this.bus.sampleRate === 0 || !this.bus.workBuffer) return;
     const buffer = this.bus.workBuffer;
     buffer.fill(0);
-    const timeLength = buffer.length / this.bus.sampleRate;
-    osc_processSamples(this.bus, buffer);
-    voicingAmp_processSamples(this.bus, buffer);
-    writeBuffer(destBuffer, buffer);
+    const timeLength = len / this.bus.sampleRate;
+    osc_processSamples(this.bus, buffer, len);
+    voicingAmp_processSamples(this.bus, buffer, len);
+    writeBuffer(destBuffer, buffer, len);
     this.bus.uptime += timeLength;
     this.bus.noteOffUptime += timeLength;
     if (

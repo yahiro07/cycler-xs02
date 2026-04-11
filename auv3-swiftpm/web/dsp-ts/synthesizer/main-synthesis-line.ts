@@ -39,13 +39,13 @@ export class MainSynthesisLine {
     this.voicingAmp.reset();
   }
 
-  processSamples(buffer: Float32Array) {
-    this.oscillators.processSamples(buffer);
-    this.filter.processSamples(buffer);
-    this.shaper.processSamples(buffer);
-    this.voicingAmp.processSamples(buffer);
-    this.phaser.processSamples(buffer);
-    this.delay.processSamples(buffer);
-    this.stepDelay.processSamples(buffer);
+  processSamples(buffer: Float32Array, len: number) {
+    this.oscillators.processSamples(buffer, len);
+    this.filter.processSamples(buffer, len);
+    this.shaper.processSamples(buffer, len);
+    this.voicingAmp.processSamples(buffer, len);
+    this.phaser.processSamples(buffer, len);
+    this.delay.processSamples(buffer, len);
+    this.stepDelay.processSamples(buffer, len);
   }
 }

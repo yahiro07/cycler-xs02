@@ -72,25 +72,12 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
     [BlWave2AWaveform.saw]: buildWaveFrameTable(
       tableHarmonicsSeries,
       (x, h) => {
-        if (0) {
-          let value = 0;
-          for (let k = 1; k <= h; k++) {
-            const sign = k % 2 === 0 ? -1 : 1;
-            const y = sign * (2 / k) * m_sin(k * (x + m_pi));
-            //位相ゼロで立ち上げるとこの部分でスパイクが出やすいので、中央で立ち上がるようにする
-            // const y = sign * (2 / k) * m_sin(k * x);
-            value += y * 0.25;
-          }
-          return -value;
-        } else {
-          //標準的な鋸波の式
-          let value = 0;
-          for (let k = 1; k <= h; k++) {
-            const sign = k % 2 === 0 ? 1 : -1;
-            value += (sign * m_sin(k * (x + m_pi))) / k;
-          }
-          return value * (2 / m_pi);
+        let value = 0;
+        for (let k = 1; k <= h; k++) {
+          const sign = k % 2 === 0 ? 1 : -1;
+          value += (sign * m_sin(k * (x + m_pi))) / k;
         }
+        return value * (2 / m_pi);
       },
     ),
     [BlWave2AWaveform.rect]: buildWaveFrameTable(
@@ -147,5 +134,6 @@ export function blWave2A_getWaveformSample(
   pp -= m_floor(pp);
   const nh = clampValue((0.45 / normFreq) >> 0, 1, numHarmonicsMax);
   const ti = tableIndexMapper[nh];
-  return readWaveFrameInterpolated(waveFrameTables[waveform][ti], pp);
+  const waveFrame = waveFrameTables[waveform][ti];
+  return readWaveFrameInterpolated(waveFrame, waveFrame.length, pp);
 }

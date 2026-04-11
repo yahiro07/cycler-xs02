@@ -38,7 +38,7 @@ export class Filter {
     return clampValue(cutoffNormFreq, 0.0, 0.49);
   }
 
-  processSamples(buffer: Float32Array) {
+  processSamples(buffer: Float32Array, len: number) {
     const { sp, interm } = this.bus;
     if (!sp.filterOn) return;
     const prCutoff = interm.pmxFilterPrCutoff;
@@ -50,6 +50,7 @@ export class Filter {
     const prPeak = sp.filterPeak;
     this.filterBiquadLp12.processSamples(
       buffer,
+      len,
       cutoffNormFreq,
       prCutoff,
       prPeak,
