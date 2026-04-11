@@ -14,6 +14,10 @@ export function m_max(a: number, b: number) {
   return Math.max(a, b);
 }
 
+export function m_clamp(v: number, lo: number, hi: number) {
+  return Math.max(lo, Math.min(v, hi));
+}
+
 export function m_cos(v: number) {
   return Math.cos(v);
 }
