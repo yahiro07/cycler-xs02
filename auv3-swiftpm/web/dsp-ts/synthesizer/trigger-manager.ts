@@ -32,7 +32,7 @@ export class TriggerManager {
   }
 
   updateNoteStates() {
-    const { sp } = this.bus;
+    const sp = this.bus.parameters;
     const nextGateOn = this.groovePlaying || this.notePlaying;
 
     let gateTriggered = false;

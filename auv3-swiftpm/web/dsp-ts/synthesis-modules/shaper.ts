@@ -27,7 +27,7 @@ export class Shaper {
   }
 
   processSamples(buffer: Float32Array, len: number) {
-    const sp = this.bus.sp;
+    const sp = this.bus.parameters;
     if (!sp.shaperOn) return;
     const highResBuffer = this.ovsStage.readIn(buffer, len, true);
     const hLen = len * ovsRate;

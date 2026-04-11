@@ -23,7 +23,7 @@ export class StepDelay {
   }
 
   processSamples(buffer: Float32Array, len: number) {
-    const { sp } = this.bus;
+    const sp = this.bus.parameters;
     if (!sp.stepDelayOn) return;
     if (this.bus.gateTriggered) {
       this.delayLine.clear();

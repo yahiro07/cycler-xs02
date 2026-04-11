@@ -18,7 +18,7 @@ export class VoicingAmp {
   }
 
   processSamples(buffer: Float32Array, len: number) {
-    const { sp, interm } = this.bus;
+    const { parameters: sp, interm } = this.bus;
     let g = 0;
     if (this.bus.gateOn) g = 1;
     if (sp.ampOn) {

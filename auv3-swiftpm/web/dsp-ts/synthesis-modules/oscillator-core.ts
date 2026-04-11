@@ -45,7 +45,8 @@ export class OscillatorCore {
     normFreq: number,
     gain: number,
   ) {
-    const { sp, interm } = this.bus;
+    const sp = this.bus.parameters;
+    const interm = this.bus.interm;
     this.miPhaseDelta.feed(normFreq, len);
     this.miColor.feed(interm.pmxOscColor, len);
 

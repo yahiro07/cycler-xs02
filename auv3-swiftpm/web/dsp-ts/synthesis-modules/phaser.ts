@@ -16,9 +16,9 @@ export class Phaser {
   }
 
   processSamples(buffer: Float32Array, len: number) {
-    const { sp, interm } = this.bus;
+    const sp = this.bus.parameters;
     if (!sp.phaserOn) return;
-    const prLevel = interm.pmxPhaserLevel;
+    const prLevel = this.bus.interm.pmxPhaserLevel;
     const cutoffNormFreq = this.getCutoffNormFreq(prLevel, this.bus.sampleRate);
     this.phaserCore.processSamples(buffer, len, cutoffNormFreq, 0.5);
   }

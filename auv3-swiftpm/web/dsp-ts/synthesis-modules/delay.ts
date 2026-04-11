@@ -30,7 +30,8 @@ export class Delay {
   }
 
   processSamples(buffer: Float32Array, len: number) {
-    const { sp, interm } = this.bus;
+    const sp = this.bus.parameters;
+    const interm = this.bus.interm;
     if (!sp.delayOn) return;
     if (this.bus.gateTriggered) {
       this.delayLine.clear();

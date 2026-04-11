@@ -41,7 +41,7 @@ function mapMotionPartValuesToTargetParameter(
 }
 
 export function getOscPitchRelNote(bus: Bus, stepPos: number) {
-  const { sp } = bus;
+  const sp = bus.parameters;
   const {
     rndMappedValue: baseRelNote,
     egLevel,
@@ -62,7 +62,7 @@ export function getOscPitchRelNote(bus: Bus, stepPos: number) {
 }
 
 export function getOscPrPitch(bus: Bus, stepPos: number) {
-  const { sp } = bus;
+  const sp = bus.parameters;
   //Output of OSC pitch knob value
   const partValues = processMotionWrapper(bus, MoId.oscPitch, stepPos);
   const { moOn, moType } = sp.moOscPitch;
@@ -79,7 +79,7 @@ export function getOscPrPitch(bus: Bus, stepPos: number) {
 }
 
 export function getOscColorValue(bus: Bus, stepPos: number) {
-  const { sp } = bus;
+  const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.oscColor, stepPos);
   return mapMotionPartValuesToTargetParameter(
     partValues,
@@ -89,7 +89,7 @@ export function getOscColorValue(bus: Bus, stepPos: number) {
 }
 
 export function getFilterPrCutoff(bus: Bus, stepPos: number) {
-  const { sp } = bus;
+  const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.filterCutoff, stepPos);
   return mapMotionPartValuesToTargetParameter(
     partValues,
@@ -99,7 +99,7 @@ export function getFilterPrCutoff(bus: Bus, stepPos: number) {
 }
 
 export function getShaperLevelValue(bus: Bus, stepPos: number) {
-  const { sp } = bus;
+  const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.shaperLevel, stepPos);
   return mapMotionPartValuesToTargetParameter(
     partValues,
@@ -109,7 +109,7 @@ export function getShaperLevelValue(bus: Bus, stepPos: number) {
 }
 
 export function getPhaserLevelValue(bus: Bus, stepPos: number) {
-  const { sp } = bus;
+  const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.phaserLevel, stepPos);
   return mapMotionPartValuesToTargetParameter(
     partValues,
@@ -119,7 +119,7 @@ export function getPhaserLevelValue(bus: Bus, stepPos: number) {
 }
 
 export function getDelayTimeValue(bus: Bus, stepPos: number) {
-  const { sp } = bus;
+  const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.delayTime, stepPos);
   return mapMotionPartValuesToTargetParameter(
     partValues,

@@ -39,7 +39,8 @@ export class Filter {
   }
 
   processSamples(buffer: Float32Array, len: number) {
-    const { sp, interm } = this.bus;
+    const sp = this.bus.parameters;
+    const interm = this.bus.interm;
     if (!sp.filterOn) return;
     const prCutoff = interm.pmxFilterPrCutoff;
     const cutoffNormFreq = this.calculateNormalizedCutoffFreq(

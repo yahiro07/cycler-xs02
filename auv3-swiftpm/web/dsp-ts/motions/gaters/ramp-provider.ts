@@ -67,14 +67,14 @@ export function getPlainRamp(
   stepPos: number,
   inputStride: GateStride,
 ): RampSpec {
-  const gp = bus.sp;
+  const sp = bus.parameters;
   if (inputStride === GateStride.gate) {
     const rampCode =
-      gp.gaterType === GaterType.lax
+      sp.gaterType === GaterType.lax
         ? gaterMinLaxMode_getRampCodeCached(bus, stepPos)
         : gaterMainSeqMode_getRampCode(bus, stepPos);
 
-    const gaterStride = gp.gaterStride as unknown as PureStride;
+    const gaterStride = sp.gaterStride as unknown as PureStride;
     return getGaterStepRamp(stepPos, gaterStride, rampCode);
   } else {
     const stride = inputStride as unknown as PureStride;

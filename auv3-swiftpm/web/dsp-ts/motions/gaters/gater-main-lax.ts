@@ -62,12 +62,12 @@ export function gaterMainLax_testGenerateStepRampCodes(
 }
 
 function updateStepCellCodes(bus: Bus) {
-  const gp = bus.sp;
+  const sp = bus.parameters;
   const gs = bus.moduleLocals.gaterMainLax as GaterMainLaxState;
   gs.stepRampCodes.fill(StepRampCode.one);
-  const stepLength = gp.loopBars * 16;
-  if (gp.gaterRndTieOn) {
-    placeRandomTwoCellCodes(gs.stepRampCodes, stepLength, gp.gaterRndTieCover);
+  const stepLength = sp.loopBars * 16;
+  if (sp.gaterRndTieOn) {
+    placeRandomTwoCellCodes(gs.stepRampCodes, stepLength, sp.gaterRndTieCover);
   }
 }
 
@@ -80,7 +80,7 @@ export function gaterMinLaxMode_getRampCodeCached(
   stepPos: number,
 ): StepRampCode {
   const gaterState = bus.moduleLocals.gaterMainLax as GaterMainLaxState;
-  const gp = bus.sp;
+  const gp = bus.parameters;
   const period = getStepPeriodForGaterMain(gp.gaterStride);
   const scaledStep = stepPos / period;
 

@@ -46,7 +46,8 @@ export class Oscillators {
   }
 
   private calcNormFreq() {
-    const { sp, interm } = this.bus;
+    const sp = this.bus.parameters;
+    const interm = this.bus.interm;
 
     let noteNumber = 0;
     if (sp.oscPitchMoSmooth) {
@@ -79,7 +80,7 @@ export class Oscillators {
   }
 
   assignVoices() {
-    const { sp, interm } = this.bus;
+    const { parameters: sp, interm } = this.bus;
     const { oscUnisonMode: pileMode } = sp;
     const det = power3(sp.oscUnisonDetune) * 0.03;
 
@@ -158,7 +159,7 @@ export class Oscillators {
   }
 
   processSamples(buffer: Float32Array, len: number) {
-    const { sp } = this.bus;
+    const { parameters: sp } = this.bus;
     if (!sp.oscOn) return;
 
     this.assignVoices();

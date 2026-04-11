@@ -198,12 +198,12 @@ export function gaterExSeqMode_getRampSpec(
   bus: Bus,
   stepPos: number,
 ): RampSpec {
-  const gp = bus.sp;
-  const stepPeriod = getStepPeriodForExGater(gp.exGaterSeqStride);
+  const sp = bus.parameters;
+  const stepPeriod = getStepPeriodForExGater(sp.exGaterSeqStride);
   const scaledStep = stepPos / stepPeriod;
   const basePosition = (scaledStep / 4) >>> 0;
   const pos = scaledStep % 4;
-  const notes = buildNotesCached(bus, gp.exGaterCodes);
+  const notes = buildNotesCached(bus, sp.exGaterCodes);
   // Search for a note at the specified pos in the notes collection, map it to rampSpec, and return it
   const note = findNote(notes, pos);
   if (note) {

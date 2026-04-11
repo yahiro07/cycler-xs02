@@ -43,7 +43,7 @@ export function parameterAssigner_applyParameter(
   id: number,
   value: number,
 ) {
-  const sp = bus.sp;
+  const sp = bus.parameters;
   if (id === pk.parametersVersion) bus.paramVer = floatToInt(value);
   if (id === pk.internalBpm) bus.bpm = value;
   //

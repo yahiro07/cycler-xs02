@@ -70,14 +70,13 @@ export class SynthesizerHub {
 
   prepare(sampleRate: number) {
     const maxFrames = configs.chunkSize;
-    const { bus } = this;
-    bus.sampleRate = sampleRate;
-    bus.maxFrames = maxFrames;
+    this.bus.sampleRate = sampleRate;
+    this.bus.maxFrames = maxFrames;
     if (this.workBuffer.length !== maxFrames) {
       this.workBuffer = new Float32Array(maxFrames);
     }
-    gaterMinLaxMode_setupLocalState(bus);
-    gaterExSeqMode_setupLocalState(bus);
+    gaterMinLaxMode_setupLocalState(this.bus);
+    gaterExSeqMode_setupLocalState(this.bus);
     this.mainSynth.prepare();
     this.kickSynth.prepare(sampleRate, maxFrames);
     this.bassSynth.prepare(sampleRate, maxFrames);
@@ -97,7 +96,7 @@ export class SynthesizerHub {
 
   private coreProcessSamples(buffer: Float32Array, len: number) {
     const { bus } = this;
-    const { sp } = bus;
+    const sp = bus.parameters;
     const { workBuffer } = this;
 
     bus.loopBars = getLoopBarsFromKey(sp.loopBars);

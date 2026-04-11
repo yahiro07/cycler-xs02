@@ -25,7 +25,7 @@ export type ModuleLocalStates = {
 };
 
 export type SynthesisBus = {
-  sp: SynthParametersSuit;
+  parameters: SynthParametersSuit;
   interm: SynthesisIntermediateState;
   moduleLocals: ModuleLocalStates;
   sampleRate: number;
@@ -52,7 +52,7 @@ export type Bus = SynthesisBus;
 
 export function createSynthesisBus(): SynthesisBus {
   return {
-    sp: createSynthParametersSuit(),
+    parameters: createSynthParametersSuit(),
     interm: {
       pmxOscRelNote: 0,
       pmxOscPrPitch: 0,

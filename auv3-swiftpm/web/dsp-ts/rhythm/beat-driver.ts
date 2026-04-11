@@ -30,7 +30,7 @@ export class BeatDriver {
   }
 
   private onStep(stepIndex: number) {
-    const sp = this.bus.sp;
+    const sp = this.bus.parameters;
     {
       const pos = stepIndex % 4;
       if (pos === 0 && sp.clockingOn && this.bus.gateOn && sp.kickOn) {
@@ -79,7 +79,7 @@ export class BeatDriver {
   }
 
   advance() {
-    const sp = this.bus.sp;
+    const sp = this.bus.parameters;
     const { currentStep } = this.bus;
     const frameStepLength = calcNumStepsForSamples(
       this.bus.bpm,

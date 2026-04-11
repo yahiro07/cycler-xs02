@@ -37,7 +37,7 @@ function updateMoValues(bus: Bus) {
 }
 
 function updateLoopOnFrameEnd(bus: Bus) {
-  const { sp } = bus;
+  const sp = bus.parameters;
   const stepDelta = getStepDeltaForFrame(bus);
   bus.totalStep += stepDelta;
   bus.currentStep += stepDelta;

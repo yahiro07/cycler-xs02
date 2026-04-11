@@ -65,11 +65,11 @@ export function gaterMainSeqMode_getRampCode(
   bus: Bus,
   stepPos: number,
 ): StepRampCode {
-  const gp = bus.sp;
-  const stepPeriod = getStepPeriodForGaterMain(gp.gaterStride);
+  const sp = bus.parameters;
+  const stepPeriod = getStepPeriodForGaterMain(sp.gaterStride);
   const scaledStep = stepPos / stepPeriod;
   const index = (scaledStep % 16) >>> 0;
-  let bits = mapCodesToBits(gp.gaterSeqPatterns);
+  let bits = mapCodesToBits(sp.gaterSeqPatterns);
   bits = replaceContinuousTiesN(bits);
   return getRampCodeFromEx2PatternBits(bits, index);
 }

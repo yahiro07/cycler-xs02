@@ -174,8 +174,8 @@ export function getAmpEgLevel(bus: SynthesisBus, stepPos: number): number {
   const ramp = wrapGetStepRamp(bus, GateStride.gate, stepPos);
   return eg_curves.getAmpEgCurvePL(
     ramp.relPos,
-    bus.sp.ampEgHold,
-    bus.sp.ampEgDecay,
+    bus.parameters.ampEgHold,
+    bus.parameters.ampEgDecay,
     ramp.duration,
   );
 }

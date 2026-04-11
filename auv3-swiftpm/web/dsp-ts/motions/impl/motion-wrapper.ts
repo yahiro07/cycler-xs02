@@ -21,7 +21,7 @@ function getMotionParamsAndSeed(
       [MoId.phaserLevel]: "moPhaserLevel",
     } as const
   )[moId];
-  const mp = bus.sp[moKey];
+  const mp = bus.parameters[moKey];
   const moIdSeed = moIdSeeds[moId];
   return { mp, moIdSeed };
 }
