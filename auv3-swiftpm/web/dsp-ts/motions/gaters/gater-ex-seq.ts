@@ -3,7 +3,6 @@ import { RampSpec } from "@dsp/base/ramp-types";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForExGater } from "@dsp/motions/funcs/steps-common";
 import { checkArrayItemsEquivalent, seqNumbers } from "@dsp/utils/arrays";
-import { raiseError } from "@dsp/utils/errors";
 
 type PreAllocatedArray<T> = {
   reset(): void;
@@ -31,7 +30,7 @@ function createPreAllocatedArray<T>(
     },
     beginPush() {
       if (length >= items.length) {
-        raiseError("PreAllocatedArray is full");
+        throw new Error("PreAllocatedArray is full");
       }
       return items[length];
     },
@@ -217,6 +216,6 @@ export function gaterExSeqMode_getRampSpec(
       duration: note.duration * stepPeriod,
     };
   } else {
-    raiseError("note not found");
+    throw new Error("note not found");
   }
 }

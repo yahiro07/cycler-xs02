@@ -1,5 +1,3 @@
-import { raiseError } from "@dsp/utils/errors";
-
 export type Interpolator = {
   feed(nextValue: number, n: number): void;
   advance(): number;
@@ -19,7 +17,7 @@ export function createInterpolator() {
     },
     advance() {
       if (value === undefined) {
-        raiseError("interpolator.advance: value is undefined");
+        throw new Error("interpolator.advance: value is undefined");
       }
       const res = value;
       value += delta;
