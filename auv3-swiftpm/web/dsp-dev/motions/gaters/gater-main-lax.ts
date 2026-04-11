@@ -1,8 +1,8 @@
+import { StepRampCode } from "@core/base/ramp-types";
 import { Bus } from "@core/base/synthesis-bus";
-import { StepRampCode } from "@core/base/synthesis-types";
-import { randF } from "@core/dsp-modules/basic/parameters-helper";
 import { getStepPeriodForGaterMain } from "@core/motions/funcs/steps-common";
 import { seqNumbers } from "@core/utils/arrays";
+import { m_random } from "@core/utils/math-utils";
 
 type GaterMainLaxState = {
   stepRampCodes: StepRampCode[];
@@ -33,7 +33,7 @@ function placeRandomTwoCellCodes(
   const trialRate = 2;
   let num = 0;
   for (let i = 0; i < maxNum * trialRate; i++) {
-    const idx = (randF() * (stepLength - 1)) >>> 0;
+    const idx = (m_random() * (stepLength - 1)) >>> 0;
     if (
       !(
         stepRampCodes[idx] === StepRampCode.one &&

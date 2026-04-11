@@ -1,4 +1,4 @@
-import { StepRampCode } from "@core/base/synthesis-types";
+import { StepRampCode } from "@core/base/ramp-types";
 import { gaterMainLax_testGenerateStepRampCodes } from "@core/motions/gaters/gater-main-lax";
 import { it } from "vitest";
 

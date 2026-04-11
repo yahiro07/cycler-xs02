@@ -1,5 +1,6 @@
 import { MoEgWave } from "@core/base/parameter-defs";
 import { mapExpCurve } from "@core/dsp-modules/basic/curves";
+import { m_exp, m_floor } from "@core/utils/math-utils";
 import {
   clampValueZeroOne,
   invPower2,
@@ -18,7 +19,7 @@ export function getEgCurve(wave: MoEgWave, pos: number, shape: number): number {
     return 1 - tunableSigmoid(pos, k);
   } else if (wave === MoEgWave.d2) {
     shape = invPower2(shape);
-    return Math.exp(-50 * pos * power3(1 - shape * 0.85));
+    return m_exp(-50 * pos * power3(1 - shape * 0.85));
   } else if (wave === MoEgWave.ad) {
     const t = pos * 0.125;
     const bp = 0.25 * mapUnaryTo(shape, 0.02, 1);
@@ -40,7 +41,7 @@ export function getEgCurve(wave: MoEgWave, pos: number, shape: number): number {
     return 0;
   } else if (wave === MoEgWave.stair) {
     const nStep = mapUnaryToInt(shape, 2, 10);
-    const y = 1 - Math.floor(pos * nStep) / nStep;
+    const y = 1 - m_floor(pos * nStep) / nStep;
     const low = 1 / nStep;
     const z = mapUnaryFrom(y, low, 1);
     return clampValueZeroOne(z);

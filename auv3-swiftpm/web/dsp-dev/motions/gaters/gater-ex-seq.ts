@@ -1,6 +1,6 @@
 import { ExGaterCode } from "@core/base/parameter-defs";
+import { RampSpec } from "@core/base/ramp-types";
 import { Bus } from "@core/base/synthesis-bus";
-import { RampSpec } from "@core/base/synthesis-types";
 import { getStepPeriodForExGater } from "@core/motions/funcs/steps-common";
 import { checkArrayItemsEquivalent, seqNumbers } from "@core/utils/arrays";
 import { raiseError } from "@core/utils/errors";

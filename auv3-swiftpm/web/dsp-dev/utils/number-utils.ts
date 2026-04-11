@@ -1,3 +1,5 @@
+import { m_abs, m_floor, m_max, m_min, m_round } from "@core/utils/math-utils";
+
 export function clampValue(val: number, lo: number, hi: number) {
   if (val > hi) return hi;
   if (val < lo) return lo;
@@ -9,19 +11,19 @@ export function clampValueZeroOne(val: number) {
 }
 
 export function lowClip(val: number, lo: number) {
-  return Math.max(val, lo);
+  return m_max(val, lo);
 }
 
 export function highClip(val: number, hi: number) {
-  return Math.min(val, hi);
+  return m_min(val, hi);
 }
 
 export function lowClipZero(val: number) {
-  return Math.max(val, 0);
+  return m_max(val, 0);
 }
 
 export function highClipOne(val: number) {
-  return Math.min(val, 1);
+  return m_min(val, 1);
 }
 
 export function mapUnaryTo(val: number, d0: number, d1: number) {
@@ -33,10 +35,10 @@ export function mapUnaryBipolar(val: number) {
 }
 
 export function mapUnaryToInt(val: number, v1: number, v2: number) {
-  return v1 + Math.round(val * (v2 - v1));
+  return v1 + m_round(val * (v2 - v1));
 }
 export function mapUnaryToValues(pr: number, values: number[]): number {
-  const index = Math.round(pr * (values.length - 1));
+  const index = m_round(pr * (values.length - 1));
   return values[index];
 }
 
@@ -64,8 +66,8 @@ export function linearInterpolate(
 ) {
   const res = ((val - s0) / (s1 - s0)) * (d1 - d0) + d0;
   if (applyClamp) {
-    const lo = Math.min(d0, d1);
-    const hi = Math.max(d0, d1);
+    const lo = m_min(d0, d1);
+    const hi = m_max(d0, d1);
     return clampValue(res, lo, hi);
   }
   return res;
@@ -111,9 +113,9 @@ export function roundFloat(value: number, frac: number) {
 
 //x:-1__1, k:-1__1, positive k for low curve, negative k for high curve
 export function tunableSigmoid(x: number, k: number) {
-  return (x - k * x) / (k - 2 * k * Math.abs(x) + 1);
+  return (x - k * x) / (k - 2 * k * m_abs(x) + 1);
 }
 
 export function fracPart(value: number) {
-  return value - Math.floor(value);
+  return value - m_floor(value);
 }

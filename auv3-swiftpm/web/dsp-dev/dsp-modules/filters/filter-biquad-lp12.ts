@@ -4,6 +4,7 @@
 import { createMultiInterpolator } from "@core/dsp-modules/basic/multi-interpolator";
 import { applySoftClipAt } from "@core/dsp-modules/effects/soft-clip-shaper";
 import { createFilterOnePoleHighPass } from "@core/dsp-modules/filters/filter-onepole-highpass";
+import { m_cos, m_sin, m_two_pi } from "@core/utils/math-utils";
 import { clampValue } from "@core/utils/number-utils";
 
 export interface IFilter {
@@ -60,9 +61,9 @@ export function createFilterBiquadLp12(sampleRate: number): IFilter {
     const Q = minQ + paramPeak * (maxQ - minQ);
 
     // Cookbook formula for lowpass biquad
-    const omega = 2.0 * Math.PI * freq;
-    const sinOmega = Math.sin(omega);
-    const cosOmega = Math.cos(omega);
+    const omega = m_two_pi * freq;
+    const sinOmega = m_sin(omega);
+    const cosOmega = m_cos(omega);
     const alpha = sinOmega / (2.0 * Q);
 
     const a0 = 1.0 + alpha;

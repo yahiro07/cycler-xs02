@@ -5,6 +5,7 @@ import {
   LoopBarsKey,
   PureStride,
 } from "@core/base/parameter-defs";
+import { m_pow } from "@core/utils/math-utils";
 import { mapUnaryToInt } from "@core/utils/number-utils";
 
 export function getLfoStepPeriod(lfoRate: number, lfoRateStepped: boolean) {
@@ -14,7 +15,7 @@ export function getLfoStepPeriod(lfoRate: number, lfoRateStepped: boolean) {
   } else {
     k = (1 - lfoRate) * 6;
   }
-  return Math.pow(2, k);
+  return m_pow(2, k);
 }
 
 export function getStepPeriod(stride: PureStride): number {

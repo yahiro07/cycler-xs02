@@ -1,15 +1,14 @@
-import { randF } from "@core/dsp-modules/basic/parameters-helper";
-import { TwoPi } from "@core/dsp-modules/basic/synthesis-helper";
+import { m_random, m_sin, m_two_pi } from "@core/utils/math-utils";
 
 export function fillErrorSound(buffer: Float32Array) {
   for (let i = 0; i < buffer.length; i++) {
-    buffer[i] = randF() * 0.01;
+    buffer[i] = m_random() * 0.01;
   }
 }
 
 export function debugFillNoise(buffer: Float32Array) {
   for (let i = 0; i < buffer.length; i++) {
-    buffer[i] = randF() * 0.01;
+    buffer[i] = m_random() * 0.01;
   }
 }
 
@@ -21,7 +20,7 @@ export function debugFillSine(
 ) {
   const delta = freq / sampleRate;
   for (let i = 0; i < buffer.length; i++) {
-    buffer[i] = Math.sin(phase * TwoPi);
+    buffer[i] = m_sin(phase * m_two_pi);
     phase = (phase + delta) % 1;
   }
 }

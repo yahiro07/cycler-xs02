@@ -1,4 +1,4 @@
-import { RampSpec } from "@core/base/synthesis-types";
+import { RampSpec } from "@core/base/ramp-types";
 
 export type RampSpecBase = {
   headPos: number;

@@ -1,5 +1,6 @@
 import { RandomizeLevel } from "@core/base/parameter-defs";
 import { ParameterId } from "@core/base/parameter-id";
+import { m_abs, m_random } from "@core/utils/math-utils";
 
 const pk = ParameterId;
 
@@ -8,11 +9,11 @@ function toBool(value: number) {
 }
 
 function rand() {
-  return (Math.random() * 0xffffffff) >>> 0;
+  return (m_random() * 0xffffffff) >>> 0;
 }
 
 function randF() {
-  return Math.random();
+  return m_random();
 }
 
 function randB(onWeight = 0.5) {
@@ -235,7 +236,7 @@ function buildParameterIdsRandomOrder(
   parameters: Record<number, number>,
 ): number[] {
   const paramIds = Object.keys(parameters).map((id) => Number(id));
-  return paramIds.sort(() => Math.random() - 0.5);
+  return paramIds.sort(() => m_random() - 0.5);
 }
 
 const divisions = {
@@ -492,7 +493,7 @@ function randomizeParameters(
     const currentValue = parameters[id];
     const newValue = getRandomParameterValue(id);
     if (newValue === -1) continue;
-    if (Math.abs(newValue - currentValue) < 1e-6) continue;
+    if (m_abs(newValue - currentValue) < 1e-6) continue;
     parameters[id] = newValue;
     changedCount++;
     if (changedCount >= randomCount) break;

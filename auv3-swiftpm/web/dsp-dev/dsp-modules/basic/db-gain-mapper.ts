@@ -1,3 +1,4 @@
+import { m_pow } from "@core/utils/math-utils";
 import { linearInterpolate } from "@core/utils/number-utils";
 
 export function mapDbGain(
@@ -17,5 +18,5 @@ export function mapDbGain(
   } else {
     db = linearInterpolate(level, cp, 1, 0, dbHi);
   }
-  return Math.pow(10, db / 20);
+  return m_pow(10, db / 20);
 }

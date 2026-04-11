@@ -1,3 +1,4 @@
+import { m_cos, m_pi, m_sin } from "@core/utils/math-utils";
 import { linearInterpolate, mixValue } from "@core/utils/number-utils";
 
 type OscWave = "saw" | "rect" | "tri" | "sine";
@@ -22,9 +23,9 @@ export function getOscWaveformPd(
       pp = sr + t * (1 - sr);
     }
     if (narrow) {
-      return Math.sin(pp * Math.PI * 2);
+      return m_sin(pp * m_pi * 2);
     } else {
-      return -Math.cos(pp * Math.PI * 2);
+      return -m_cos(pp * m_pi * 2);
     }
   } else if (wave === "rect") {
     const phase = _phase;
@@ -41,19 +42,19 @@ export function getOscWaveformPd(
     y *= 0.5;
     const y2 = phase > 0.5 ? 0.5 + y : y;
     if (narrow) {
-      return -Math.cos(y2 * Math.PI * 2);
+      return -m_cos(y2 * m_pi * 2);
     } else {
-      return Math.sin(y2 * Math.PI * 2);
+      return m_sin(y2 * m_pi * 2);
     }
   } else if (wave === "tri") {
     const phase = _phase;
     if (0) {
       const phase1 = (phase % 0.5) * 2; //0__1
       const y0 = phase1;
-      const y1 = -Math.cos(phase1 * Math.PI) * 0.5 + 0.5;
+      const y1 = -m_cos(phase1 * m_pi) * 0.5 + 0.5;
       const y = mixValue(y0, y1, pdLevel);
       const y2 = phase > 0.5 ? 0.5 + y * 0.5 : y * 0.5;
-      return Math.sin(y2 * Math.PI * 2);
+      return m_sin(y2 * m_pi * 2);
     } else {
       //PDでうまく三角波が作れないので代替
       let y = 0;
@@ -64,11 +65,11 @@ export function getOscWaveformPd(
       } else {
         y = 2 - 4 * phase;
       }
-      const sine = Math.sin(phase * Math.PI * 2);
+      const sine = m_sin(phase * m_pi * 2);
       return mixValue(sine, y, pdLevel);
     }
   } else {
     const phase = _phase;
-    return Math.sin(phase * Math.PI * 2);
+    return m_sin(phase * m_pi * 2);
   }
 }

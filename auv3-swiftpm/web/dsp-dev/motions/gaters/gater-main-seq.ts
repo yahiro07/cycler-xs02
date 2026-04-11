@@ -1,6 +1,6 @@
 import { GateSequencerCode } from "@core/base/parameter-defs";
+import { StepRampCode } from "@core/base/ramp-types";
 import { Bus } from "@core/base/synthesis-bus";
-import { StepRampCode } from "@core/base/synthesis-types";
 import { getStepPeriodForGaterMain } from "@core/motions/funcs/steps-common";
 
 export function getRampCodeFromEx2PatternBits(

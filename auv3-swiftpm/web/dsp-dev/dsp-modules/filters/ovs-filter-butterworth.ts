@@ -12,24 +12,33 @@
  * - The filter is stateful (keeps z1/z2 per biquad).
  */
 
+import {
+  m_cos,
+  m_floor,
+  m_max,
+  m_min,
+  m_pi,
+  m_sin,
+} from "@core/utils/math-utils";
+
 type IOvsFilter = {
   reset(): void;
   processSamples(buffer: Float32Array): void;
 };
 
 function clamp(v: number, lo: number, hi: number) {
-  return Math.max(lo, Math.min(hi, v));
+  return m_max(lo, m_min(hi, v));
 }
 
 function butterworthQs(order: number): number[] {
   // order must be even (2,4,6,8,...)
-  const n = Math.max(2, Math.floor(order));
-  const m = Math.floor(n / 2);
+  const n = m_max(2, m_floor(order));
+  const m = m_floor(n / 2);
   const qs: number[] = [];
   for (let k = 1; k <= m; k++) {
     // Q_k = 1 / (2 cos((2k-1)π / (2n)))
-    const ang = ((2 * k - 1) * Math.PI) / (2 * n);
-    qs.push(1 / (2 * Math.cos(ang)));
+    const ang = ((2 * k - 1) * m_pi) / (2 * n);
+    qs.push(1 / (2 * m_cos(ang)));
   }
   return qs;
 }
@@ -37,11 +46,11 @@ function butterworthQs(order: number): number[] {
 function createBiquadLpCookbook(cutoffNormFreq: number, Q: number) {
   // cutoffNormFreq is normalized to Fs where Nyquist = 0.5
   const f = clamp(cutoffNormFreq, 0.0001, 0.49);
-  const q = Math.max(0.1, Q);
+  const q = m_max(0.1, Q);
 
-  const omega = 2.0 * Math.PI * f;
-  const sinOmega = Math.sin(omega);
-  const cosOmega = Math.cos(omega);
+  const omega = 2.0 * m_pi * f;
+  const sinOmega = m_sin(omega);
+  const cosOmega = m_cos(omega);
   const alpha = sinOmega / (2.0 * q);
 
   const a0 = 1.0 + alpha;
@@ -65,8 +74,8 @@ export function createOvsFilterButterworth(
   cutoffScale: number,
   order: number = 8,
 ): IOvsFilter {
-  const nx = Math.max(1, Math.floor(oversampleRatio));
-  const ord = Math.max(2, Math.floor(order / 2) * 2); // force even
+  const nx = m_max(1, m_floor(oversampleRatio));
+  const ord = m_max(2, m_floor(order / 2) * 2); // force even
 
   // cutoffScale: original Nyquist (Fs/2) is 1.0
   // so actual cutoff in oversampled normalized domain is:

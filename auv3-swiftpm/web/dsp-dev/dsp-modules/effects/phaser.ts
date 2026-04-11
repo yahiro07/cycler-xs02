@@ -1,4 +1,5 @@
 import { seqNumbers } from "@core/utils/arrays";
+import { m_cos, m_pi, m_sin } from "@core/utils/math-utils";
 import { mixValue } from "@core/utils/number-utils";
 
 function createAllPassFilter() {
@@ -9,13 +10,13 @@ function createAllPassFilter() {
 
   return {
     processSample(_in: number, normFreq: number, q: number) {
-      const omega = 2 * Math.PI * normFreq;
-      const alpha = Math.sin(omega) / (2 * q);
+      const omega = 2 * m_pi * normFreq;
+      const alpha = m_sin(omega) / (2 * q);
       const a0 = 1 + alpha;
-      const a1 = -2 * Math.cos(omega);
+      const a1 = -2 * m_cos(omega);
       const a2 = 1 - alpha;
       const b0 = 1 - alpha;
-      const b1 = -2 * Math.cos(omega);
+      const b1 = -2 * m_cos(omega);
       const b2 = 1 + alpha;
 
       const out =

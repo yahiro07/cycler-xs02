@@ -1,18 +1,19 @@
+import { m_abs, m_cos, m_pi, m_sign, m_sin } from "@core/utils/math-utils";
 import { invPower2 } from "@core/utils/number-utils";
 
 export const curveMapper = {
   riseSine(x: number) {
-    return Math.sin(x * Math.PI * 0.5);
+    return m_sin(x * m_pi * 0.5);
   },
   fallSine(x: number) {
-    return 1 - Math.sin(x * Math.PI * 0.5);
+    return 1 - m_sin(x * m_pi * 0.5);
   },
   riseInvCosine(x: number) {
-    return 0.5 - 0.5 * Math.cos(x * Math.PI);
+    return 0.5 - 0.5 * m_cos(x * m_pi);
   },
   riseInvCosineTight(x: number) {
-    let y = Math.cos(x * Math.PI);
-    y = invPower2(Math.abs(y)) * Math.sign(y);
+    let y = m_cos(x * m_pi);
+    y = invPower2(m_abs(y)) * m_sign(y);
     return 0.5 - 0.5 * y;
   },
 };

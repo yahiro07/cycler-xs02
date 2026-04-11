@@ -1,3 +1,4 @@
+import { m_abs, m_sign, m_sqrt2 } from "@core/utils/math-utils";
 import {
   clampValue,
   invPower2,
@@ -8,8 +9,8 @@ import {
 
 export const softClipShapers = {
   soft1(_x) {
-    const sign = Math.sign(_x);
-    let x = Math.abs(_x);
+    const sign = m_sign(_x);
+    let x = m_abs(_x);
     const ta = 0.8;
     const tb = 1.25;
     if (x < ta) {
@@ -22,8 +23,8 @@ export const softClipShapers = {
     return clampValue(sign * x, -1, 1);
   },
   soft2(_x) {
-    const sign = Math.sign(_x);
-    let x = Math.abs(_x);
+    const sign = m_sign(_x);
+    let x = m_abs(_x);
     const ta = 0.8;
     const tb = 1.8;
     if (x < ta) {
@@ -36,7 +37,7 @@ export const softClipShapers = {
     return clampValue(sign * x, -1, 1);
   },
   soft3(x) {
-    const sqrt2 = Math.SQRT2;
+    const sqrt2 = m_sqrt2;
     x = clampValue(x, -sqrt2, sqrt2);
     return x - (x * x * x) / 6.0;
   },

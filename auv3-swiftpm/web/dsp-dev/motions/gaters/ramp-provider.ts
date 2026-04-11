@@ -4,12 +4,13 @@ import {
   MotionStride,
   PureStride,
 } from "@core/base/parameter-defs";
+import { RampSpec, StepRampCode } from "@core/base/ramp-types";
 import { Bus } from "@core/base/synthesis-bus";
-import { RampSpec, StepRampCode } from "@core/base/synthesis-types";
 import { getStepPeriod } from "@core/motions/funcs/steps-common";
 import { gaterExSeqMode_getRampSpec } from "@core/motions/gaters/gater-ex-seq";
 import { gaterMinLaxMode_getRampCodeCached } from "@core/motions/gaters/gater-main-lax";
 import { gaterMainSeqMode_getRampCode } from "@core/motions/gaters/gater-main-seq";
+import { m_floor } from "@core/utils/math-utils";
 import { fracPart } from "@core/utils/number-utils";
 
 export function getGaterStepRamp(
@@ -19,7 +20,7 @@ export function getGaterStepRamp(
 ): RampSpec {
   const stepPeriod = getStepPeriod(gaterPeriod);
   const scaledStep = stepPos / stepPeriod;
-  let headPos = Math.floor(scaledStep) * stepPeriod;
+  let headPos = m_floor(scaledStep) * stepPeriod;
   let progress = fracPart(scaledStep);
   let duration = stepPeriod;
   if (rampCode === StepRampCode.tie1) {
@@ -54,7 +55,7 @@ export function getMasterDividedRamp(
   } else {
     const progress = fracPart(scaledStep);
     return {
-      headPos: Math.floor(scaledStep) * stepPeriod,
+      headPos: m_floor(scaledStep) * stepPeriod,
       relPos: progress * stepPeriod,
       progress,
       duration: stepPeriod,

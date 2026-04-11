@@ -1,5 +1,6 @@
 import { createOvsFilterSimple } from "@core/dsp-modules/filters/ovs-filter";
 import { createOvsFilterButterworth } from "@core/dsp-modules/filters/ovs-filter-butterworth";
+import { m_max } from "@core/utils/math-utils";
 
 export type OversamplingStage = {
   ensureAllocated(maxFrames: number): void;
@@ -49,7 +50,7 @@ export function createOversamplingStage(
   };
   const preFilter = createFilter();
   const postFilter = createFilter();
-  const decimateOffset = Math.max(0, oversampleRatio >> 1);
+  const decimateOffset = m_max(0, oversampleRatio >> 1);
 
   const state = {
     // Buffer allocated in advance based on the maximum frame length (len=maxFrames*nx)

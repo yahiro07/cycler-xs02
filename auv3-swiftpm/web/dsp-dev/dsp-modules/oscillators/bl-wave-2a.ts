@@ -3,6 +3,7 @@ import {
   readWaveFrameInterpolated,
 } from "@core/dsp-modules/oscillators/wave-frame-helper";
 import { seqNumbers } from "@core/utils/arrays";
+import { m_floor, m_pi, m_sin, m_two_pi } from "@core/utils/math-utils";
 import { clampValue } from "@core/utils/number-utils";
 
 export enum BlWave2AWaveform {
@@ -29,7 +30,7 @@ function buildWaveFrameTable(
     const waveFrameSize = calculateWaveFrameSize(h);
     const buffer = new Float32Array(waveFrameSize);
     for (let i = 0; i < waveFrameSize; i++) {
-      const x = (i / waveFrameSize) * 2.0 * Math.PI;
+      const x = (i / waveFrameSize) * m_two_pi;
       buffer[i] = fn(x, h);
     }
     return buffer;
@@ -75,9 +76,9 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
           let value = 0;
           for (let k = 1; k <= h; k++) {
             const sign = k % 2 === 0 ? -1 : 1;
-            const y = sign * (2 / k) * Math.sin(k * (x + Math.PI));
+            const y = sign * (2 / k) * m_sin(k * (x + m_pi));
             //位相ゼロで立ち上げるとこの部分でスパイクが出やすいので、中央で立ち上がるようにする
-            // const y = sign * (2 / k) * Math.sin(k * x);
+            // const y = sign * (2 / k) * m_sin(k * x);
             value += y * 0.25;
           }
           return -value;
@@ -86,9 +87,9 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
           let value = 0;
           for (let k = 1; k <= h; k++) {
             const sign = k % 2 === 0 ? 1 : -1;
-            value += (sign * Math.sin(k * (x + Math.PI))) / k;
+            value += (sign * m_sin(k * (x + m_pi))) / k;
           }
-          return value * (2 / Math.PI);
+          return value * (2 / m_pi);
         }
       },
     ),
@@ -97,10 +98,10 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
       (x, n) => {
         let value = 0;
         for (let k = 1; k <= n; k += 2) {
-          const y = (1 / k) * Math.sin(k * x);
+          const y = (1 / k) * m_sin(k * x);
           value += y;
         }
-        return value * (4 / Math.PI);
+        return value * (4 / m_pi);
       },
     ),
     [BlWave2AWaveform.tri]: buildWaveFrameTable(
@@ -110,11 +111,11 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
         let harmonicIndex = 0;
         for (let k = 1; k <= n; k += 2) {
           const sign = harmonicIndex % 2 === 0 ? 1 : -1;
-          const y = sign * (1 / (k * k)) * Math.sin(k * x);
+          const y = sign * (1 / (k * k)) * m_sin(k * x);
           value += y;
           harmonicIndex++;
         }
-        return value * (8 / (Math.PI * Math.PI)); // Scale to [-1, 1] range
+        return value * (8 / (m_pi * m_pi)); // Scale to [-1, 1] range
       },
     ),
   };
@@ -141,9 +142,9 @@ export function blWave2A_getWaveformSample(
   if (!self.initialized) return 0;
   const { waveFrameTables, tableIndexMapper, numHarmonicsMax } = self;
   if (waveform === BlWave2AWaveform.sine) {
-    return Math.sin(pp * Math.PI * 2);
+    return m_sin(pp * m_two_pi);
   }
-  pp -= Math.floor(pp);
+  pp -= m_floor(pp);
   const nh = clampValue((0.45 / normFreq) >> 0, 1, numHarmonicsMax);
   const ti = tableIndexMapper[nh];
   return readWaveFrameInterpolated(waveFrameTables[waveform][ti], pp);

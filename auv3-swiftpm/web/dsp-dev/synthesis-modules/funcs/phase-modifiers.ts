@@ -1,6 +1,15 @@
 import { OscColorMode } from "@core/base/parameter-defs";
-import { HalfPi, Pi, TwoPi } from "@core/dsp-modules/basic/synthesis-helper";
 import { seqNumbers } from "@core/utils/arrays";
+import {
+  m_abs,
+  m_cos,
+  m_floor,
+  m_half_pi,
+  m_pi,
+  m_random,
+  m_sin,
+  m_two_pi,
+} from "@core/utils/math-utils";
 import {
   clampValueZeroOne,
   fracPart,
@@ -10,7 +19,7 @@ import {
   power2,
 } from "@core/utils/number-utils";
 
-const randomSequence = seqNumbers(200).map(() => Math.random());
+const randomSequence = seqNumbers(200).map(() => m_random());
 
 export function modifyPhaseWithColor(
   phase: number,
@@ -21,9 +30,9 @@ export function modifyPhaseWithColor(
     case OscColorMode.sfm: {
       const fmRatio = mapUnaryTo(prColor, 1, 4);
       const fmDepth = prColor * 2;
-      const fmOscValue = Math.sin(phase * TwoPi * fmRatio);
+      const fmOscValue = m_sin(phase * m_two_pi * fmRatio);
       const modPhase = fracPart(phase + fmOscValue * fmDepth);
-      const maxSlope = 1 + TwoPi * fmDepth * fmRatio;
+      const maxSlope = 1 + m_two_pi * fmDepth * fmRatio;
       return [modPhase, maxSlope];
     }
     case OscColorMode.speed: {
@@ -51,7 +60,7 @@ export function modifyPhaseWithColor(
     case OscColorMode.sdm: {
       const speedRate = mapUnaryTo(prColor, 1, 100);
       const indexF = phase * speedRate;
-      const i0 = Math.floor(indexF);
+      const i0 = m_floor(indexF);
       const i1 = i0 + 1;
       const m = indexF - i0;
       const y1 = phase;
@@ -67,20 +76,20 @@ export function modifyPhaseWithColor(
     case OscColorMode.creep: {
       const speedRate = 1 + prColor * 31;
       const gainRight = mapUnaryTo(prColor, 1, 0);
-      const y = -Math.cos(invPower2(phase) * Pi * speedRate) * 0.5 + 0.5;
+      const y = -m_cos(invPower2(phase) * m_pi * speedRate) * 0.5 + 0.5;
       const gain = mapUnaryTo(phase, 1, gainRight);
       const gain2 = mapUnaryTo(invPower2(prColor), 1, 1.07);
       const modPhase = clampValueZeroOne(y * gain * gain2);
       return [modPhase, speedRate];
     }
     case OscColorMode.sinus: {
-      const modPhase = -Math.cos(phase * Pi * (1 + prColor * 15)) * 0.5 + 0.5;
-      const maxSlope = HalfPi * (1 + prColor * 15);
+      const modPhase = -m_cos(phase * m_pi * (1 + prColor * 15)) * 0.5 + 0.5;
+      const maxSlope = m_half_pi * (1 + prColor * 15);
       return [modPhase, maxSlope];
     }
     case OscColorMode.ridge: {
       const speedRate = 1 + prColor * 15;
-      const modPhase = Math.abs(Math.sin(phase * HalfPi * speedRate));
+      const modPhase = m_abs(m_sin(phase * m_half_pi * speedRate));
       return [modPhase, speedRate];
     }
   }

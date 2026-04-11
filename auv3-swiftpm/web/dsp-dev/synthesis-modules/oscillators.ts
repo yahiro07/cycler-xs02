@@ -11,6 +11,7 @@ import {
 } from "@core/motions/funcs/pitch-mapping";
 import { OscillatorCore } from "@core/synthesis-modules/oscillator-core";
 import { seqNumbers } from "@core/utils/arrays";
+import { m_sqrt } from "@core/utils/math-utils";
 import { power3 } from "@core/utils/number-utils";
 
 type VoiceSpec = { octaveRatio: number; detune: number; gain: number };
@@ -111,8 +112,8 @@ export class Oscillators {
       //Support for pitch mode octave cross mix
       const isOdd = (crossMixRateKey >>> 0) & 1;
       const upperMix = crossMixRateKey % 1;
-      const wa = Math.sqrt(1 - upperMix);
-      const wb = Math.sqrt(upperMix);
+      const wa = m_sqrt(1 - upperMix);
+      const wb = m_sqrt(upperMix);
       const numVoices = this.voiceIndex;
       for (let i = 0; i < numVoices; i++) {
         const vo = this.voiceSpecs[i];

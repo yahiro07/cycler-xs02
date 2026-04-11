@@ -1,8 +1,10 @@
+import { m_exp, m_pi } from "@core/utils/math-utils";
+
 export function createFilterOnePoleHighPass(
   sampleRate: number,
   cutoffFreqInHz: number,
 ) {
-  const a1 = Math.exp((-2.0 * Math.PI * cutoffFreqInHz) / sampleRate);
+  const a1 = m_exp((-2.0 * m_pi * cutoffFreqInHz) / sampleRate);
   const b0 = 0.5 * (1 + a1);
   const b1 = -0.5 * (1 + a1);
   let x1 = 0;
@@ -23,7 +25,7 @@ export function createFilterOnePoleHighPassDynamic() {
   let y1 = 0;
   return {
     apply(x: number, cutoffNormFreq: number) {
-      const a1 = Math.exp(-2.0 * Math.PI * cutoffNormFreq);
+      const a1 = m_exp(-2.0 * m_pi * cutoffNormFreq);
       const b0 = 0.5 * (1 + a1);
       const b1 = -0.5 * (1 + a1);
       const tiny = 1e-32;

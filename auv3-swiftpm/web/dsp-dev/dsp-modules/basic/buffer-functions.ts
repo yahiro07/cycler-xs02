@@ -2,6 +2,7 @@ import {
   applyHardClip,
   applySoftClip,
 } from "@core/dsp-modules/effects/soft-clip-shaper";
+import { m_sqrt } from "@core/utils/math-utils";
 import { mixValue } from "@core/utils/number-utils";
 
 export function readBufferInterpolated(
@@ -38,7 +39,7 @@ export function applyBufferGain(buffer: Float32Array, gain: number) {
 }
 
 export function applyBufferGainRms(buffer: Float32Array, numSources: number) {
-  const gain = 1 / Math.sqrt(numSources);
+  const gain = 1 / m_sqrt(numSources);
   applyBufferGain(buffer, gain);
 }
 

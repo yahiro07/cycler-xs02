@@ -1,10 +1,12 @@
+import { m_exp, m_pi } from "@core/utils/math-utils";
+
 export function createOvsFilterSimple(
   oversampleRatio: number,
   //cutoffScale: The ratio of the cutoff frequency when the original sampling rate Fs/2 is set to 1.0
   //Set to 1 if no special adjustment to the timbre is required
   cutoffScale: number,
 ) {
-  const alpha = 1 - Math.exp((-Math.PI * cutoffScale) / oversampleRatio);
+  const alpha = 1 - m_exp((-m_pi * cutoffScale) / oversampleRatio);
   let y1 = 0;
   let y2 = 0;
   let y3 = 0;

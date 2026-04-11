@@ -22,17 +22,18 @@ import {
 } from "@core/base/parameter-defs";
 import { ParameterId } from "@core/base/parameter-id";
 import { SynthesisBus } from "@core/base/synthesis-bus";
+import { m_round } from "@core/utils/math-utils";
 
 function floatToBool(value: number) {
   return value > 0.5;
 }
 
 function floatToInt(value: number): number {
-  return Math.round(value);
+  return m_round(value);
 }
 
 function floatToEnum<T extends number>(value: number): T {
-  return Math.round(value) as T;
+  return m_round(value) as T;
 }
 
 const pk = ParameterId;

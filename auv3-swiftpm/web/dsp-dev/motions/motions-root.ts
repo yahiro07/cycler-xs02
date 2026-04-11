@@ -6,6 +6,7 @@ import {
   wrapGetStepRamp,
 } from "@core/motions/impl/motion-curve-mapper";
 import * as mo_mappers from "@core/motions/mo-mappers";
+import { m_random } from "@core/utils/math-utils";
 
 function getStepDeltaForFrame(bus: Bus) {
   return calcNumStepsForSamples(bus.bpm, bus.sampleRate, bus.blockLength);
@@ -44,7 +45,7 @@ function updateLoopOnFrameEnd(bus: Bus) {
   if (bus.currentStep >= maxSteps) {
     bus.currentStep %= maxSteps;
     if (!sp.looped) {
-      bus.loopSeed = Math.random();
+      bus.loopSeed = m_random();
     }
     if (sp.autoRandomizeOnLoop) {
       bus.randomizationRequestFlag = true;
@@ -55,7 +56,7 @@ function updateLoopOnFrameEnd(bus: Bus) {
 export function reset(bus: Bus) {
   bus.currentStep = 0;
   bus.totalStep = 0;
-  bus.loopSeed = Math.random();
+  bus.loopSeed = m_random();
 }
 
 export function advance(bus: Bus) {

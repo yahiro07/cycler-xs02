@@ -1,4 +1,5 @@
 import { OscPitchMode } from "@core/base/parameter-defs";
+import { m_floor, m_log2 } from "@core/utils/math-utils";
 import {
   clampValue,
   mapUnaryTo,
@@ -55,7 +56,7 @@ export function mapParamOscPitchToRelativeNote(
   if (pitchMode === OscPitchMode.octave) {
     return mapUnaryToInt(prPitch, -2, 2) * 12;
   } else if (pitchMode === OscPitchMode.oct_x) {
-    return Math.floor(mapUnaryTo(prPitch, -2, 2)) * 12;
+    return m_floor(mapUnaryTo(prPitch, -2, 2)) * 12;
   } else if (pitchMode === OscPitchMode.semi) {
     const d = 6;
     return mapUnaryToInt(prPitch, -d, d);
@@ -71,7 +72,7 @@ export function mapParamOscPitchToRelativeNote(
       const pos = (0.5 - prPitch) * 2;
       ratio = mapUnaryToValues(pos, [1, 1 / 2, 1 / 3, 1 / 4]);
     }
-    return 12 * Math.log2(ratio);
+    return 12 * m_log2(ratio);
   } else if (pitchMode === OscPitchMode.map1) {
     return mapUnaryToValues(prPitch, noteMapperConstants.map1Notes);
   } else if (pitchMode === OscPitchMode.map2) {

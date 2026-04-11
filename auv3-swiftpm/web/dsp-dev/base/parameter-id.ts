@@ -1,8 +1,10 @@
+import { m_imul } from "@core/utils/math-utils";
+
 function hash(str: string): number {
   let _hash = 0x811c9dc5;
   for (let i = 0; i < str.length; i++) {
     _hash ^= str.charCodeAt(i);
-    _hash = Math.imul(_hash, 0x01000193);
+    _hash = m_imul(_hash, 0x01000193);
   }
   return _hash >>> 0;
 }
