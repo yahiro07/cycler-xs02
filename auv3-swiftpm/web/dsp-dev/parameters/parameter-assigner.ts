@@ -19,12 +19,16 @@ import {
   OscWave,
   RandomizeLevel,
   ShaperMode,
-  SynthParametersSuit,
 } from "@core/base/parameter-defs";
-import { ParameterId } from "@core/parameter-id";
+import { ParameterId } from "@core/base/parameter-id";
+import { SynthesisBus } from "@core/base/synthesis-bus";
 
 function floatToBool(value: number) {
   return value > 0.5;
+}
+
+function floatToInt(value: number): number {
+  return Math.round(value);
 }
 
 function floatToEnum<T extends number>(value: number): T {
@@ -34,10 +38,14 @@ function floatToEnum<T extends number>(value: number): T {
 const pk = ParameterId;
 
 export function parameterAssigner_applyParameter(
-  sp: SynthParametersSuit,
+  bus: SynthesisBus,
   id: number,
   value: number,
 ) {
+  const sp = bus.sp;
+  if (id === pk.parametersVersion) bus.paramVer = floatToInt(value);
+  if (id === pk.internalBpm) bus.bpm = value;
+  //
   if (id === pk.oscOn) sp.oscOn = floatToBool(value);
   if (id === pk.oscWave) sp.oscWave = floatToEnum<OscWave>(value);
   if (id === pk.oscOctave) sp.oscOctave = value;
@@ -248,7 +256,6 @@ export function parameterAssigner_applyParameter(
   if (id === pk.masterVolume) sp.masterVolume = value;
   if (id === pk.clockingOn) sp.clockingOn = floatToBool(value);
   if (id === pk.baseNoteIndex) sp.baseNoteIndex = value;
-  if (id === pk.internalBpm) sp.internalBpm = value;
   if (id === pk.autoRandomizeOnLoop)
     sp.autoRandomizeOnLoop = floatToBool(value);
   if (id === pk.randomizeLevel)

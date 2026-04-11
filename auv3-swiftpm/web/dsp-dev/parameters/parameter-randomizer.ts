@@ -1,5 +1,5 @@
 import { RandomizeLevel } from "@core/base/parameter-defs";
-import { ParameterId } from "@core/parameter-id";
+import { ParameterId } from "@core/base/parameter-id";
 
 const pk = ParameterId;
 
