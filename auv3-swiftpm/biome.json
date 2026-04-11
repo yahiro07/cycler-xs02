@@ -9,7 +9,8 @@
     "rules": {
       "recommended": true,
       "style": {
-        "useImportType": "off"
+        "useImportType": "off",
+        "useExponentiationOperator": "off"
       },
       "correctness": {
         "noConstantCondition": "off",
