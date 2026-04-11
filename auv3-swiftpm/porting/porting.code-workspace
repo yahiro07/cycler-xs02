@@ -1,7 +1,7 @@
 {
   "folders": [
     {
-      "path": "../web/dsp-dev"
+      "path": "../web/dsp-ts"
     },
     {
       "path": "../swiftpm/Auv3Package/Sources/Dsp"
