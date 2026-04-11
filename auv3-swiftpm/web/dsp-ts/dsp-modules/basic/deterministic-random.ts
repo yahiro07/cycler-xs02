@@ -10,11 +10,3 @@ export function deterministicRandom(seed: number) {
   const pos = x % randomSequence.length;
   return randomSequence[pos];
 }
-
-// export function generateSeedFromText(text: string): number {
-//   let hash = 0;
-//   for (let i = 0; i < text.length; i++) {
-//     hash = m_imul(hash ^ text.charCodeAt(i), 2654435761);
-//   }
-//   return hash >>> 0;
-// }
