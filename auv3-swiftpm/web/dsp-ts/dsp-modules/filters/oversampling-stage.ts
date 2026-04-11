@@ -1,4 +1,3 @@
-import { createOvsFilterSimple } from "@dsp/dsp-modules/filters/ovs-filter";
 import { createOvsFilterButterworth } from "@dsp/dsp-modules/filters/ovs-filter-butterworth";
 import { m_max } from "@dsp/utils/math-utils";
 
@@ -41,18 +40,10 @@ const ovsHelper = {
 };
 
 export function createOversamplingStage(
-  oversampleRatio: number,
-  filterKind: "simple" | "butterworth8" = "butterworth8",
-  cutoffScale = 1,
+  oversampleRatio: number, cutoffScale = 1,
 ): OversamplingStage {
-  const createFilter = () => {
-    if (filterKind === "butterworth8") {
-      return createOvsFilterButterworth(oversampleRatio, cutoffScale, 8);
-    }
-    return createOvsFilterSimple(oversampleRatio, cutoffScale);
-  };
-  const preFilter = createFilter();
-  const postFilter = createFilter();
+  const preFilter = createOvsFilterButterworth(oversampleRatio, cutoffScale, 8)
+  const postFilter = createOvsFilterButterworth(oversampleRatio, cutoffScale, 8)
   const decimateOffset = m_max(0, oversampleRatio >> 1);
 
   const state = {
