@@ -1,11 +1,11 @@
 import { Bus } from "@core/base/synthesis-bus";
 
 export class TriggerManager {
-  bus: Bus;
-  groovePlaying: boolean;
-  notePlaying: boolean;
-  notePlayingOverrideNoteNumber: number;
-  prevBaseNoteIndex: number;
+  private bus: Bus;
+  private groovePlaying: boolean;
+  private notePlaying: boolean;
+  private notePlayingOverrideNoteNumber: number;
+  private prevBaseNoteIndex: number;
 
   constructor(bus: Bus) {
     this.bus = bus;
@@ -32,35 +32,28 @@ export class TriggerManager {
   }
 
   updateNoteStates() {
-    const {
-      bus,
-      groovePlaying,
-      notePlaying,
-      notePlayingOverrideNoteNumber,
-      prevBaseNoteIndex,
-    } = this;
-    const { sp } = bus;
-    const nextGateOn = groovePlaying || notePlaying;
+    const { sp } = this.bus;
+    const nextGateOn = this.groovePlaying || this.notePlaying;
 
     let gateTriggered = false;
 
-    if (!bus.gateOn && nextGateOn) {
-      bus.gateOn = true;
+    if (!this.bus.gateOn && nextGateOn) {
+      this.bus.gateOn = true;
       gateTriggered = true;
-    } else if (bus.gateOn && !nextGateOn) {
-      bus.gateOn = false;
+    } else if (this.bus.gateOn && !nextGateOn) {
+      this.bus.gateOn = false;
     }
-    if (sp.baseNoteIndex !== prevBaseNoteIndex) {
+    if (sp.baseNoteIndex !== this.prevBaseNoteIndex) {
       this.notePlayingOverrideNoteNumber = -1;
       this.prevBaseNoteIndex = sp.baseNoteIndex;
     }
     const noteNumber =
-      notePlayingOverrideNoteNumber !== -1
-        ? notePlayingOverrideNoteNumber
+      this.notePlayingOverrideNoteNumber !== -1
+        ? this.notePlayingOverrideNoteNumber
         : 36 + sp.baseNoteIndex;
-    bus.noteNumber = noteNumber;
-    bus.beatActive = groovePlaying && sp.clockingOn;
-    bus.gateTriggered = gateTriggered;
+    this.bus.noteNumber = noteNumber;
+    this.bus.beatActive = this.groovePlaying && sp.clockingOn;
+    this.bus.gateTriggered = gateTriggered;
     return gateTriggered;
   }
 }

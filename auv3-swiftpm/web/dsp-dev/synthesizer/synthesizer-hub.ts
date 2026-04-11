@@ -30,14 +30,14 @@ type ChunkBuffer = {
 };
 
 export class SynthesizerHub {
-  bus: Bus;
-  mainSynth: MainSynthesisLine;
-  kickSynth: KickSynth;
-  bassSynth: BassSynth;
-  beatDriver: BeatDriver;
-  workBuffer: Float32Array;
-  chunkBuffer: ChunkBuffer;
-  triggerManager: TriggerManager;
+  private bus: Bus;
+  private mainSynth: MainSynthesisLine;
+  private kickSynth: KickSynth;
+  private bassSynth: BassSynth;
+  private beatDriver: BeatDriver;
+  private workBuffer: Float32Array;
+  private chunkBuffer: ChunkBuffer;
+  private triggerManager: TriggerManager;
 
   constructor() {
     const bus = createSynthesisBus();
@@ -60,6 +60,10 @@ export class SynthesizerHub {
     this.workBuffer = workBuffer;
     this.chunkBuffer = chunkBuffer;
     this.triggerManager = triggerManager;
+  }
+
+  getBus() {
+    return this.bus;
   }
 
   prepare(sampleRate: number) {
@@ -90,7 +94,7 @@ export class SynthesizerHub {
     this.triggerManager.stopNote(noteNumber);
   }
 
-  coreProcessSamples(buffer: Float32Array) {
+  private coreProcessSamples(buffer: Float32Array) {
     const { bus } = this;
     const { sp } = bus;
     const { workBuffer } = this;
@@ -139,7 +143,7 @@ export class SynthesizerHub {
     motions_root.processOnFrameEnd(bus);
   }
 
-  processSamplesWithChunks(destBuffer: Float32Array, len: number) {
+  private processSamplesWithChunks(destBuffer: Float32Array, len: number) {
     if (len === 0) return;
     // Even when the number of output requests is small, waveforms are always generated in chunks,
     // and changes to note and parameter states are applied only at chunk boundaries

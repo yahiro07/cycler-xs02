@@ -12,10 +12,10 @@ import { modifyPhaseWithColor } from "@core/synthesis-modules/funcs/phase-modifi
 import { fracPart } from "@core/utils/number-utils";
 
 export class OscillatorCore {
-  bus: Bus;
-  phase: number;
-  miPhaseDelta: Interpolator;
-  miColor: Interpolator;
+  private bus: Bus;
+  private phase: number;
+  private miPhaseDelta: Interpolator;
+  private miColor: Interpolator;
 
   constructor(bus: Bus) {
     this.bus = bus;
@@ -23,7 +23,7 @@ export class OscillatorCore {
     this.miPhaseDelta = createInterpolator();
     this.miColor = createInterpolator();
   }
-  mapBl2Waveform(wave: OscWave): BlWave2AWaveform {
+  private mapBl2Waveform(wave: OscWave): BlWave2AWaveform {
     switch (wave) {
       case OscWave.saw:
         return BlWave2AWaveform.saw;
@@ -40,15 +40,14 @@ export class OscillatorCore {
   }
 
   processSamples(destBuffer: Float32Array, normFreq: number, gain: number) {
-    const { bus, miPhaseDelta, miColor } = this;
-    const { sp, interm } = bus;
+    const { sp, interm } = this.bus;
     const numSamples = destBuffer.length;
-    miPhaseDelta.feed(normFreq, numSamples);
-    miColor.feed(interm.pmxOscColor, numSamples);
+    this.miPhaseDelta.feed(normFreq, numSamples);
+    this.miColor.feed(interm.pmxOscColor, numSamples);
 
     for (let i = 0; i < numSamples; i++) {
-      const phaseDelta = miPhaseDelta.advance();
-      const prColor = miColor.advance();
+      const phaseDelta = this.miPhaseDelta.advance();
+      const prColor = this.miColor.advance();
 
       const wave = this.mapBl2Waveform(sp.oscWave);
       let phase = fracPart(this.phase);
@@ -59,7 +58,7 @@ export class OscillatorCore {
         sp.oscColorMode,
       );
       const y = blWave2A_getWaveformSample(
-        bus.blWave2A,
+        this.bus.blWave2A,
         wave,
         phase,
         phaseDelta * speedRate,

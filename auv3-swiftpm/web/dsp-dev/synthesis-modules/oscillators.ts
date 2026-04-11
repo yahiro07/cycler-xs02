@@ -16,11 +16,11 @@ import { power3 } from "@core/utils/number-utils";
 type VoiceSpec = { octaveRatio: number; detune: number; gain: number };
 const ovsRate = 4;
 export class Oscillators {
-  bus: Bus;
-  oscs: OscillatorCore[];
-  ovsStage: OversamplingStage;
-  voiceSpecs: VoiceSpec[];
-  voiceIndex: number;
+  private bus: Bus;
+  private oscs: OscillatorCore[];
+  private ovsStage: OversamplingStage;
+  private voiceSpecs: VoiceSpec[];
+  private voiceIndex: number;
 
   constructor(bus: Bus) {
     this.bus = bus;
@@ -44,22 +44,22 @@ export class Oscillators {
     this.ovsStage.ensureAllocated(this.bus.maxFrames);
   }
 
-  calcNormFreq() {
-    const { bus } = this;
-    const { sp, interm } = bus;
+  private calcNormFreq() {
+    const { sp, interm } = this.bus;
 
     let noteNumber = 0;
     if (sp.oscPitchMoSmooth) {
       //Smoothly map the MO's continuous values to the intermediate notes between notes
-      noteNumber = bus.noteNumber + interm.pmxOscRelNote + sp.oscOctave * 12;
+      noteNumber =
+        this.bus.noteNumber + interm.pmxOscRelNote + sp.oscOctave * 12;
     } else {
       //Map parameter changes directly to note values
       noteNumber =
-        bus.noteNumber +
+        this.bus.noteNumber +
         mapParamOscPitchToRelativeNote(interm.pmxOscPrPitch, sp.oscPitchMode) +
         sp.oscOctave * 12;
     }
-    const oscSampleRate = bus.sampleRate * ovsRate;
+    const oscSampleRate = this.bus.sampleRate * ovsRate;
     return midiToFrequency(noteNumber) / oscSampleRate;
   }
 
@@ -68,8 +68,7 @@ export class Oscillators {
   }
 
   addVoice(octaveRatio: number, detune: number, gain: number) {
-    const { voiceSpecs } = this;
-    const vo = voiceSpecs[this.voiceIndex];
+    const vo = this.voiceSpecs[this.voiceIndex];
     vo.octaveRatio = octaveRatio;
     vo.detune = detune;
     vo.gain = gain;
@@ -79,8 +78,7 @@ export class Oscillators {
   }
 
   assignVoices() {
-    const { bus, voiceSpecs } = this;
-    const { sp, interm } = bus;
+    const { sp, interm } = this.bus;
     const { oscUnisonMode: pileMode } = sp;
     const det = power3(sp.oscUnisonDetune) * 0.03;
 
@@ -117,11 +115,11 @@ export class Oscillators {
       const wb = Math.sqrt(upperMix);
       const numVoices = this.voiceIndex;
       for (let i = 0; i < numVoices; i++) {
-        const vo = voiceSpecs[i];
+        const vo = this.voiceSpecs[i];
         this.addVoice(vo.octaveRatio, vo.detune, vo.gain);
       }
-      const formerVoices = voiceSpecs.slice(0, numVoices);
-      const latterVoices = voiceSpecs.slice(numVoices);
+      const formerVoices = this.voiceSpecs.slice(0, numVoices);
+      const latterVoices = this.voiceSpecs.slice(numVoices);
       if (isOdd) {
         formerVoices.forEach((vo) => {
           vo.gain *= wa;
@@ -142,11 +140,10 @@ export class Oscillators {
     }
   }
 
-  processSamplesInternal(buffer: Float32Array, normFreq: number) {
-    const { oscs, voiceIndex, voiceSpecs } = this;
-    for (let i = 0; i < voiceIndex; i++) {
-      const vo = voiceSpecs[i];
-      oscs[i].processSamples(
+  private processSamplesInternal(buffer: Float32Array, normFreq: number) {
+    for (let i = 0; i < this.voiceIndex; i++) {
+      const vo = this.voiceSpecs[i];
+      this.oscs[i].processSamples(
         buffer,
         normFreq * vo.octaveRatio * (1 + vo.detune),
         vo.gain,
@@ -155,17 +152,16 @@ export class Oscillators {
   }
 
   processSamples(buffer: Float32Array) {
-    const { bus, ovsStage } = this;
-    const { sp } = bus;
+    const { sp } = this.bus;
     if (!sp.oscOn) return;
 
     this.assignVoices();
 
     const normFreq = this.calcNormFreq();
 
-    const highResBuffer = ovsStage.readIn(buffer);
+    const highResBuffer = this.ovsStage.readIn(buffer);
     if (!highResBuffer) return;
     this.processSamplesInternal(highResBuffer, normFreq);
-    ovsStage.writeOut();
+    this.ovsStage.writeOut();
   }
 }

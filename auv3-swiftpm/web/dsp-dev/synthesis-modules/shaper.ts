@@ -10,9 +10,9 @@ import {
 import { applyShaper } from "@core/synthesis-modules/funcs/shaper-funcs";
 
 export class Shaper {
-  bus: Bus;
-  ovsStage: OversamplingStage;
-  miLevel: Interpolator;
+  private bus: Bus;
+  private ovsStage: OversamplingStage;
+  private miLevel: Interpolator;
 
   constructor(bus: Bus) {
     this.bus = bus;
@@ -25,18 +25,17 @@ export class Shaper {
   }
 
   processSamples(buffer: Float32Array) {
-    const { bus, ovsStage, miLevel } = this;
-    const sp = bus.sp;
+    const sp = this.bus.sp;
     if (!sp.shaperOn) return;
-    const highResBuffer = ovsStage.readIn(buffer, true);
+    const highResBuffer = this.ovsStage.readIn(buffer, true);
     if (!highResBuffer) return;
-    miLevel.feed(sp.shaperLevel, highResBuffer.length);
+    this.miLevel.feed(sp.shaperLevel, highResBuffer.length);
     for (let i = 0; i < highResBuffer.length; i++) {
-      const level = miLevel.advance();
+      const level = this.miLevel.advance();
       const input = highResBuffer[i];
       const y = applyShaper(input, level, sp.shaperMode);
       highResBuffer[i] = y;
     }
-    ovsStage.writeOut();
+    this.ovsStage.writeOut();
   }
 }

@@ -8,17 +8,15 @@ import { StepDelay } from "@core/synthesis-modules/step-delay";
 import { VoicingAmp } from "@core/synthesis-modules/voicing-amp";
 
 export class MainSynthesisLine {
-  bus: Bus;
-  oscillators: Oscillators;
-  filter: Filter;
-  voicingAmp: VoicingAmp;
-  shaper: Shaper;
-  phaser: Phaser;
-  delay: Delay;
-  stepDelay: StepDelay;
+  private oscillators: Oscillators;
+  private filter: Filter;
+  private voicingAmp: VoicingAmp;
+  private shaper: Shaper;
+  private phaser: Phaser;
+  private delay: Delay;
+  private stepDelay: StepDelay;
 
   constructor(bus: Bus) {
-    this.bus = bus;
     this.oscillators = new Oscillators(bus);
     this.filter = new Filter(bus);
     this.voicingAmp = new VoicingAmp(bus);

@@ -17,10 +17,10 @@ const bassTailAccentPatterns: Record<BassTailAccentPatternKey, string> = {
 };
 
 export class BeatDriver {
-  bus: Bus;
-  kickSynth: KickSynth;
-  bassSynth: BassSynth;
-  kickPlaying: boolean;
+  private bus: Bus;
+  private kickSynth: KickSynth;
+  private bassSynth: BassSynth;
+  private kickPlaying: boolean;
 
   constructor(bus: Bus, kickSynth: KickSynth, bassSynth: BassSynth) {
     this.bus = bus;
@@ -29,12 +29,11 @@ export class BeatDriver {
     this.kickPlaying = false;
   }
 
-  onStep(stepIndex: number) {
-    const { bus } = this;
-    const sp = bus.sp;
+  private onStep(stepIndex: number) {
+    const sp = this.bus.sp;
     {
       const pos = stepIndex % 4;
-      if (pos === 0 && sp.clockingOn && bus.gateOn && sp.kickOn) {
+      if (pos === 0 && sp.clockingOn && this.bus.gateOn && sp.kickOn) {
         this.kickSynth.playTone();
         this.kickPlaying = true;
       } else if (pos === 2 && this.kickPlaying) {
@@ -42,7 +41,7 @@ export class BeatDriver {
         this.kickPlaying = false;
       }
     }
-    if (sp.clockingOn && bus.gateOn && sp.bassOn) {
+    if (sp.clockingOn && this.bus.gateOn && sp.bassOn) {
       let pos = stepIndex % 32;
       const targetPattern = bassTailAccentPatterns[sp.bassTailAccentPatternKey];
       let pattern = "";
@@ -67,8 +66,8 @@ export class BeatDriver {
           c: 3,
         }[code];
         if (rel !== undefined) {
-          const unitStepSec = calcStepTimeSec(1, bus.bpm);
-          const ni = bus.noteNumber - 12 + rel;
+          const unitStepSec = calcStepTimeSec(1, this.bus.bpm);
+          const ni = this.bus.noteNumber - 12 + rel;
           this.bassSynth.playTone(ni, unitStepSec * sp.bassDuty);
         }
       }
@@ -80,13 +79,12 @@ export class BeatDriver {
   }
 
   advance() {
-    const { bus } = this;
-    const sp = bus.sp;
-    const { currentStep } = bus;
+    const sp = this.bus.sp;
+    const { currentStep } = this.bus;
     const frameStepLength = calcNumStepsForSamples(
-      bus.bpm,
-      bus.sampleRate,
-      bus.blockLength,
+      this.bus.bpm,
+      this.bus.sampleRate,
+      this.bus.blockLength,
     );
     const nextStep = (currentStep + frameStepLength) % (sp.loopBars * 16);
     const s0 = currentStep >>> 0;

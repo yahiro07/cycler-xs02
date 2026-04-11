@@ -8,8 +8,8 @@ import { getStepPeriodForDelay } from "@core/motions/funcs/steps-common";
 import { clampValue, mixValue, power2 } from "@core/utils/number-utils";
 
 export class StepDelay {
-  bus: Bus;
-  delayLine: IDelayLineRingBuffer;
+  private bus: Bus;
+  private delayLine: IDelayLineRingBuffer;
 
   constructor(bus: Bus) {
     this.bus = bus;
@@ -23,27 +23,30 @@ export class StepDelay {
   }
 
   processSamples(buffer: Float32Array) {
-    const { bus, delayLine } = this;
-    const { sp } = bus;
+    const { sp } = this.bus;
     if (!sp.stepDelayOn) return;
-    if (bus.gateTriggered) {
-      delayLine.clear();
+    if (this.bus.gateTriggered) {
+      this.delayLine.clear();
     }
-    const delayLineLength = delayLine.size();
+    const delayLineLength = this.delayLine.size();
 
     const n = buffer.length;
     const steps = getStepPeriodForDelay(sp.stepDelayStep);
-    let delayPos = calcNumSamplesForSteps(bus.bpm, bus.sampleRate, steps);
+    let delayPos = calcNumSamplesForSteps(
+      this.bus.bpm,
+      this.bus.sampleRate,
+      steps,
+    );
     delayPos = clampValue(delayPos, 1, delayLineLength - 1);
 
     for (let i = 0; i < n; i++) {
       let y = buffer[i];
       const dry = y;
-      const yd = delayLine.take(delayPos);
+      const yd = this.delayLine.take(delayPos);
       const wet = y + yd * power2(sp.stepDelayFeed) * 0.9;
       y = mixValue(dry, wet, sp.stepDelayMix);
       buffer[i] = y;
-      delayLine.push(y);
+      this.delayLine.push(y);
     }
   }
 }

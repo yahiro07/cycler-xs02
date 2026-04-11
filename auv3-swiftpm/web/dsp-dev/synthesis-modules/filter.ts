@@ -7,8 +7,8 @@ import {
 import { clampValue, invPower2, mapUnaryTo } from "@core/utils/number-utils";
 
 export class Filter {
-  bus: Bus;
-  filterBiquadLp12: IFilter;
+  private bus: Bus;
+  private filterBiquadLp12: IFilter;
 
   constructor(bus: Bus) {
     this.bus = bus;
@@ -19,7 +19,7 @@ export class Filter {
     this.filterBiquadLp12.reset();
   }
 
-  calculateNormalizedCutoffFreq(
+  private calculateNormalizedCutoffFreq(
     noteNumber: number,
     prCutoff: number,
     sampleRate: number,
@@ -39,16 +39,20 @@ export class Filter {
   }
 
   processSamples(buffer: Float32Array) {
-    const { bus, filterBiquadLp12 } = this;
-    const { sp, interm } = bus;
+    const { sp, interm } = this.bus;
     if (!sp.filterOn) return;
     const prCutoff = interm.pmxFilterPrCutoff;
     const cutoffNormFreq = this.calculateNormalizedCutoffFreq(
-      bus.noteNumber,
+      this.bus.noteNumber,
       prCutoff,
-      bus.sampleRate,
+      this.bus.sampleRate,
     );
     const prPeak = sp.filterPeak;
-    filterBiquadLp12.processSamples(buffer, cutoffNormFreq, prCutoff, prPeak);
+    this.filterBiquadLp12.processSamples(
+      buffer,
+      cutoffNormFreq,
+      prCutoff,
+      prPeak,
+    );
   }
 }

@@ -270,7 +270,7 @@ export function createStateBus(): StateBus {
 }
 
 export class BassSynth {
-  bus: StateBus = createStateBus();
+  private bus: StateBus = createStateBus();
 
   prepare(sampleRate: number, maxFrames: number) {
     this.bus.sampleRate = sampleRate;
@@ -284,41 +284,38 @@ export class BassSynth {
   }
 
   processSamples(destBuffer: Float32Array) {
-    const bus = this.bus;
-    if (bus.sampleRate === 0 || !bus.workBuffer) return;
-    const buffer = bus.workBuffer;
+    if (this.bus.sampleRate === 0 || !this.bus.workBuffer) return;
+    const buffer = this.bus.workBuffer;
     buffer.fill(0);
-    const timeLength = buffer.length / bus.sampleRate;
-    osc_processSamples(bus, buffer);
-    voicingAmp_processSamples(bus, buffer);
+    const timeLength = buffer.length / this.bus.sampleRate;
+    osc_processSamples(this.bus, buffer);
+    voicingAmp_processSamples(this.bus, buffer);
     writeBuffer(destBuffer, buffer);
-    bus.uptime += timeLength;
-    bus.noteOffUptime += timeLength;
+    this.bus.uptime += timeLength;
+    this.bus.noteOffUptime += timeLength;
     if (
-      bus.gateOn &&
-      bus.noteDurationSec !== undefined &&
-      bus.uptime > bus.noteDurationSec
+      this.bus.gateOn &&
+      this.bus.noteDurationSec !== undefined &&
+      this.bus.uptime > this.bus.noteDurationSec
     ) {
-      bus.gateOn = false;
-      bus.noteOffUptime = 0;
+      this.bus.gateOn = false;
+      this.bus.noteOffUptime = 0;
     }
-    bus.gateTriggered = false;
+    this.bus.gateTriggered = false;
   }
 
   playTone(noteNumber: number, noteDurationSec?: number) {
-    const bus = this.bus;
     if (noteDurationSec !== undefined && noteDurationSec <= 1e-6) return;
-    bus.noteNumber = noteNumber;
-    bus.uptime = 0;
-    bus.noteOffUptime = 0;
-    bus.gateOn = true;
-    bus.noteDurationSec = noteDurationSec;
-    bus.gateTriggered = true;
+    this.bus.noteNumber = noteNumber;
+    this.bus.uptime = 0;
+    this.bus.noteOffUptime = 0;
+    this.bus.gateOn = true;
+    this.bus.noteDurationSec = noteDurationSec;
+    this.bus.gateTriggered = true;
   }
 
   stopTone() {
-    const bus = this.bus;
-    bus.gateOn = false;
-    bus.noteOffUptime = 0;
+    this.bus.gateOn = false;
+    this.bus.noteOffUptime = 0;
   }
 }

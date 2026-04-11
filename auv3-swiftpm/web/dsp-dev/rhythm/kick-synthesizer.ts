@@ -267,47 +267,42 @@ export function createStateBus(): StateBus {
 }
 
 export class KickSynth {
-  bus: StateBus = createStateBus();
+  private bus: StateBus = createStateBus();
 
   prepare(sampleRate: number, maxFrames: number) {
-    const { bus } = this;
-    bus.sampleRate = sampleRate;
-    if (!(bus.workBuffer && bus.workBuffer.length === maxFrames)) {
-      bus.workBuffer = new Float32Array(maxFrames);
+    this.bus.sampleRate = sampleRate;
+    if (!(this.bus.workBuffer && this.bus.workBuffer.length === maxFrames)) {
+      this.bus.workBuffer = new Float32Array(maxFrames);
     }
   }
 
   applyPreset(presetKey: KickPresetKey) {
-    const { bus } = this;
-    Object.assign(bus.parameters, kickPresets[presetKey]);
+    Object.assign(this.bus.parameters, kickPresets[presetKey]);
   }
 
   processSamples(destBuffer: Float32Array) {
-    const { bus } = this;
-    if (bus.sampleRate === 0 || !bus.workBuffer) return;
-    const buffer = bus.workBuffer;
+    if (this.bus.sampleRate === 0 || !this.bus.workBuffer) return;
+    const buffer = this.bus.workBuffer;
     buffer.fill(0);
-    const timeLength = buffer.length / bus.sampleRate;
-    pitchEg_advance(bus);
-    ampEg_advance(bus);
-    osc_processSamples(bus, buffer);
-    voicingAmp_processSamples(bus, buffer);
+    const timeLength = buffer.length / this.bus.sampleRate;
+    pitchEg_advance(this.bus);
+    ampEg_advance(this.bus);
+    osc_processSamples(this.bus, buffer);
+    voicingAmp_processSamples(this.bus, buffer);
     writeBuffer(destBuffer, buffer);
-    bus.currentTime += timeLength;
-    bus.gateTriggered = false;
+    this.bus.currentTime += timeLength;
+    this.bus.gateTriggered = false;
   }
 
   playTone() {
-    const { bus } = this;
-    bus.noteNumber = 32;
-    bus.currentTime = 0;
-    bus.gateOn = true;
-    bus.gateTriggered = true;
+    this.bus.noteNumber = 32;
+    this.bus.currentTime = 0;
+    this.bus.gateOn = true;
+    this.bus.gateTriggered = true;
   }
 
   stopTone() {
-    const { bus } = this;
-    bus.gateOn = false;
-    bus.currentTime = 0;
+    this.bus.gateOn = false;
+    this.bus.currentTime = 0;
   }
 }

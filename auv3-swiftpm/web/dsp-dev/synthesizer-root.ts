@@ -5,7 +5,7 @@ import { parameterAssigner_applyParameter } from "./parameters/parameter-assigne
 import { SynthesizerHub } from "./synthesizer/synthesizer-hub";
 
 export class SynthesizerRoot implements IDspCore {
-  synthesizerHub: SynthesizerHub;
+  private synthesizerHub: SynthesizerHub;
 
   constructor() {
     this.synthesizerHub = new SynthesizerHub();
@@ -16,7 +16,8 @@ export class SynthesizerRoot implements IDspCore {
     this.synthesizerHub.prepare(sampleRate);
   }
   setParameter(id: number, value: number): void {
-    parameterAssigner_applyParameter(this.synthesizerHub.bus, id, value);
+    const bus = this.synthesizerHub.getBus();
+    parameterAssigner_applyParameter(bus, id, value);
   }
   noteOn(noteNumber: number, _velocity: number): void {
     this.synthesizerHub.noteOn(noteNumber);
@@ -42,7 +43,7 @@ export class SynthesizerRoot implements IDspCore {
   }
 
   extraLogic_pullRandomizeRequestFlag(): boolean {
-    const bus = this.synthesizerHub.bus;
+    const bus = this.synthesizerHub.getBus();
     const res = bus.randomizationRequestFlag;
     bus.randomizationRequestFlag = false;
     return res;
