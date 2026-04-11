@@ -172,6 +172,5 @@ export class SynthesizerHub {
 
   setupBlWaveTable() {
     blWave2A_buildWaveTables(this.bus.blWave2A);
-    konsole.log("synthesizerHub_setupBlWaveTable");
   }
 }
