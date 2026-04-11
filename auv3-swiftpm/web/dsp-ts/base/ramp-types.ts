@@ -6,7 +6,7 @@
 
 export type RampSpec = {
   headPos: number; //Start position of the ramp; offset in steps from the beginning of the loop
-  relPos: number; //ramp内でのstep単位での経過時間 0~duration
+  relPos: number; //Elapsed time per step within the ramp 0~duration
   progress: number; //Progress within the ramp: 0–1
   duration: number; //Ramp length, in steps
 };
