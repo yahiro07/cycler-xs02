@@ -1,6 +1,35 @@
 import { ShaperMode } from "@dsp/base/parameter-defs";
-import { shaperCore } from "@dsp/dsp-modules/effects/shaper";
-import { power3 } from "@dsp/utils/number-utils";
+import { m_abs, m_pi, m_sign, m_sin } from "@dsp/utils/math-utils";
+import { mixValue, power3 } from "@dsp/utils/number-utils";
+
+const shaperCore = {
+  foldSine(x: number) {
+    return m_sin(x * m_pi * 0.5);
+  },
+  foldTriangle(x: number) {
+    const t = (((x + 1) % 4) + 4) % 4;
+    return t < 2 ? t - 1 : 3 - t;
+  },
+  foldSawHalf(x: number) {
+    const sign = m_sign(x);
+    let level = m_abs(x);
+    level %= 1;
+    return sign * level;
+  },
+  foldPolyHalf(_x: number) {
+    const sign = m_sign(_x);
+    const x = m_abs(_x);
+    if (x < 1) return x;
+    if (x < 2) return 1;
+    const y = ((x / 2) & 1) === 0 ? 1 : 0;
+    return sign * y;
+  },
+  foldBlend(x: number, a: number) {
+    const f = shaperCore.foldTriangle(x);
+    const s = m_sin(x * m_pi * 2);
+    return mixValue(f, s, a);
+  },
+};
 
 export function applyShaper(
   x: number,
