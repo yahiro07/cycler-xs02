@@ -5,7 +5,7 @@ import {
   MotionParams,
   MotionStride,
 } from "@dsp/base/parameter-defs";
-import { RampSpec } from "@dsp/base/ramp-types";
+import { RampSpec } from "@dsp/motions/gaters/ramp-types";
 import { SynthesisBus } from "@dsp/base/synthesis-bus";
 import { glideCurves } from "@dsp/dsp-modules/basic/curves";
 import { deterministicRandom } from "@dsp/dsp-modules/basic/deterministic-random";

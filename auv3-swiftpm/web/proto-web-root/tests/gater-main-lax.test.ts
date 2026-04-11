@@ -1,4 +1,4 @@
-import { StepRampCode } from "@dsp/base/ramp-types";
+import { StepRampCode } from "@dsp/motions/gaters/ramp-types";
 import { gaterMainLax_testGenerateStepRampCodes } from "@dsp/motions/gaters/gater-main-lax";
 import { it } from "vitest";
 

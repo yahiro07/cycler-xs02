@@ -1,4 +1,4 @@
-import { RampSpec } from "@dsp/base/ramp-types";
+import { RampSpec } from "@dsp/motions/gaters/ramp-types";
 
 export type RampSpecBase = {
   headPos: number;

@@ -1,5 +1,5 @@
 import { GateSequencerCode } from "@dsp/base/parameter-defs";
-import { StepRampCode } from "@dsp/base/ramp-types";
+import { StepRampCode } from "@dsp/motions/gaters/ramp-types";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForGaterMain } from "@dsp/motions/funcs/steps-common";
 

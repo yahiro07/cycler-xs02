@@ -4,7 +4,7 @@ import {
   MotionStride,
   PureStride,
 } from "@dsp/base/parameter-defs";
-import { RampSpec, StepRampCode } from "@dsp/base/ramp-types";
+import { RampSpec, StepRampCode } from "@dsp/motions/gaters/ramp-types";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriod } from "@dsp/motions/funcs/steps-common";
 import { gaterExSeqMode_getRampSpec } from "@dsp/motions/gaters/gater-ex-seq";

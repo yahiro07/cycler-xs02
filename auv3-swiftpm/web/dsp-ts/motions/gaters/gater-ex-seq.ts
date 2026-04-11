@@ -1,5 +1,5 @@
 import { ExGaterCode } from "@dsp/base/parameter-defs";
-import { RampSpec } from "@dsp/base/ramp-types";
+import { RampSpec } from "@dsp/motions/gaters/ramp-types";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForExGater } from "@dsp/motions/funcs/steps-common";
 import { seqNumbers } from "@dsp/utils/arrays";
