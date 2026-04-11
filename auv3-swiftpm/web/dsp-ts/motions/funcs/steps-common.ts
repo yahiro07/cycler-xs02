@@ -4,9 +4,9 @@ import {
   GaterSourceStride,
   LoopBarsKey,
   PureStride,
-} from "@core/base/parameter-defs";
-import { m_pow } from "@core/utils/math-utils";
-import { mapUnaryToInt } from "@core/utils/number-utils";
+} from "@dsp/base/parameter-defs";
+import { m_pow } from "@dsp/utils/math-utils";
+import { mapUnaryToInt } from "@dsp/utils/number-utils";
 
 export function getLfoStepPeriod(lfoRate: number, lfoRateStepped: boolean) {
   let k = 0;

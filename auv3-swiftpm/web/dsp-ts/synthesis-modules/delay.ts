@@ -1,13 +1,13 @@
-import { Bus } from "@core/base/synthesis-bus";
+import { Bus } from "@dsp/base/synthesis-bus";
 import {
   createInterpolator,
   Interpolator,
-} from "@core/dsp-modules/basic/interpolator";
+} from "@dsp/dsp-modules/basic/interpolator";
 import {
   createDelayLineRingBuffer,
   IDelayLineRingBuffer,
-} from "@core/dsp-modules/effects/delay-line-ring-buffer";
-import { clampValue, mixValue, power2 } from "@core/utils/number-utils";
+} from "@dsp/dsp-modules/effects/delay-line-ring-buffer";
+import { clampValue, mixValue, power2 } from "@dsp/utils/number-utils";
 
 const delayMaxTimeSec = 20 / 1000;
 

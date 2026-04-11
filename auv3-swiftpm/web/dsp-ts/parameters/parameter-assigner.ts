@@ -19,10 +19,10 @@ import {
   OscWave,
   RandomizeLevel,
   ShaperMode,
-} from "@core/base/parameter-defs";
-import { ParameterId } from "@core/base/parameter-id";
-import { SynthesisBus } from "@core/base/synthesis-bus";
-import { m_round } from "@core/utils/math-utils";
+} from "@dsp/base/parameter-defs";
+import { ParameterId } from "@dsp/base/parameter-id";
+import { SynthesisBus } from "@dsp/base/synthesis-bus";
+import { m_round } from "@dsp/utils/math-utils";
 
 function floatToBool(value: number) {
   return value > 0.5;

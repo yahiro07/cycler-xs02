@@ -1,8 +1,8 @@
-import { Bus } from "@core/base/synthesis-bus";
+import { Bus } from "@dsp/base/synthesis-bus";
 import {
   createInterpolator,
   Interpolator,
-} from "@core/dsp-modules/basic/interpolator";
+} from "@dsp/dsp-modules/basic/interpolator";
 
 export class VoicingAmp {
   private bus: Bus;

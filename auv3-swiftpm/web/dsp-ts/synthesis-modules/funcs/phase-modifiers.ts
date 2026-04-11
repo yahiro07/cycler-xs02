@@ -1,5 +1,5 @@
-import { OscColorMode } from "@core/base/parameter-defs";
-import { seqNumbers } from "@core/utils/arrays";
+import { OscColorMode } from "@dsp/base/parameter-defs";
+import { seqNumbers } from "@dsp/utils/arrays";
 import {
   m_abs,
   m_cos,
@@ -9,7 +9,7 @@ import {
   m_random,
   m_sin,
   m_two_pi,
-} from "@core/utils/math-utils";
+} from "@dsp/utils/math-utils";
 import {
   clampValueZeroOne,
   fracPart,
@@ -17,7 +17,7 @@ import {
   mapUnaryTo,
   mixValue,
   power2,
-} from "@core/utils/number-utils";
+} from "@dsp/utils/number-utils";
 
 const randomSequence = seqNumbers(200).map(() => m_random());
 

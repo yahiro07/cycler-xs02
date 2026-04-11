@@ -1,9 +1,9 @@
-import { ExGaterCode } from "@core/base/parameter-defs";
-import { RampSpec } from "@core/base/ramp-types";
-import { Bus } from "@core/base/synthesis-bus";
-import { getStepPeriodForExGater } from "@core/motions/funcs/steps-common";
-import { checkArrayItemsEquivalent, seqNumbers } from "@core/utils/arrays";
-import { raiseError } from "@core/utils/errors";
+import { ExGaterCode } from "@dsp/base/parameter-defs";
+import { RampSpec } from "@dsp/base/ramp-types";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { getStepPeriodForExGater } from "@dsp/motions/funcs/steps-common";
+import { checkArrayItemsEquivalent, seqNumbers } from "@dsp/utils/arrays";
+import { raiseError } from "@dsp/utils/errors";
 
 type PreAllocatedArray<T> = {
   reset(): void;

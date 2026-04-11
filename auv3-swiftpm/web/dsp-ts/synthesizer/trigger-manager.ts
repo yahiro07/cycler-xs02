@@ -1,4 +1,4 @@
-import { Bus } from "@core/base/synthesis-bus";
+import { Bus } from "@dsp/base/synthesis-bus";
 
 export class TriggerManager {
   private bus: Bus;

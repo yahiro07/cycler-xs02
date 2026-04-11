@@ -1,6 +1,6 @@
-import { IDspCore } from "@core/base/api";
-import { CommandId } from "@core/base/parameter-id";
-import { applyRandomizeParameters } from "@core/parameters/parameter-randomizer";
+import { IDspCore } from "@dsp/base/api";
+import { CommandId } from "@dsp/base/parameter-id";
+import { applyRandomizeParameters } from "@dsp/parameters/parameter-randomizer";
 import { parameterAssigner_applyParameter } from "./parameters/parameter-assigner";
 import { SynthesizerHub } from "./synthesizer/synthesizer-hub";
 

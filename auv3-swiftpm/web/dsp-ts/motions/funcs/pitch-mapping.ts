@@ -1,11 +1,11 @@
-import { OscPitchMode } from "@core/base/parameter-defs";
-import { m_floor, m_log2 } from "@core/utils/math-utils";
+import { OscPitchMode } from "@dsp/base/parameter-defs";
+import { m_floor, m_log2 } from "@dsp/utils/math-utils";
 import {
   clampValue,
   mapUnaryTo,
   mapUnaryToInt,
   mapUnaryToValues,
-} from "@core/utils/number-utils";
+} from "@dsp/utils/number-utils";
 
 const dn = -12;
 const noteMapperConstants = {

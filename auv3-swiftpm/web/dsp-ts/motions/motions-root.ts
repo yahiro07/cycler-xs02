@@ -1,12 +1,12 @@
-import { GateStride } from "@core/base/parameter-defs";
-import { Bus } from "@core/base/synthesis-bus";
-import { calcNumStepsForSamples } from "@core/dsp-modules/basic/sequence-helper";
+import { GateStride } from "@dsp/base/parameter-defs";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { calcNumStepsForSamples } from "@dsp/dsp-modules/basic/sequence-helper";
 import {
   getAmpEgLevel,
   wrapGetStepRamp,
-} from "@core/motions/impl/motion-curve-mapper";
-import * as mo_mappers from "@core/motions/mo-mappers";
-import { m_random } from "@core/utils/math-utils";
+} from "@dsp/motions/impl/motion-curve-mapper";
+import * as mo_mappers from "@dsp/motions/mo-mappers";
+import { m_random } from "@dsp/utils/math-utils";
 
 function getStepDeltaForFrame(bus: Bus) {
   return calcNumStepsForSamples(bus.bpm, bus.sampleRate, bus.blockLength);

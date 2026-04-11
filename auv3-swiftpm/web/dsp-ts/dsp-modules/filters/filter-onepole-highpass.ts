@@ -1,4 +1,4 @@
-import { m_exp, m_pi } from "@core/utils/math-utils";
+import { m_exp, m_pi } from "@dsp/utils/math-utils";
 
 export function createFilterOnePoleHighPass(
   sampleRate: number,

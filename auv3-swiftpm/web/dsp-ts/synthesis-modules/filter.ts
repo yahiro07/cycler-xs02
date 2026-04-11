@@ -1,10 +1,10 @@
-import { Bus } from "@core/base/synthesis-bus";
-import { midiToFrequency } from "@core/dsp-modules/basic/synthesis-helper";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { midiToFrequency } from "@dsp/dsp-modules/basic/synthesis-helper";
 import {
   createFilterBiquadLp12,
   IFilter,
-} from "@core/dsp-modules/filters/filter-biquad-lp12";
-import { clampValue, invPower2, mapUnaryTo } from "@core/utils/number-utils";
+} from "@dsp/dsp-modules/filters/filter-biquad-lp12";
+import { clampValue, invPower2, mapUnaryTo } from "@dsp/utils/number-utils";
 
 export class Filter {
   private bus: Bus;

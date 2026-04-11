@@ -1,4 +1,4 @@
-import { m_random, m_sin, m_two_pi } from "@core/utils/math-utils";
+import { m_random, m_sin, m_two_pi } from "@dsp/utils/math-utils";
 
 export function fillErrorSound(buffer: Float32Array) {
   for (let i = 0; i < buffer.length; i++) {

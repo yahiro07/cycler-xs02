@@ -19,7 +19,7 @@ import {
   m_min,
   m_pi,
   m_sin,
-} from "@core/utils/math-utils";
+} from "@dsp/utils/math-utils";
 
 type IOvsFilter = {
   reset(): void;

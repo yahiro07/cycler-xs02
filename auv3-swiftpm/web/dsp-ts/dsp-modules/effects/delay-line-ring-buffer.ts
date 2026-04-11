@@ -1,4 +1,4 @@
-import { readBufferInterpolated } from "@core/dsp-modules/basic/buffer-functions";
+import { readBufferInterpolated } from "@dsp/dsp-modules/basic/buffer-functions";
 
 export interface IDelayLineRingBuffer {
   size(): number;

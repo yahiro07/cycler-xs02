@@ -1,6 +1,6 @@
-import { MoEgWave } from "@core/base/parameter-defs";
-import { mapExpCurve } from "@core/dsp-modules/basic/curves";
-import { m_exp, m_floor } from "@core/utils/math-utils";
+import { MoEgWave } from "@dsp/base/parameter-defs";
+import { mapExpCurve } from "@dsp/dsp-modules/basic/curves";
+import { m_exp, m_floor } from "@dsp/utils/math-utils";
 import {
   clampValueZeroOne,
   invPower2,
@@ -10,7 +10,7 @@ import {
   mixValue,
   power3,
   tunableSigmoid,
-} from "@core/utils/number-utils";
+} from "@dsp/utils/number-utils";
 
 export function getEgCurve(wave: MoEgWave, pos: number, shape: number): number {
   if (wave === MoEgWave.d) {

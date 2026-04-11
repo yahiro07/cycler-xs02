@@ -1,5 +1,5 @@
-import { m_pow } from "@core/utils/math-utils";
-import { linearInterpolate } from "@core/utils/number-utils";
+import { m_pow } from "@dsp/utils/math-utils";
+import { linearInterpolate } from "@dsp/utils/number-utils";
 
 export function mapDbGain(
   level: number,

@@ -1,23 +1,23 @@
-import { Bus, createSynthesisBus } from "@core/base/synthesis-bus";
+import { Bus, createSynthesisBus } from "@dsp/base/synthesis-bus";
 import {
   applyBufferGain,
   applyBufferGainRms,
   applyBufferSoftClip,
   writeBuffer,
-} from "@core/dsp-modules/basic/buffer-functions";
-import { mapDbGain } from "@core/dsp-modules/basic/db-gain-mapper";
-import { masterGainConfig } from "@core/dsp-modules/basic/master-gain-config";
-import { blWave2A_buildWaveTables } from "@core/dsp-modules/oscillators/bl-wave-2a";
-import { getLoopBarsFromKey } from "@core/motions/funcs/steps-common";
-import { gaterExSeqMode_setupLocalState } from "@core/motions/gaters/gater-ex-seq";
-import { gaterMinLaxMode_setupLocalState } from "@core/motions/gaters/gater-main-lax";
-import * as motions_root from "@core/motions/motions-root";
-import { BassSynth } from "@core/rhythm/bass-synthesizer";
-import { BeatDriver } from "@core/rhythm/beat-driver";
-import { KickSynth } from "@core/rhythm/kick-synthesizer";
-import { MainSynthesisLine } from "@core/synthesizer/main-synthesis-line";
-import { konsole } from "@core/utils/konsole";
-import { power2 } from "@core/utils/number-utils";
+} from "@dsp/dsp-modules/basic/buffer-functions";
+import { mapDbGain } from "@dsp/dsp-modules/basic/db-gain-mapper";
+import { masterGainConfig } from "@dsp/dsp-modules/basic/master-gain-config";
+import { blWave2A_buildWaveTables } from "@dsp/dsp-modules/oscillators/bl-wave-2a";
+import { getLoopBarsFromKey } from "@dsp/motions/funcs/steps-common";
+import { gaterExSeqMode_setupLocalState } from "@dsp/motions/gaters/gater-ex-seq";
+import { gaterMinLaxMode_setupLocalState } from "@dsp/motions/gaters/gater-main-lax";
+import * as motions_root from "@dsp/motions/motions-root";
+import { BassSynth } from "@dsp/rhythm/bass-synthesizer";
+import { BeatDriver } from "@dsp/rhythm/beat-driver";
+import { KickSynth } from "@dsp/rhythm/kick-synthesizer";
+import { MainSynthesisLine } from "@dsp/synthesizer/main-synthesis-line";
+import { konsole } from "@dsp/utils/konsole";
+import { power2 } from "@dsp/utils/number-utils";
 import { TriggerManager } from "./trigger-manager";
 
 const configs = {

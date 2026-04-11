@@ -1,5 +1,5 @@
-import { m_abs, m_cos, m_pi, m_sign, m_sin } from "@core/utils/math-utils";
-import { invPower2 } from "@core/utils/number-utils";
+import { m_abs, m_cos, m_pi, m_sign, m_sin } from "@dsp/utils/math-utils";
+import { invPower2 } from "@dsp/utils/number-utils";
 
 export const curveMapper = {
   riseSine(x: number) {

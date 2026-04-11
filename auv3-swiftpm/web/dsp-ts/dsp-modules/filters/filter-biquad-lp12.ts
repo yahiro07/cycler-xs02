@@ -1,11 +1,11 @@
 // Biquad Lowpass Filter (12dB/oct, 2-pole)
 // Standard cookbook implementation
 
-import { createMultiInterpolator } from "@core/dsp-modules/basic/multi-interpolator";
-import { applySoftClipAt } from "@core/dsp-modules/effects/soft-clip-shaper";
-import { createFilterOnePoleHighPass } from "@core/dsp-modules/filters/filter-onepole-highpass";
-import { m_cos, m_sin, m_two_pi } from "@core/utils/math-utils";
-import { clampValue } from "@core/utils/number-utils";
+import { createMultiInterpolator } from "@dsp/dsp-modules/basic/multi-interpolator";
+import { applySoftClipAt } from "@dsp/dsp-modules/effects/soft-clip-shaper";
+import { createFilterOnePoleHighPass } from "@dsp/dsp-modules/filters/filter-onepole-highpass";
+import { m_cos, m_sin, m_two_pi } from "@dsp/utils/math-utils";
+import { clampValue } from "@dsp/utils/number-utils";
 
 export interface IFilter {
   reset(): void;

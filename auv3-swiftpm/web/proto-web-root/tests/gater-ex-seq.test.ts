@@ -1,8 +1,8 @@
-import { ExGaterCode } from "@core/base/parameter-defs";
+import { ExGaterCode } from "@dsp/base/parameter-defs";
 import {
   GaterExNoteType,
   gaterExSeq_buildNotesFromCodesForTest,
-} from "@core/motions/gaters/gater-ex-seq";
+} from "@dsp/motions/gaters/gater-ex-seq";
 import { describe, expect, it } from "vitest";
 
 describe("gaterExSeq_buildNotesFromCodesForTest", () => {

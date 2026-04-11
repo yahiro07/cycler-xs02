@@ -1,8 +1,8 @@
-import { StepRampCode } from "@core/base/ramp-types";
-import { Bus } from "@core/base/synthesis-bus";
-import { getStepPeriodForGaterMain } from "@core/motions/funcs/steps-common";
-import { seqNumbers } from "@core/utils/arrays";
-import { m_random } from "@core/utils/math-utils";
+import { StepRampCode } from "@dsp/base/ramp-types";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { getStepPeriodForGaterMain } from "@dsp/motions/funcs/steps-common";
+import { seqNumbers } from "@dsp/utils/arrays";
+import { m_random } from "@dsp/utils/math-utils";
 
 type GaterMainLaxState = {
   stepRampCodes: StepRampCode[];

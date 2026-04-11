@@ -1,11 +1,11 @@
-import { m_abs, m_sign, m_sqrt2 } from "@core/utils/math-utils";
+import { m_abs, m_sign, m_sqrt2 } from "@dsp/utils/math-utils";
 import {
   clampValue,
   invPower2,
   invPower4,
   linearInterpolate,
   mapUnaryTo,
-} from "@core/utils/number-utils";
+} from "@dsp/utils/number-utils";
 
 export const softClipShapers = {
   soft1(_x) {

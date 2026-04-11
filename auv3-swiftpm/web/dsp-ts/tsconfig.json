@@ -11,7 +11,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "paths": {
-      "@core/*": [
+      "@dsp/*": [
         "./*"
       ]
     }

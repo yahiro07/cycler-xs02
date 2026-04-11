@@ -1,4 +1,4 @@
-import { m_abs, m_floor, m_max, m_min, m_round } from "@core/utils/math-utils";
+import { m_abs, m_floor, m_max, m_min, m_round } from "@dsp/utils/math-utils";
 
 export function clampValue(val: number, lo: number, hi: number) {
   if (val > hi) return hi;

@@ -4,17 +4,17 @@ import {
   MoType,
   MotionParams,
   MotionStride,
-} from "@core/base/parameter-defs";
-import { RampSpec } from "@core/base/ramp-types";
-import { SynthesisBus } from "@core/base/synthesis-bus";
-import { glideCurves } from "@core/dsp-modules/basic/curves";
-import { deterministicRandom } from "@core/dsp-modules/basic/deterministic-random";
-import * as eg_curves from "@core/motions/funcs/eg-curves";
-import * as lfo_waves from "@core/motions/funcs/lfo-waves";
-import * as steps_common from "@core/motions/funcs/steps-common";
-import * as ramp_provider from "@core/motions/gaters/ramp-provider";
-import { RandomValueMapperFn } from "@core/motions/impl/motion-common";
-import { invPower2Weak, lowClipZero, mixValue } from "@core/utils/number-utils";
+} from "@dsp/base/parameter-defs";
+import { RampSpec } from "@dsp/base/ramp-types";
+import { SynthesisBus } from "@dsp/base/synthesis-bus";
+import { glideCurves } from "@dsp/dsp-modules/basic/curves";
+import { deterministicRandom } from "@dsp/dsp-modules/basic/deterministic-random";
+import * as eg_curves from "@dsp/motions/funcs/eg-curves";
+import * as lfo_waves from "@dsp/motions/funcs/lfo-waves";
+import * as steps_common from "@dsp/motions/funcs/steps-common";
+import * as ramp_provider from "@dsp/motions/gaters/ramp-provider";
+import { RandomValueMapperFn } from "@dsp/motions/impl/motion-common";
+import { invPower2Weak, lowClipZero, mixValue } from "@dsp/utils/number-utils";
 
 const moPartSeed = {
   rnd: 1,

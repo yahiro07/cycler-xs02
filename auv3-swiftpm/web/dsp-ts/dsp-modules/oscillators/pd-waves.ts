@@ -1,5 +1,5 @@
-import { m_cos, m_pi, m_sin } from "@core/utils/math-utils";
-import { linearInterpolate, mixValue } from "@core/utils/number-utils";
+import { m_cos, m_pi, m_sin } from "@dsp/utils/math-utils";
+import { linearInterpolate, mixValue } from "@dsp/utils/number-utils";
 
 type OscWave = "saw" | "rect" | "tri" | "sine";
 

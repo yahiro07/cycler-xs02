@@ -1,10 +1,10 @@
 import {
   calculateWaveFrameSize,
   readWaveFrameInterpolated,
-} from "@core/dsp-modules/oscillators/wave-frame-helper";
-import { seqNumbers } from "@core/utils/arrays";
-import { m_floor, m_pi, m_sin, m_two_pi } from "@core/utils/math-utils";
-import { clampValue } from "@core/utils/number-utils";
+} from "@dsp/dsp-modules/oscillators/wave-frame-helper";
+import { seqNumbers } from "@dsp/utils/arrays";
+import { m_floor, m_pi, m_sin, m_two_pi } from "@dsp/utils/math-utils";
+import { clampValue } from "@dsp/utils/number-utils";
 
 export enum BlWave2AWaveform {
   saw,

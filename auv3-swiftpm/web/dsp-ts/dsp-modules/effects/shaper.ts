@@ -10,13 +10,13 @@ import {
   m_sign,
   m_sin,
   m_tanh,
-} from "@core/utils/math-utils";
+} from "@dsp/utils/math-utils";
 import {
   mapUnaryTo,
   mixValue,
   power2,
   tunableSigmoid,
-} from "@core/utils/number-utils";
+} from "@dsp/utils/number-utils";
 
 export function applyShaperCore(
   y: number,

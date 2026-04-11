@@ -1,5 +1,5 @@
-import { LfoWave } from "@core/base/parameter-defs";
-import { m_pi, m_sin } from "@core/utils/math-utils";
+import { LfoWave } from "@dsp/base/parameter-defs";
+import { m_pi, m_sin } from "@dsp/utils/math-utils";
 
 export function getLfoWave(wave: LfoWave, x: number) {
   if (wave === LfoWave.sine) {

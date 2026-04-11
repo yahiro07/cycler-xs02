@@ -1,9 +1,9 @@
-import { Bus } from "@core/base/synthesis-bus";
+import { Bus } from "@dsp/base/synthesis-bus";
 import {
   createPhaserAllPass4,
   PhaserAllPass4,
-} from "@core/dsp-modules/effects/phaser";
-import { mapUnaryTo, power2 } from "@core/utils/number-utils";
+} from "@dsp/dsp-modules/effects/phaser";
+import { mapUnaryTo, power2 } from "@dsp/utils/number-utils";
 
 export class Phaser {
   private bus: Bus;

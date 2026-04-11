@@ -1,4 +1,4 @@
-import { CommandId, ParameterId } from "@core/base/parameter-id";
+import { CommandId, ParameterId } from "@dsp/base/parameter-id";
 import {
   BassPresetKey,
   BassTailAccentPatternKey,

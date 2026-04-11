@@ -1,15 +1,15 @@
-import { OscWave } from "@core/base/parameter-defs";
-import { Bus } from "@core/base/synthesis-bus";
+import { OscWave } from "@dsp/base/parameter-defs";
+import { Bus } from "@dsp/base/synthesis-bus";
 import {
   createInterpolator,
   Interpolator,
-} from "@core/dsp-modules/basic/interpolator";
+} from "@dsp/dsp-modules/basic/interpolator";
 import {
   BlWave2AWaveform,
   blWave2A_getWaveformSample,
-} from "@core/dsp-modules/oscillators/bl-wave-2a";
-import { modifyPhaseWithColor } from "@core/synthesis-modules/funcs/phase-modifiers";
-import { fracPart } from "@core/utils/number-utils";
+} from "@dsp/dsp-modules/oscillators/bl-wave-2a";
+import { modifyPhaseWithColor } from "@dsp/synthesis-modules/funcs/phase-modifiers";
+import { fracPart } from "@dsp/utils/number-utils";
 
 export class OscillatorCore {
   private bus: Bus;

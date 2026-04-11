@@ -1,5 +1,5 @@
-import { m_ceil, m_floor, m_log2, m_pow } from "@core/utils/math-utils";
-import { clampValue, mixValue } from "@core/utils/number-utils";
+import { m_ceil, m_floor, m_log2, m_pow } from "@dsp/utils/math-utils";
+import { clampValue, mixValue } from "@dsp/utils/number-utils";
 
 export function calculateWaveFrameSize(numHarmonics: number) {
   const n = m_pow(2, m_ceil(m_log2(numHarmonics)));

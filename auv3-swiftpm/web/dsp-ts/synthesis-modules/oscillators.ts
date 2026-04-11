@@ -1,18 +1,18 @@
-import { OscPitchMode, OscUnisonMode } from "@core/base/parameter-defs";
-import { Bus } from "@core/base/synthesis-bus";
-import { midiToFrequency } from "@core/dsp-modules/basic/synthesis-helper";
+import { OscPitchMode, OscUnisonMode } from "@dsp/base/parameter-defs";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { midiToFrequency } from "@dsp/dsp-modules/basic/synthesis-helper";
 import {
   createOversamplingStage,
   OversamplingStage,
-} from "@core/dsp-modules/filters/oversampling-stage";
+} from "@dsp/dsp-modules/filters/oversampling-stage";
 import {
   mapParamOscPitchToOctXCrossMixRateKey,
   mapParamOscPitchToRelativeNote,
-} from "@core/motions/funcs/pitch-mapping";
-import { OscillatorCore } from "@core/synthesis-modules/oscillator-core";
-import { seqNumbers } from "@core/utils/arrays";
-import { m_sqrt } from "@core/utils/math-utils";
-import { power3 } from "@core/utils/number-utils";
+} from "@dsp/motions/funcs/pitch-mapping";
+import { OscillatorCore } from "@dsp/synthesis-modules/oscillator-core";
+import { seqNumbers } from "@dsp/utils/arrays";
+import { m_sqrt } from "@dsp/utils/math-utils";
+import { power3 } from "@dsp/utils/number-utils";
 
 type VoiceSpec = { octaveRatio: number; detune: number; gain: number };
 const ovsRate = 4;

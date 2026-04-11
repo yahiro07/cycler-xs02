@@ -1,4 +1,4 @@
-import { masterGainConfig } from "@core/dsp-modules/basic/master-gain-config";
+import { masterGainConfig } from "@dsp/dsp-modules/basic/master-gain-config";
 
 export enum OscWave {
   saw,

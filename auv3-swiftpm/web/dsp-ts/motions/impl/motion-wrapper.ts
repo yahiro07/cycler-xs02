@@ -1,11 +1,11 @@
-import { MoId, MoType, MotionParams } from "@core/base/parameter-defs";
-import { Bus } from "@core/base/synthesis-bus";
+import { MoId, MoType, MotionParams } from "@dsp/base/parameter-defs";
+import { Bus } from "@dsp/base/synthesis-bus";
 import {
   MotionPartValues,
   moIdSeeds,
   RandomValueMapperFn,
-} from "@core/motions/impl/motion-common";
-import * as motion_mapping_core_internal from "@core/motions/impl/motion-curve-mapper";
+} from "@dsp/motions/impl/motion-common";
+import * as motion_mapping_core_internal from "@dsp/motions/impl/motion-curve-mapper";
 
 function getMotionParamsAndSeed(
   bus: Bus,

@@ -3,15 +3,15 @@ import {
   GateStride,
   MotionStride,
   PureStride,
-} from "@core/base/parameter-defs";
-import { RampSpec, StepRampCode } from "@core/base/ramp-types";
-import { Bus } from "@core/base/synthesis-bus";
-import { getStepPeriod } from "@core/motions/funcs/steps-common";
-import { gaterExSeqMode_getRampSpec } from "@core/motions/gaters/gater-ex-seq";
-import { gaterMinLaxMode_getRampCodeCached } from "@core/motions/gaters/gater-main-lax";
-import { gaterMainSeqMode_getRampCode } from "@core/motions/gaters/gater-main-seq";
-import { m_floor } from "@core/utils/math-utils";
-import { fracPart } from "@core/utils/number-utils";
+} from "@dsp/base/parameter-defs";
+import { RampSpec, StepRampCode } from "@dsp/base/ramp-types";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { getStepPeriod } from "@dsp/motions/funcs/steps-common";
+import { gaterExSeqMode_getRampSpec } from "@dsp/motions/gaters/gater-ex-seq";
+import { gaterMinLaxMode_getRampCodeCached } from "@dsp/motions/gaters/gater-main-lax";
+import { gaterMainSeqMode_getRampCode } from "@dsp/motions/gaters/gater-main-seq";
+import { m_floor } from "@dsp/utils/math-utils";
+import { fracPart } from "@dsp/utils/number-utils";
 
 export function getGaterStepRamp(
   stepPos: number,

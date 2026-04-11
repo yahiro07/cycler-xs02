@@ -1,6 +1,6 @@
-import { createOvsFilterSimple } from "@core/dsp-modules/filters/ovs-filter";
-import { createOvsFilterButterworth } from "@core/dsp-modules/filters/ovs-filter-butterworth";
-import { m_max } from "@core/utils/math-utils";
+import { createOvsFilterSimple } from "@dsp/dsp-modules/filters/ovs-filter";
+import { createOvsFilterButterworth } from "@dsp/dsp-modules/filters/ovs-filter-butterworth";
+import { m_max } from "@dsp/utils/math-utils";
 
 export type OversamplingStage = {
   ensureAllocated(maxFrames: number): void;

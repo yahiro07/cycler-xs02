@@ -1,6 +1,6 @@
-import { ShaperMode } from "@core/base/parameter-defs";
-import { shaperCore } from "@core/dsp-modules/effects/shaper";
-import { power3 } from "@core/utils/number-utils";
+import { ShaperMode } from "@dsp/base/parameter-defs";
+import { shaperCore } from "@dsp/dsp-modules/effects/shaper";
+import { power3 } from "@dsp/utils/number-utils";
 
 export function applyShaper(
   x: number,

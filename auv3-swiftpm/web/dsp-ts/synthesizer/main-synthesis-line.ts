@@ -1,11 +1,11 @@
-import { Bus } from "@core/base/synthesis-bus";
-import { Delay } from "@core/synthesis-modules/delay";
-import { Filter } from "@core/synthesis-modules/filter";
-import { Oscillators } from "@core/synthesis-modules/oscillators";
-import { Phaser } from "@core/synthesis-modules/phaser";
-import { Shaper } from "@core/synthesis-modules/shaper";
-import { StepDelay } from "@core/synthesis-modules/step-delay";
-import { VoicingAmp } from "@core/synthesis-modules/voicing-amp";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { Delay } from "@dsp/synthesis-modules/delay";
+import { Filter } from "@dsp/synthesis-modules/filter";
+import { Oscillators } from "@dsp/synthesis-modules/oscillators";
+import { Phaser } from "@dsp/synthesis-modules/phaser";
+import { Shaper } from "@dsp/synthesis-modules/shaper";
+import { StepDelay } from "@dsp/synthesis-modules/step-delay";
+import { VoicingAmp } from "@dsp/synthesis-modules/voicing-amp";
 
 export class MainSynthesisLine {
   private oscillators: Oscillators;

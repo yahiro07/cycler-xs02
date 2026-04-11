@@ -1,11 +1,11 @@
-import { BassTailAccentPatternKey } from "@core/base/parameter-defs";
-import { Bus } from "@core/base/synthesis-bus";
+import { BassTailAccentPatternKey } from "@dsp/base/parameter-defs";
+import { Bus } from "@dsp/base/synthesis-bus";
 import {
   calcNumStepsForSamples,
   calcStepTimeSec,
-} from "@core/dsp-modules/basic/sequence-helper";
-import { BassSynth } from "@core/rhythm/bass-synthesizer";
-import { KickSynth } from "@core/rhythm/kick-synthesizer";
+} from "@dsp/dsp-modules/basic/sequence-helper";
+import { BassSynth } from "@dsp/rhythm/bass-synthesizer";
+import { KickSynth } from "@dsp/rhythm/kick-synthesizer";
 
 //a:root, p:+1, g:-2, c:+3
 const bassTailAccentPatterns: Record<BassTailAccentPatternKey, string> = {

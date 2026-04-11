@@ -1,4 +1,4 @@
-import { m_imul } from "@core/utils/math-utils";
+import { m_imul } from "@dsp/utils/math-utils";
 
 function hash(str: string): number {
   let _hash = 0x811c9dc5;

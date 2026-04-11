@@ -1,13 +1,13 @@
-import { BassPresetKey } from "@core/base/parameter-defs";
-import { writeBuffer } from "@core/dsp-modules/basic/buffer-functions";
-import { curveMapper, mapExpCurve } from "@core/dsp-modules/basic/curves";
+import { BassPresetKey } from "@dsp/base/parameter-defs";
+import { writeBuffer } from "@dsp/dsp-modules/basic/buffer-functions";
+import { curveMapper, mapExpCurve } from "@dsp/dsp-modules/basic/curves";
 import {
   createInterpolator,
   Interpolator,
-} from "@core/dsp-modules/basic/interpolator";
-import { midiToFrequency } from "@core/dsp-modules/basic/synthesis-helper";
-import { applySoftClip } from "@core/dsp-modules/effects/soft-clip-shaper";
-import { getOscWaveformPd } from "@core/dsp-modules/oscillators/pd-waves";
+} from "@dsp/dsp-modules/basic/interpolator";
+import { midiToFrequency } from "@dsp/dsp-modules/basic/synthesis-helper";
+import { applySoftClip } from "@dsp/dsp-modules/effects/soft-clip-shaper";
+import { getOscWaveformPd } from "@dsp/dsp-modules/oscillators/pd-waves";
 import {
   clampValue,
   fracPart,
@@ -15,7 +15,7 @@ import {
   mapUnaryTo,
   power3,
   tunableSigmoid,
-} from "@core/utils/number-utils";
+} from "@dsp/utils/number-utils";
 
 export enum BassEgWave {
   ds,

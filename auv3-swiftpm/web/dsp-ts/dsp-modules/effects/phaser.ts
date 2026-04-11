@@ -1,6 +1,6 @@
-import { seqNumbers } from "@core/utils/arrays";
-import { m_cos, m_pi, m_sin } from "@core/utils/math-utils";
-import { mixValue } from "@core/utils/number-utils";
+import { seqNumbers } from "@dsp/utils/arrays";
+import { m_cos, m_pi, m_sin } from "@dsp/utils/math-utils";
+import { mixValue } from "@dsp/utils/number-utils";
 
 function createAllPassFilter() {
   let in1 = 0;

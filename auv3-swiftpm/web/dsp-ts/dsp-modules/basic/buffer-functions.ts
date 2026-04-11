@@ -1,9 +1,9 @@
 import {
   applyHardClip,
   applySoftClip,
-} from "@core/dsp-modules/effects/soft-clip-shaper";
-import { m_sqrt } from "@core/utils/math-utils";
-import { mixValue } from "@core/utils/number-utils";
+} from "@dsp/dsp-modules/effects/soft-clip-shaper";
+import { m_sqrt } from "@dsp/utils/math-utils";
+import { mixValue } from "@dsp/utils/number-utils";
 
 export function readBufferInterpolated(
   buffer: number[] | Float32Array,

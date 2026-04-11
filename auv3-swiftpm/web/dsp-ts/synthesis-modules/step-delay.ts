@@ -1,11 +1,11 @@
-import { Bus } from "@core/base/synthesis-bus";
-import { calcNumSamplesForSteps } from "@core/dsp-modules/basic/sequence-helper";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { calcNumSamplesForSteps } from "@dsp/dsp-modules/basic/sequence-helper";
 import {
   createDelayLineRingBuffer,
   IDelayLineRingBuffer,
-} from "@core/dsp-modules/effects/delay-line-ring-buffer";
-import { getStepPeriodForDelay } from "@core/motions/funcs/steps-common";
-import { clampValue, mixValue, power2 } from "@core/utils/number-utils";
+} from "@dsp/dsp-modules/effects/delay-line-ring-buffer";
+import { getStepPeriodForDelay } from "@dsp/motions/funcs/steps-common";
+import { clampValue, mixValue, power2 } from "@dsp/utils/number-utils";
 
 export class StepDelay {
   private bus: Bus;

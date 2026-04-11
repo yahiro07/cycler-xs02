@@ -1,5 +1,5 @@
-import { seqNumbers } from "@core/utils/arrays";
-import { m_floor, m_imul, m_random } from "@core/utils/math-utils";
+import { seqNumbers } from "@dsp/utils/arrays";
+import { m_floor, m_imul, m_random } from "@dsp/utils/math-utils";
 
 const randomSequence = seqNumbers(1000).map(() => m_random());
 

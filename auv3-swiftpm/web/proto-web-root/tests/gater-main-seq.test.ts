@@ -1,10 +1,10 @@
-import { GateSequencerCode } from "@core/base/parameter-defs";
-import { StepRampCode } from "@core/base/ramp-types";
+import { GateSequencerCode } from "@dsp/base/parameter-defs";
+import { StepRampCode } from "@dsp/base/ramp-types";
 import {
   getRampCodeFromEx2PatternBits,
   mapCodesToBits,
   replaceContinuousTiesN,
-} from "@core/motions/gaters/gater-main-seq";
+} from "@dsp/motions/gaters/gater-main-seq";
 import { describe, expect, it } from "vitest";
 
 describe("_mapCodesToBits", () => {

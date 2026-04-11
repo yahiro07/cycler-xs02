@@ -1,4 +1,4 @@
-import { MoId } from "@core/base/parameter-defs";
+import { MoId } from "@dsp/base/parameter-defs";
 
 export type RandomValueMapperFn = (rr: number | "rndSkip" | "rndOff") => number;
 

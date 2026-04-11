@@ -1,6 +1,6 @@
-import { RandomizeLevel } from "@core/base/parameter-defs";
-import { ParameterId } from "@core/base/parameter-id";
-import { m_abs, m_random } from "@core/utils/math-utils";
+import { RandomizeLevel } from "@dsp/base/parameter-defs";
+import { ParameterId } from "@dsp/base/parameter-id";
+import { m_abs, m_random } from "@dsp/utils/math-utils";
 
 const pk = ParameterId;
 
