@@ -277,7 +277,7 @@ export class KickSynth {
   }
 
   applyPreset(presetKey: KickPresetKey) {
-    Object.assign(this.bus.parameters, kickPresets[presetKey]);
+    this.bus.parameters = kickPresets[presetKey];
   }
 
   processSamples(destBuffer: Float32Array) {

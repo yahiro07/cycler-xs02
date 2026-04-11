@@ -280,7 +280,7 @@ export class BassSynth {
   }
 
   applyPreset(presetKey: BassPresetKey) {
-    Object.assign(this.bus.parameters, bassPresets[presetKey]);
+    this.bus.parameters = bassPresets[presetKey];
   }
 
   processSamples(destBuffer: Float32Array) {

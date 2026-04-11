@@ -85,7 +85,6 @@ export class SynthesizerHub {
   setGroovePlaying(playing: boolean) {
     this.triggerManager.setGroovePlaying(playing);
   }
-
   noteOn(noteNumber: number) {
     this.triggerManager.playNote(noteNumber);
   }
@@ -118,6 +117,9 @@ export class SynthesizerHub {
     if (bus.gateStepAdvanced && sp.ampOn && sp.ampEgHold < 1) {
       this.mainSynth.reset();
     }
+
+    this.kickSynth.applyPreset(sp.kickPresetKey);
+    this.bassSynth.applyPreset(sp.bassPresetKey);
 
     {
       workBuffer.fill(0);
