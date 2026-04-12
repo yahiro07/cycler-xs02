@@ -1,11 +1,24 @@
 import { MoId, MoType, MotionParams } from "@dsp/base/parameter-defs";
 import { Bus } from "@dsp/base/synthesis-bus";
 import {
+  getMoEgLevel,
+  getMoLfoOut,
+  getMoRndMapped,
+  getMoRndMod,
+} from "@dsp/motions/impl/motion-curve-mapper";
+import {
   MotionPartValues,
-  moIdSeeds,
   RandomValueMapperFn,
-} from "@dsp/motions/impl/motion-common";
-import * as motion_mapping_core_internal from "@dsp/motions/impl/motion-curve-mapper";
+} from "@dsp/motions/impl/motion-types";
+
+export const moIdSeeds: Record<MoId, number> = {
+  [MoId.oscPitch]: 110,
+  [MoId.oscColor]: 120,
+  [MoId.filterCutoff]: 130,
+  [MoId.shaperLevel]: 140,
+  [MoId.delayTime]: 150,
+  [MoId.phaserLevel]: 160,
+};
 
 function getMotionParams(bus: Bus, moId: MoId): MotionParams {
   const moKey = (
@@ -29,23 +42,12 @@ export function processMotionWrapper(
 ): MotionPartValues {
   const mp = getMotionParams(bus, moId);
   const moIdSeed = moIdSeeds[moId];
-  const rndOut = motion_mapping_core_internal.getRndMod(
-    bus,
-    mp,
-    moIdSeed,
-    stepPos,
-  ); //0~1
+  const rndOut = getMoRndMod(bus, mp, moIdSeed, stepPos); //0~1
   const rndMappedValue = randomValueMapperFn
-    ? motion_mapping_core_internal.getRndMapped(
-        bus,
-        mp,
-        moIdSeed,
-        stepPos,
-        randomValueMapperFn,
-      )
+    ? getMoRndMapped(bus, mp, moIdSeed, stepPos, randomValueMapperFn)
     : 0; //mapperFn出力による任意の範囲
-  let egLevel = motion_mapping_core_internal.getMoEgLevel(bus, mp, stepPos); //0~1
-  let lfoOut = motion_mapping_core_internal.getLfoOut(mp, stepPos); //0~1
+  let egLevel = getMoEgLevel(bus, mp, stepPos); //0~1
+  let lfoOut = getMoLfoOut(mp, stepPos); //0~1
   if (mp.egInvert) {
     egLevel = 1 - egLevel; //0~1
   }

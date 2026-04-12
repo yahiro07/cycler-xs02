@@ -3,7 +3,6 @@ import {
   MoRndMode,
   MoType,
   MotionParams,
-  MotionStride,
 } from "@dsp/base/parameter-defs";
 import { SynthesisBus } from "@dsp/base/synthesis-bus";
 import { glideCurves } from "@dsp/dsp-modules/basic/curves";
@@ -12,12 +11,11 @@ import * as eg_curves from "@dsp/motions/funcs/eg-curves";
 import * as lfo_waves from "@dsp/motions/funcs/lfo-waves";
 import * as steps_common from "@dsp/motions/funcs/steps-common";
 import * as ramp_provider from "@dsp/motions/gaters/ramp-provider";
-import { RampSpec } from "@dsp/motions/gaters/ramp-types";
 import {
   RandomValueMapperFn,
   RandomValueStateFlag,
-} from "@dsp/motions/impl/motion-common";
-import { invPower2Weak, lowClipZero, mixValue } from "@dsp/utils/number-utils";
+} from "@dsp/motions/impl/motion-types";
+import { invPower2Weak, mixValue } from "@dsp/utils/number-utils";
 
 const moPartSeed = {
   rnd: 1,
@@ -26,24 +24,8 @@ const moPartSeed = {
   rndCover: 4,
 };
 
-export function wrapGetStepRamp(
-  bus: SynthesisBus,
-  stride: GateStride,
-  stepPos: number,
-): RampSpec {
-  return ramp_provider.getPlainRamp(bus, lowClipZero(stepPos), stride);
-}
-export function wrapGetMoStepRamp(
-  bus: SynthesisBus,
-  stride: MotionStride,
-  stepPos: number,
-): RampSpec {
-  return ramp_provider.getMotionRamp(bus, lowClipZero(stepPos), stride);
-}
-
 function rndCoverCurved(cover: number): number {
   return invPower2Weak(cover, 0.7);
-  // return tunableSigmoid(cover, -0.4);
 }
 
 function getRandomWithCover(
@@ -86,7 +68,7 @@ function wrapGlide(pos: number): number {
   return glideCurves.glide3(pos, 0.5);
 }
 
-export function getRndMapped(
+export function getMoRndMapped(
   bus: SynthesisBus,
   mp: MotionParams,
   moIdSeed: number,
@@ -94,7 +76,7 @@ export function getRndMapped(
   mapperFn: RandomValueMapperFn,
 ): number {
   if (mp.moType === MoType.rnd) {
-    const ramp = wrapGetMoStepRamp(bus, mp.rndStride, stepPos);
+    const ramp = ramp_provider.wrapGetMoStepRamp(bus, mp.rndStride, stepPos);
     const semiCurrent = getMappedValueWithRandom(
       bus,
       moIdSeed,
@@ -119,14 +101,14 @@ export function getRndMapped(
   }
   return mapperFn(bus, 0, RandomValueStateFlag.rndOff);
 }
-export function getRndMod(
+export function getMoRndMod(
   bus: SynthesisBus,
   mp: MotionParams,
   moIdSeed: number,
   stepPos: number,
 ): number {
   if (mp.moType === MoType.rnd) {
-    const ramp = wrapGetMoStepRamp(bus, mp.rndStride, stepPos);
+    const ramp = ramp_provider.wrapGetMoStepRamp(bus, mp.rndStride, stepPos);
     const rrCurrent = getRandomWithCover(
       bus,
       moIdSeed,
@@ -149,7 +131,7 @@ export function getRndMod(
   }
   return 0;
 }
-export function getLfoOut(mp: MotionParams, stepPos: number): number {
+export function getMoLfoOut(mp: MotionParams, stepPos: number): number {
   if (mp.moType === MoType.lfo) {
     const sd = steps_common.getLfoStepPeriod(mp.lfoRate, mp.lfoRateStepped);
     const ramp = ramp_provider.getMasterDividedRamp(stepPos, sd, false);
@@ -164,17 +146,12 @@ export function getMoEgLevel(
   mp: MotionParams,
   stepPos: number,
 ): number {
-  const ramp = wrapGetMoStepRamp(bus, mp.egStride, stepPos);
-  if (0) {
-    //pulsed
-    return eg_curves.getEgCurve(mp.egWave, ramp.relPos, mp.egCurve);
-  } else {
-    return eg_curves.getEgCurve(mp.egWave, ramp.progress, mp.egCurve);
-  }
+  const ramp = ramp_provider.wrapGetMoStepRamp(bus, mp.egStride, stepPos);
+  return eg_curves.getEgCurve(mp.egWave, ramp.progress, mp.egCurve);
 }
 
 export function getAmpEgLevel(bus: SynthesisBus, stepPos: number): number {
-  const ramp = wrapGetStepRamp(bus, GateStride.gate, stepPos);
+  const ramp = ramp_provider.wrapGetStepRamp(bus, GateStride.gate, stepPos);
   return eg_curves.getAmpEgCurvePL(
     ramp.relPos,
     bus.parameters.ampEgHold,

@@ -5,7 +5,7 @@ import { mapParamOscPitchToRelativeNote } from "@dsp/motions/funcs/pitch-mapping
 import {
   MotionPartValues,
   RandomValueStateFlag,
-} from "@dsp/motions/impl/motion-common";
+} from "@dsp/motions/impl/motion-types";
 import { processMotionWrapper } from "@dsp/motions/impl/motion-wrapper";
 import {
   clampValueZeroOne,
@@ -88,7 +88,7 @@ function randomValueMapperFn_oscPrPitch(
   return prPitch;
 }
 
-export function getOscPitchRelNote(bus: Bus, stepPos: number) {
+function getOscPitchRelNote(bus: Bus, stepPos: number) {
   const sp = bus.parameters;
   const {
     rndMappedValue: baseRelNote,
@@ -114,7 +114,7 @@ export function getOscPitchRelNote(bus: Bus, stepPos: number) {
   return baseRelNote + egm + lfm;
 }
 
-export function getOscPrPitch(bus: Bus, stepPos: number) {
+function getOscPrPitch(bus: Bus, stepPos: number) {
   const sp = bus.parameters;
   //Output of OSC pitch knob value
   const partValues = processMotionWrapper(
@@ -136,7 +136,7 @@ export function getOscPrPitch(bus: Bus, stepPos: number) {
   );
 }
 
-export function getOscColorValue(bus: Bus, stepPos: number) {
+function getOscColorValue(bus: Bus, stepPos: number) {
   const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.oscColor, stepPos);
   return mapMotionPartValuesToTargetParameter(
@@ -146,7 +146,7 @@ export function getOscColorValue(bus: Bus, stepPos: number) {
   );
 }
 
-export function getFilterPrCutoff(bus: Bus, stepPos: number) {
+function getFilterPrCutoff(bus: Bus, stepPos: number) {
   const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.filterCutoff, stepPos);
   return mapMotionPartValuesToTargetParameter(
@@ -156,7 +156,7 @@ export function getFilterPrCutoff(bus: Bus, stepPos: number) {
   );
 }
 
-export function getShaperLevelValue(bus: Bus, stepPos: number) {
+function getShaperLevelValue(bus: Bus, stepPos: number) {
   const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.shaperLevel, stepPos);
   return mapMotionPartValuesToTargetParameter(
@@ -166,7 +166,7 @@ export function getShaperLevelValue(bus: Bus, stepPos: number) {
   );
 }
 
-export function getPhaserLevelValue(bus: Bus, stepPos: number) {
+function getPhaserLevelValue(bus: Bus, stepPos: number) {
   const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.phaserLevel, stepPos);
   return mapMotionPartValuesToTargetParameter(
@@ -176,7 +176,7 @@ export function getPhaserLevelValue(bus: Bus, stepPos: number) {
   );
 }
 
-export function getDelayTimeValue(bus: Bus, stepPos: number) {
+function getDelayTimeValue(bus: Bus, stepPos: number) {
   const sp = bus.parameters;
   const partValues = processMotionWrapper(bus, MoId.delayTime, stepPos);
   return mapMotionPartValuesToTargetParameter(
@@ -184,4 +184,16 @@ export function getDelayTimeValue(bus: Bus, stepPos: number) {
     sp.delayTime,
     sp.moDelayTime,
   );
+}
+
+export function moMappers_updateMoValues(bus: Bus) {
+  const { interm } = bus;
+  const step = bus.currentStep;
+  interm.pmxOscRelNote = getOscPitchRelNote(bus, step);
+  interm.pmxOscPrPitch = getOscPrPitch(bus, step);
+  interm.pmxOscColor = getOscColorValue(bus, step);
+  interm.pmxFilterPrCutoff = getFilterPrCutoff(bus, step);
+  interm.pmxShaperLevel = getShaperLevelValue(bus, step);
+  interm.pmxPhaserLevel = getPhaserLevelValue(bus, step);
+  interm.pmxDelayTime = getDelayTimeValue(bus, step);
 }

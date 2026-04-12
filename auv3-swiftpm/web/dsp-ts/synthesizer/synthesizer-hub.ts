@@ -11,7 +11,11 @@ import { blWave2A_buildWaveTables } from "@dsp/dsp-modules/oscillators/bl-wave-2
 import { getLoopBarsFromKey } from "@dsp/motions/funcs/steps-common";
 import { gaterExSeqMode_setupLocalState } from "@dsp/motions/gaters/gater-ex-seq";
 import { gaterMinLaxMode_setupLocalState } from "@dsp/motions/gaters/gater-main-lax";
-import * as motions_root from "@dsp/motions/motions-root";
+import {
+  motionsRoot_advance,
+  motionsRoot_processOnFrameEnd,
+  motionsRoot_reset,
+} from "@dsp/motions/motions-root";
 import { BassSynth } from "@dsp/rhythm/bass-synthesizer";
 import { BeatDriver } from "@dsp/rhythm/beat-driver";
 import { KickSynth } from "@dsp/rhythm/kick-synthesizer";
@@ -107,12 +111,12 @@ export class SynthesizerHub {
 
     const gateTriggered = this.triggerManager.updateNoteStates();
     if (gateTriggered) {
-      motions_root.reset(bus);
+      motionsRoot_reset(bus);
       this.mainSynth.reset();
       this.beatDriver.start();
     }
 
-    motions_root.advance(bus);
+    motionsRoot_advance(bus);
     this.beatDriver.advance();
 
     if (bus.gateStepAdvanced && sp.ampOn && sp.ampEgHold < 1) {
@@ -138,7 +142,7 @@ export class SynthesizerHub {
     const masterGain = mapDbGain(sp.masterVolume, masterGainConfig);
     applyBufferGain(buffer, len, masterGain);
     applyBufferSoftClip(buffer, len);
-    motions_root.processOnFrameEnd(bus);
+    motionsRoot_processOnFrameEnd(bus);
   }
 
   private processSamplesWithChunks(destBuffer: Float32Array, len: number) {

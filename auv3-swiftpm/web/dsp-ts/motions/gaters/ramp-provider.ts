@@ -4,14 +4,14 @@ import {
   MotionStride,
   PureStride,
 } from "@dsp/base/parameter-defs";
-import { RampSpec, StepRampCode } from "@dsp/motions/gaters/ramp-types";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriod } from "@dsp/motions/funcs/steps-common";
 import { gaterExSeqMode_getRampSpec } from "@dsp/motions/gaters/gater-ex-seq";
 import { gaterMinLaxMode_getRampCodeCached } from "@dsp/motions/gaters/gater-main-lax";
 import { gaterMainSeqMode_getRampCode } from "@dsp/motions/gaters/gater-main-seq";
+import { RampSpec, StepRampCode } from "@dsp/motions/gaters/ramp-types";
 import { m_floor } from "@dsp/utils/math-utils";
-import { fracPart } from "@dsp/utils/number-utils";
+import { fracPart, lowClipZero } from "@dsp/utils/number-utils";
 
 export function getGaterStepRamp(
   stepPos: number,
@@ -92,4 +92,19 @@ export function getMotionRamp(
   }
   const stride = inputStride as unknown as GateStride;
   return getPlainRamp(bus, stepPos, stride);
+}
+
+export function wrapGetStepRamp(
+  bus: Bus,
+  stride: GateStride,
+  stepPos: number,
+): RampSpec {
+  return getPlainRamp(bus, lowClipZero(stepPos), stride);
+}
+export function wrapGetMoStepRamp(
+  bus: Bus,
+  stride: MotionStride,
+  stepPos: number,
+): RampSpec {
+  return getMotionRamp(bus, lowClipZero(stepPos), stride);
 }

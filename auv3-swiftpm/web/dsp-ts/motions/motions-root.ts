@@ -1,11 +1,9 @@
 import { GateStride } from "@dsp/base/parameter-defs";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { calcNumStepsForSamples } from "@dsp/dsp-modules/basic/sequence-helper";
-import {
-  getAmpEgLevel,
-  wrapGetStepRamp,
-} from "@dsp/motions/impl/motion-curve-mapper";
-import * as mo_mappers from "@dsp/motions/mo-mappers";
+import { wrapGetStepRamp } from "@dsp/motions/gaters/ramp-provider";
+import { getAmpEgLevel } from "@dsp/motions/impl/motion-curve-mapper";
+import { moMappers_updateMoValues } from "@dsp/motions/mo-mappers";
 import { m_random } from "@dsp/utils/math-utils";
 
 function getStepDeltaForFrame(bus: Bus) {
@@ -24,19 +22,19 @@ function updateAmp(bus: Bus) {
   bus.interm.ampGain = getAmpEgLevel(bus, bus.currentStep);
 }
 
-function updateMoValues(bus: Bus) {
-  const { interm } = bus;
-  const step = bus.currentStep;
-  interm.pmxOscRelNote = mo_mappers.getOscPitchRelNote(bus, step);
-  interm.pmxOscPrPitch = mo_mappers.getOscPrPitch(bus, step);
-  interm.pmxOscColor = mo_mappers.getOscColorValue(bus, step);
-  interm.pmxFilterPrCutoff = mo_mappers.getFilterPrCutoff(bus, step);
-  interm.pmxShaperLevel = mo_mappers.getShaperLevelValue(bus, step);
-  interm.pmxPhaserLevel = mo_mappers.getPhaserLevelValue(bus, step);
-  interm.pmxDelayTime = mo_mappers.getDelayTimeValue(bus, step);
+export function motionsRoot_reset(bus: Bus) {
+  bus.currentStep = 0;
+  bus.totalStep = 0;
+  bus.loopSeed = m_random();
 }
 
-function updateLoopOnFrameEnd(bus: Bus) {
+export function motionsRoot_advance(bus: Bus) {
+  updateGate(bus);
+  updateAmp(bus);
+  moMappers_updateMoValues(bus);
+}
+
+export function motionsRoot_processOnFrameEnd(bus: Bus) {
   const sp = bus.parameters;
   const stepDelta = getStepDeltaForFrame(bus);
   bus.totalStep += stepDelta;
@@ -51,20 +49,4 @@ function updateLoopOnFrameEnd(bus: Bus) {
       bus.randomizationRequestFlag = true;
     }
   }
-}
-
-export function reset(bus: Bus) {
-  bus.currentStep = 0;
-  bus.totalStep = 0;
-  bus.loopSeed = m_random();
-}
-
-export function advance(bus: Bus) {
-  updateGate(bus);
-  updateAmp(bus);
-  updateMoValues(bus);
-}
-
-export function processOnFrameEnd(bus: Bus) {
-  updateLoopOnFrameEnd(bus);
 }
