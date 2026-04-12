@@ -5,9 +5,9 @@ import {
   Interpolator,
 } from "@dsp/dsp-modules/basic/interpolator";
 import {
-  BlWave2AWaveform,
-  blWave2A_getWaveformSample,
-} from "@dsp/dsp-modules/oscillators/bl-wave-2a";
+  BlWaveWaveform,
+  blWaveProvider,
+} from "@dsp/dsp-modules/oscillators/bl-wave-provider";
 import { modifyPhaseWithColor } from "@dsp/synthesis-modules/funcs/phase-modifiers";
 import { fracPart } from "@dsp/utils/number-utils";
 
@@ -23,16 +23,16 @@ export class OscillatorCore {
     this.miPhaseDelta = createInterpolator();
     this.miColor = createInterpolator();
   }
-  private mapBl2Waveform(wave: OscWave): BlWave2AWaveform {
+  private mapBl2Waveform(wave: OscWave): BlWaveWaveform {
     switch (wave) {
       case OscWave.saw:
-        return BlWave2AWaveform.saw;
+        return BlWaveWaveform.saw;
       case OscWave.rect:
-        return BlWave2AWaveform.rect;
+        return BlWaveWaveform.rect;
       case OscWave.tri:
-        return BlWave2AWaveform.tri;
+        return BlWaveWaveform.tri;
       case OscWave.sine:
-        return BlWave2AWaveform.sine;
+        return BlWaveWaveform.sine;
     }
   }
   reset() {
@@ -62,8 +62,7 @@ export class OscillatorCore {
         prColor,
         sp.oscColorMode,
       );
-      const y = blWave2A_getWaveformSample(
-        this.bus.blWave2A,
+      const y = blWaveProvider.getWaveformSample(
         wave,
         phase,
         phaseDelta * speedRate,

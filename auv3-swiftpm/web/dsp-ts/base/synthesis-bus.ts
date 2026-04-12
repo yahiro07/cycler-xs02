@@ -2,10 +2,6 @@ import {
   createSynthParametersSuit,
   SynthParametersSuit,
 } from "@dsp/base/parameter-defs";
-import {
-  BlWave2A,
-  createBlWave2A,
-} from "@dsp/dsp-modules/oscillators/bl-wave-2a";
 
 export type SynthesisIntermediateState = {
   pmxOscRelNote: number;
@@ -41,7 +37,6 @@ export type SynthesisBus = {
   blockLength: number;
   gateStepAdvanced: boolean;
   bpm: number;
-  blWave2A: BlWave2A;
   loopBars: number;
   beatActive: boolean;
   paramVer: number;
@@ -78,7 +73,6 @@ export function createSynthesisBus(): SynthesisBus {
     blockLength: 0,
     gateStepAdvanced: false,
     bpm: 130,
-    blWave2A: createBlWave2A(),
     loopBars: 2,
     beatActive: false,
     paramVer: 0,

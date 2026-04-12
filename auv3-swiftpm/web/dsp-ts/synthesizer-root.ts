@@ -12,7 +12,6 @@ export class SynthesizerRoot implements IDspCore {
   }
 
   prepareProcessing(sampleRate: number, _maxFrames: number): void {
-    this.synthesizerHub.setupBlWaveTable();
     this.synthesizerHub.prepare(sampleRate);
   }
   setParameter(id: number, value: number): void {
@@ -34,9 +33,6 @@ export class SynthesizerRoot implements IDspCore {
     bufferR.set(bufferL);
   }
   applyCommand(id: number, value: number): void {
-    if (id < 0) {
-      return;
-    }
     if (id === CommandId.setPlayState) {
       this.synthesizerHub.setGroovePlaying(value > 0.5);
     }

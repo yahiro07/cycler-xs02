@@ -7,7 +7,7 @@ import {
 } from "@dsp/dsp-modules/basic/buffer-functions";
 import { mapDbGain } from "@dsp/dsp-modules/basic/db-gain-mapper";
 import { masterGainConfig } from "@dsp/dsp-modules/basic/master-gain-config";
-import { blWave2A_buildWaveTables } from "@dsp/dsp-modules/oscillators/bl-wave-2a";
+import { blWaveProvider } from "@dsp/dsp-modules/oscillators/bl-wave-provider";
 import { getLoopBarsFromKey } from "@dsp/motions/funcs/steps-common";
 import { gaterExSeqMode_setupLocalState } from "@dsp/motions/gaters/gater-ex-seq";
 import { gaterMinLaxMode_setupLocalState } from "@dsp/motions/gaters/gater-main-lax";
@@ -79,6 +79,7 @@ export class SynthesizerHub {
     if (this.workBuffer.length !== maxFrames) {
       this.workBuffer = new Float32Array(maxFrames);
     }
+    blWaveProvider.setupTables();
     gaterMinLaxMode_setupLocalState(this.bus);
     gaterExSeqMode_setupLocalState(this.bus);
     this.mainSynth.prepare();
@@ -172,8 +173,4 @@ export class SynthesizerHub {
   // getBarPosition(): number {
   //   return (this.bus.totalStep / 16) >>> 0;
   // }
-
-  setupBlWaveTable() {
-    blWave2A_buildWaveTables(this.bus.blWave2A);
-  }
 }

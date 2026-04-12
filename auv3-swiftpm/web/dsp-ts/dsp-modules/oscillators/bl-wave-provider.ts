@@ -6,7 +6,7 @@ import { seqNumbers } from "@dsp/utils/arrays";
 import { m_floor, m_pi, m_sin, m_two_pi } from "@dsp/utils/math-utils";
 import { clampValue } from "@dsp/utils/number-utils";
 
-export enum BlWave2AWaveform {
+export enum BlWaveWaveform {
   saw,
   rect,
   tri,
@@ -37,31 +37,33 @@ function buildWaveFrameTable(
   });
 }
 
-export type BlWave2A = {
+export type BlWave = {
   initialized: boolean;
   waveFrameTables: {
-    [BlWave2AWaveform.saw]: Float32Array[];
-    [BlWave2AWaveform.rect]: Float32Array[];
-    [BlWave2AWaveform.tri]: Float32Array[];
+    [BlWaveWaveform.saw]: Float32Array[];
+    [BlWaveWaveform.rect]: Float32Array[];
+    [BlWaveWaveform.tri]: Float32Array[];
   };
   tableIndexMapper: number[];
   numHarmonicsMax: number;
 };
 
-export function createBlWave2A(): BlWave2A {
+export function createBlWave(): BlWave {
   return {
     initialized: false,
     waveFrameTables: {
-      [BlWave2AWaveform.saw]: [],
-      [BlWave2AWaveform.rect]: [],
-      [BlWave2AWaveform.tri]: [],
+      [BlWaveWaveform.saw]: [],
+      [BlWaveWaveform.rect]: [],
+      [BlWaveWaveform.tri]: [],
     },
     tableIndexMapper: [],
     numHarmonicsMax: 0,
   };
 }
 
-export function blWave2A_buildWaveTables(self: BlWave2A) {
+export function blWave_buildWaveTables(self: BlWave) {
+  if (self.initialized) return;
+
   const tableHarmonicsSeries = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26,
     29, 32, 37, 42, 48, 56, 64, 81, 102, 128, 181, 256, 362, 512, 724, 1024,
@@ -69,7 +71,7 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
   ];
 
   const waveFrameTables = {
-    [BlWave2AWaveform.saw]: buildWaveFrameTable(
+    [BlWaveWaveform.saw]: buildWaveFrameTable(
       tableHarmonicsSeries,
       (x, h) => {
         let value = 0;
@@ -80,7 +82,7 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
         return value * (2 / m_pi);
       },
     ),
-    [BlWave2AWaveform.rect]: buildWaveFrameTable(
+    [BlWaveWaveform.rect]: buildWaveFrameTable(
       tableHarmonicsSeries,
       (x, n) => {
         let value = 0;
@@ -91,7 +93,7 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
         return value * (4 / m_pi);
       },
     ),
-    [BlWave2AWaveform.tri]: buildWaveFrameTable(
+    [BlWaveWaveform.tri]: buildWaveFrameTable(
       tableHarmonicsSeries,
       (x, n) => {
         let value = 0;
@@ -120,15 +122,15 @@ export function blWave2A_buildWaveTables(self: BlWave2A) {
   self.initialized = true;
 }
 
-export function blWave2A_getWaveformSample(
-  self: BlWave2A,
-  waveform: BlWave2AWaveform,
+function blWave_getWaveformSample(
+  self: BlWave,
+  waveform: BlWaveWaveform,
   pp: number,
   normFreq: number,
 ) {
   if (!self.initialized) return 0;
   const { waveFrameTables, tableIndexMapper, numHarmonicsMax } = self;
-  if (waveform === BlWave2AWaveform.sine) {
+  if (waveform === BlWaveWaveform.sine) {
     return m_sin(pp * m_two_pi);
   }
   pp -= m_floor(pp);
@@ -137,3 +139,25 @@ export function blWave2A_getWaveformSample(
   const waveFrame = waveFrameTables[waveform][ti];
   return readWaveFrameInterpolated(waveFrame, waveFrame.length, pp);
 }
+
+
+class BlWaveProvider {
+  private blWaveInstance: BlWave = createBlWave();
+
+  setupTables() {
+    blWave_buildWaveTables(this.blWaveInstance);
+  }
+  //In Safari on iOS, calling time-consuming operations within a Worklet slows down subsequent operations,
+  //so the waveform table is created on the main thread and injected
+  setBlWaveInstance(blWave: BlWave) {
+    this.blWaveInstance = blWave;
+  }
+
+  getWaveformSample(waveform: BlWaveWaveform,
+    pp: number,
+    normFreq: number) {
+    return blWave_getWaveformSample(this.blWaveInstance, waveform, pp, normFreq);
+  }
+
+}
+export const blWaveProvider = new BlWaveProvider();
