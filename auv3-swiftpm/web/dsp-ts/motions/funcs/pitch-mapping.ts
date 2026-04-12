@@ -45,8 +45,6 @@ const noteMapperConstants = {
     10,
     12,
   ],
-  //la, do, re, mi, so
-  map4Notes: [dn, dn + 3, dn + 5, dn + 7, dn + 10, 0, 3, 5, 7, 10, 12],
 };
 
 export function mapParamOscPitchToRelativeNote(
