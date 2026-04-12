@@ -7,10 +7,7 @@ import {
 } from "@dsp/motions/impl/motion-common";
 import * as motion_mapping_core_internal from "@dsp/motions/impl/motion-curve-mapper";
 
-function getMotionParamsAndSeed(
-  bus: Bus,
-  moId: MoId,
-): { mp: MotionParams; moIdSeed: number } {
+function getMotionParams(bus: Bus, moId: MoId): MotionParams {
   const moKey = (
     {
       [MoId.oscPitch]: "moOscPitch",
@@ -21,38 +18,7 @@ function getMotionParamsAndSeed(
       [MoId.phaserLevel]: "moPhaserLevel",
     } as const
   )[moId];
-  const mp = bus.parameters[moKey];
-  const moIdSeed = moIdSeeds[moId];
-  return { mp, moIdSeed };
-}
-
-function getRndOut(bus: Bus, moId: MoId, stepPos: number): number {
-  const { mp, moIdSeed } = getMotionParamsAndSeed(bus, moId);
-  return motion_mapping_core_internal.getRndMod(bus, mp, moIdSeed, stepPos);
-}
-function getRandMapped(
-  bus: Bus,
-  moId: MoId,
-  stepPos: number,
-  randomValueMapperFn?: RandomValueMapperFn,
-): number {
-  if (!randomValueMapperFn) return 0;
-  const { mp, moIdSeed } = getMotionParamsAndSeed(bus, moId);
-  return motion_mapping_core_internal.getRndMapped(
-    bus,
-    mp,
-    moIdSeed,
-    stepPos,
-    randomValueMapperFn,
-  );
-}
-function getEgLevel(bus: Bus, moId: MoId, stepPos: number): number {
-  const { mp } = getMotionParamsAndSeed(bus, moId);
-  return motion_mapping_core_internal.getMoEgLevel(bus, mp, stepPos);
-}
-function getLfoOut(bus: Bus, moId: MoId, stepPos: number): number {
-  const { mp } = getMotionParamsAndSeed(bus, moId);
-  return motion_mapping_core_internal.getLfoOut(mp, stepPos);
+  return bus.parameters[moKey];
 }
 
 export function processMotionWrapper(
@@ -61,11 +27,25 @@ export function processMotionWrapper(
   stepPos: number,
   randomValueMapperFn?: RandomValueMapperFn,
 ): MotionPartValues {
-  const { mp } = getMotionParamsAndSeed(bus, moId);
-  const rndOut = getRndOut(bus, moId, stepPos); //0~1
-  const rndMappedValue = getRandMapped(bus, moId, stepPos, randomValueMapperFn); //mapperFn出力による任意の範囲
-  let egLevel = getEgLevel(bus, moId, stepPos); //0~1
-  let lfoOut = getLfoOut(bus, moId, stepPos); //0~1
+  const mp = getMotionParams(bus, moId);
+  const moIdSeed = moIdSeeds[moId];
+  const rndOut = motion_mapping_core_internal.getRndMod(
+    bus,
+    mp,
+    moIdSeed,
+    stepPos,
+  ); //0~1
+  const rndMappedValue = randomValueMapperFn
+    ? motion_mapping_core_internal.getRndMapped(
+        bus,
+        mp,
+        moIdSeed,
+        stepPos,
+        randomValueMapperFn,
+      )
+    : 0; //mapperFn出力による任意の範囲
+  let egLevel = motion_mapping_core_internal.getMoEgLevel(bus, mp, stepPos); //0~1
+  let lfoOut = motion_mapping_core_internal.getLfoOut(mp, stepPos); //0~1
   if (mp.egInvert) {
     egLevel = 1 - egLevel; //0~1
   }
