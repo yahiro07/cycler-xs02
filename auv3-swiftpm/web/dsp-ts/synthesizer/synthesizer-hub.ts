@@ -9,8 +9,8 @@ import { mapDbGain } from "@dsp/dsp-modules/basic/db-gain-mapper";
 import { masterGainConfig } from "@dsp/dsp-modules/basic/master-gain-config";
 import { blWaveProvider } from "@dsp/dsp-modules/oscillators/bl-wave-provider";
 import { getLoopBarsFromKey } from "@dsp/motions/funcs/steps-common";
-import { gaterExSeqMode_setupLocalState } from "@dsp/motions/gaters/gater-ex-seq";
-import { gaterMinLaxMode_setupLocalState } from "@dsp/motions/gaters/gater-main-lax";
+import { gaterExSeqMode_cleanupLocalState, gaterExSeqMode_setupLocalState } from "@dsp/motions/gaters/gater-ex-seq";
+import { gaterMinLaxMode_cleanupLocalState, gaterMinLaxMode_setupLocalState } from "@dsp/motions/gaters/gater-main-lax";
 import {
   motionsRoot_advance,
   motionsRoot_processOnFrameEnd,
@@ -66,6 +66,12 @@ export class SynthesizerHub {
     this.workBuffer = workBuffer;
     this.chunkBuffer = chunkBuffer;
     this.triggerManager = triggerManager;
+  }
+
+  //for c++ porting
+  destructor() {
+    gaterMinLaxMode_cleanupLocalState(this.bus);
+    gaterExSeqMode_cleanupLocalState(this.bus);
   }
 
   getBus() {

@@ -183,6 +183,10 @@ function buildNotesCached(bus: Bus, codes: ExGaterCode[]): GaterExNotes {
 export function gaterExSeqMode_setupLocalState(bus: Bus): void {
   bus.moduleLocals.gaterExSeq ??= createGaterExCacheState();
 }
+export function gaterExSeqMode_cleanupLocalState(bus: Bus): void {
+  bus.moduleLocals.gaterExSeq = undefined;
+}
+
 
 function findNote(notes: GaterExNotes, pos: number): GaterExNote | undefined {
   for (let i = 0; i < notes.length; i++) {

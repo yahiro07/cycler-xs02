@@ -74,6 +74,9 @@ function updateStepCellCodes(bus: Bus) {
 export function gaterMinLaxMode_setupLocalState(bus: Bus): void {
   bus.moduleLocals.gaterMainLax ??= createGaterMainLaxState();
 }
+export function gaterMinLaxMode_cleanupLocalState(bus: Bus): void {
+  bus.moduleLocals.gaterMainLax = undefined;
+}
 
 export function gaterMinLaxMode_getRampCodeCached(
   bus: Bus,
