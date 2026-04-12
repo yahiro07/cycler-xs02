@@ -5,7 +5,6 @@ import {
   MotionParams,
   MotionStride,
 } from "@dsp/base/parameter-defs";
-import { RampSpec } from "@dsp/motions/gaters/ramp-types";
 import { SynthesisBus } from "@dsp/base/synthesis-bus";
 import { glideCurves } from "@dsp/dsp-modules/basic/curves";
 import { deterministicRandom } from "@dsp/dsp-modules/basic/deterministic-random";
@@ -13,7 +12,11 @@ import * as eg_curves from "@dsp/motions/funcs/eg-curves";
 import * as lfo_waves from "@dsp/motions/funcs/lfo-waves";
 import * as steps_common from "@dsp/motions/funcs/steps-common";
 import * as ramp_provider from "@dsp/motions/gaters/ramp-provider";
-import { RandomValueMapperFn } from "@dsp/motions/impl/motion-common";
+import { RampSpec } from "@dsp/motions/gaters/ramp-types";
+import {
+  RandomValueMapperFn,
+  RandomValueSpecial,
+} from "@dsp/motions/impl/motion-common";
 import { invPower2Weak, lowClipZero, mixValue } from "@dsp/utils/number-utils";
 
 const moPartSeed = {
@@ -71,12 +74,12 @@ function getMappedValueWithRandom(
     bus.loopSeed + rampHeadPos + moIdSeed + moPartSeed.rndCover,
   );
   if (rrA > rndCoverCurved(rndCover)) {
-    return mapperFn("rndSkip");
+    return mapperFn(bus, RandomValueSpecial.rndSkip);
   }
   const rr = deterministicRandom(
     bus.loopSeed + rampHeadPos + moIdSeed + moPartSeed.rnd,
   );
-  return mapperFn(rr);
+  return mapperFn(bus, rr);
 }
 
 function wrapGlide(pos: number): number {
@@ -114,7 +117,7 @@ export function getRndMapped(
     }
     return semiCurrent;
   }
-  return mapperFn("rndOff");
+  return mapperFn(bus, RandomValueSpecial.rndOff);
 }
 export function getRndMod(
   bus: SynthesisBus,
