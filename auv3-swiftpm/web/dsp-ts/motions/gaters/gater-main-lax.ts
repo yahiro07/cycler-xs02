@@ -65,7 +65,7 @@ function updateStepCellCodes(bus: Bus) {
   const sp = bus.parameters;
   const gs = bus.moduleLocals.gaterMainLax as GaterMainLaxState;
   gs.stepRampCodes.fill(StepRampCode.one);
-  const stepLength = sp.loopBars * 16;
+  const stepLength = bus.loopBars * 16;
   if (sp.gaterRndTieOn) {
     placeRandomTwoCellCodes(gs.stepRampCodes, stepLength, sp.gaterRndTieCover);
   }

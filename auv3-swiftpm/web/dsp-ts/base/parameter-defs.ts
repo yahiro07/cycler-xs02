@@ -1,4 +1,4 @@
-import { masterGainConfig } from "@dsp/dsp-modules/basic/master-gain-config";
+import { masterGainConfig } from "@dsp/base/master-gain-config";
 
 export enum OscWave {
   saw,
@@ -93,7 +93,7 @@ export enum ExGaterCode {
   one,
   off,
   tie,
-  double,
+  two,
 }
 export enum MoRndMode {
   sh,
@@ -251,7 +251,7 @@ export type SynthParametersSuit = {
   bassVolume: number;
   synthVolume: number;
   //
-  loopBars: number;
+  // loopBars: LoopBarsKey; //held in bus
   looped: boolean;
   masterVolume: number;
   clockingOn: boolean;
@@ -352,7 +352,6 @@ export function createSynthParametersSuit(): SynthParametersSuit {
     bassVolume: 1,
     synthVolume: 1,
     //
-    loopBars: 2,
     looped: false,
     masterVolume: masterGainConfig.levelCenter,
     clockingOn: true,

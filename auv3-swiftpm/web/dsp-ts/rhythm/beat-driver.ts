@@ -45,7 +45,7 @@ export class BeatDriver {
       let pos = stepIndex % 32;
       const targetPattern = bassTailAccentPatterns[sp.bassTailAccentPatternKey];
       let pattern = "";
-      if (sp.loopBars === 1) {
+      if (this.bus.loopBars === 1) {
         // Loop through the target one bar at a time
         pattern = targetPattern;
         pos %= 16;
@@ -86,7 +86,7 @@ export class BeatDriver {
       this.bus.sampleRate,
       this.bus.blockLength,
     );
-    const nextStep = (currentStep + frameStepLength) % (sp.loopBars * 16);
+    const nextStep = (currentStep + frameStepLength) % (this.bus.loopBars * 16);
     const s0 = currentStep >>> 0;
     const s1 = nextStep >>> 0;
     if (s1 !== s0) {

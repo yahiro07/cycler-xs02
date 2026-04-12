@@ -25,7 +25,7 @@ describe("gaterExSeq_buildNotesFromCodesForTest", () => {
     {
       const notes = gaterExSeq_buildNotesFromCodesForTest([
         ExGaterCode.one,
-        ExGaterCode.double,
+        ExGaterCode.two,
         ExGaterCode.one,
         ExGaterCode.tie,
       ]);

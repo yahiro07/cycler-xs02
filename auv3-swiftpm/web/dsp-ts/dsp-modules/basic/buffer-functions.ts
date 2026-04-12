@@ -29,8 +29,17 @@ export function copyBuffer(
 export function writeBuffer(
   dstBuffer: Float32Array,
   srcBuffer: Float32Array,
+  len: number) {
+  for (let i = 0; i < len; i++) {
+    dstBuffer[i] += srcBuffer[i];
+  }
+}
+
+export function writeBufferWithGain(
+  dstBuffer: Float32Array,
+  srcBuffer: Float32Array,
   len: number,
-  volume: number = 1,
+  volume: number
 ) {
   for (let i = 0; i < len; i++) {
     dstBuffer[i] += srcBuffer[i] * volume;

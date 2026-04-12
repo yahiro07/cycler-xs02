@@ -118,7 +118,7 @@ function buildNotesFromCodes(
       note.type = GaterExNoteType.gate;
       note.duration = 1;
       tmpWorkingNotes.endPush();
-    } else if (code === ExGaterCode.double) {
+    } else if (code === ExGaterCode.two) {
       for (let i = 0; i < 2; i++) {
         const note = tmpWorkingNotes.beginPush();
         note.type = GaterExNoteType.gate;

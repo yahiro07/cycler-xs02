@@ -2,13 +2,11 @@ import { Bus, createSynthesisBus } from "@dsp/base/synthesis-bus";
 import {
   applyBufferGain,
   applyBufferGainRms,
-  applyBufferSoftClip,
-  writeBuffer,
+  applyBufferSoftClip, writeBufferWithGain
 } from "@dsp/dsp-modules/basic/buffer-functions";
 import { mapDbGain } from "@dsp/dsp-modules/basic/db-gain-mapper";
-import { masterGainConfig } from "@dsp/dsp-modules/basic/master-gain-config";
+import { masterGainConfig } from "@dsp/base/master-gain-config";
 import { blWaveProvider } from "@dsp/dsp-modules/oscillators/bl-wave-provider";
-import { getLoopBarsFromKey } from "@dsp/motions/funcs/steps-common";
 import { gaterExSeqMode_cleanupLocalState, gaterExSeqMode_setupLocalState } from "@dsp/motions/gaters/gater-ex-seq";
 import { gaterMinLaxMode_cleanupLocalState, gaterMinLaxMode_setupLocalState } from "@dsp/motions/gaters/gater-main-lax";
 import {
@@ -110,8 +108,6 @@ export class SynthesizerHub {
     const sp = bus.parameters;
     const { workBuffer } = this;
 
-    bus.loopBars = getLoopBarsFromKey(sp.loopBars);
-
     if (bus.blockLength !== buffer.length) {
       bus.blockLength = buffer.length;
     }
@@ -135,13 +131,13 @@ export class SynthesizerHub {
 
     workBuffer.fill(0);
     this.mainSynth.processSamples(workBuffer, len);
-    writeBuffer(buffer, workBuffer, power2(sp.synthVolume));
+    writeBufferWithGain(buffer, workBuffer, len, power2(sp.synthVolume));
     workBuffer.fill(0);
     this.kickSynth.processSamples(workBuffer, len);
-    writeBuffer(buffer, workBuffer, power2(sp.kickVolume));
+    writeBufferWithGain(buffer, workBuffer, len, power2(sp.kickVolume));
     workBuffer.fill(0);
     this.bassSynth.processSamples(workBuffer, len);
-    writeBuffer(buffer, workBuffer, len, power2(sp.bassVolume));
+    writeBufferWithGain(buffer, workBuffer, len, power2(sp.bassVolume));
 
     applyBufferGainRms(buffer, len, 3);
 

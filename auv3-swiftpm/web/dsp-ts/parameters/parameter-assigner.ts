@@ -9,6 +9,7 @@ import {
   GateSequencerCode,
   KickPresetKey,
   LfoWave,
+  LoopBarsKey,
   MoEgWave,
   MoRndMode,
   MoType,
@@ -22,6 +23,7 @@ import {
 } from "@dsp/base/parameter-defs";
 import { ParameterId } from "@dsp/base/parameter-id";
 import { SynthesisBus } from "@dsp/base/synthesis-bus";
+import { getLoopBarsFromKey } from "@dsp/motions/funcs/steps-common";
 import { m_round } from "@dsp/utils/math-utils";
 
 function floatToBool(value: number) {
@@ -46,6 +48,8 @@ export function parameterAssigner_applyParameter(
   const sp = bus.parameters;
   if (id === pk.parametersVersion) bus.paramVer = floatToInt(value);
   if (id === pk.internalBpm) bus.bpm = value;
+  if (id === pk.loopBars)
+    bus.loopBars = getLoopBarsFromKey(floatToEnum<LoopBarsKey>(value));
   //
   if (id === pk.oscOn) sp.oscOn = floatToBool(value);
   if (id === pk.oscWave) sp.oscWave = floatToEnum<OscWave>(value);
@@ -252,7 +256,6 @@ export function parameterAssigner_applyParameter(
   if (id === pk.kickVolume) sp.kickVolume = value;
   if (id === pk.bassVolume) sp.bassVolume = value;
   if (id === pk.synthVolume) sp.synthVolume = value;
-  if (id === pk.loopBars) sp.loopBars = value;
   if (id === pk.looped) sp.looped = floatToBool(value);
   if (id === pk.masterVolume) sp.masterVolume = value;
   if (id === pk.clockingOn) sp.clockingOn = floatToBool(value);

@@ -39,7 +39,7 @@ export function motionsRoot_processOnFrameEnd(bus: Bus) {
   const stepDelta = getStepDeltaForFrame(bus);
   bus.totalStep += stepDelta;
   bus.currentStep += stepDelta;
-  const maxSteps = sp.loopBars * 16;
+  const maxSteps = bus.loopBars * 16;
   if (bus.currentStep >= maxSteps) {
     bus.currentStep %= maxSteps;
     if (!sp.looped) {
