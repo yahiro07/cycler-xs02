@@ -4,7 +4,7 @@ import { mixMotionPartValues } from "@dsp/motions/funcs/motion-mux";
 import { mapParamOscPitchToRelativeNote } from "@dsp/motions/funcs/pitch-mapping";
 import {
   MotionPartValues,
-  RandomValueSpecial,
+  RandomValueStateFlag,
 } from "@dsp/motions/impl/motion-common";
 import { processMotionWrapper } from "@dsp/motions/impl/motion-wrapper";
 import {
@@ -49,16 +49,17 @@ function mapMotionPartValuesToTargetParameter(
 
 function randomValueMapperFn_oscPitchRelNote(
   bus: Bus,
-  rr: number | RandomValueSpecial,
+  rr: number,
+  stateFlag: RandomValueStateFlag,
 ) {
   const sp = bus.parameters;
   //pitch, smooth mapping on, 相対ノート値で出力
   //SD/SGの出力ではrandom mappingした結果の相対ノート値の間で線形補間
   //rndのfallbackでノブの値によらずノブ中央(0.5, ノート基準音)の値を返す
   let prPitch: number;
-  if (rr === RandomValueSpecial.rndSkip) {
+  if (stateFlag === RandomValueStateFlag.rndSkip) {
     prPitch = 0.5;
-  } else if (rr === RandomValueSpecial.rndOff) {
+  } else if (stateFlag === RandomValueStateFlag.rndOff) {
     prPitch = sp.oscPitch;
   } else {
     prPitch = clampValueZeroOne(
@@ -70,13 +71,14 @@ function randomValueMapperFn_oscPitchRelNote(
 
 function randomValueMapperFn_oscPrPitch(
   bus: Bus,
-  rr: number | RandomValueSpecial,
+  rr: number,
+  stateFlag: RandomValueStateFlag,
 ) {
   const sp = bus.parameters;
   let prPitch: number;
-  if (rr === RandomValueSpecial.rndSkip) {
+  if (stateFlag === RandomValueStateFlag.rndSkip) {
     prPitch = 0.5;
-  } else if (rr === RandomValueSpecial.rndOff) {
+  } else if (stateFlag === RandomValueStateFlag.rndOff) {
     prPitch = sp.oscPitch;
   } else {
     prPitch = clampValueZeroOne(

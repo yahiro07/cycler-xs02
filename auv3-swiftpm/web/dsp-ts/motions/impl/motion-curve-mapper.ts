@@ -15,7 +15,7 @@ import * as ramp_provider from "@dsp/motions/gaters/ramp-provider";
 import { RampSpec } from "@dsp/motions/gaters/ramp-types";
 import {
   RandomValueMapperFn,
-  RandomValueSpecial,
+  RandomValueStateFlag,
 } from "@dsp/motions/impl/motion-common";
 import { invPower2Weak, lowClipZero, mixValue } from "@dsp/utils/number-utils";
 
@@ -74,12 +74,12 @@ function getMappedValueWithRandom(
     bus.loopSeed + rampHeadPos + moIdSeed + moPartSeed.rndCover,
   );
   if (rrA > rndCoverCurved(rndCover)) {
-    return mapperFn(bus, RandomValueSpecial.rndSkip);
+    return mapperFn(bus, 0, RandomValueStateFlag.rndSkip);
   }
   const rr = deterministicRandom(
     bus.loopSeed + rampHeadPos + moIdSeed + moPartSeed.rnd,
   );
-  return mapperFn(bus, rr);
+  return mapperFn(bus, rr, RandomValueStateFlag.rndActive);
 }
 
 function wrapGlide(pos: number): number {
@@ -117,7 +117,7 @@ export function getRndMapped(
     }
     return semiCurrent;
   }
-  return mapperFn(bus, RandomValueSpecial.rndOff);
+  return mapperFn(bus, 0, RandomValueStateFlag.rndOff);
 }
 export function getRndMod(
   bus: SynthesisBus,

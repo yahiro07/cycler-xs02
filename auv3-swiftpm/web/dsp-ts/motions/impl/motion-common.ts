@@ -1,14 +1,16 @@
 import { MoId } from "@dsp/base/parameter-defs";
 import { Bus } from "@dsp/base/synthesis-bus";
 
-export enum RandomValueSpecial {
-  rndSkip = -1,
-  rndOff = -2,
+export enum RandomValueStateFlag {
+  rndActive = 1,
+  rndSkip = 2,
+  rndOff = 3,
 }
 
 export type RandomValueMapperFn = (
   bus: Bus,
-  rr: number | RandomValueSpecial,
+  rr: number,
+  stateFlag: RandomValueStateFlag,
 ) => number;
 
 export type MotionPartValues = {
