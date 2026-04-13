@@ -1,6 +1,5 @@
 #pragma once
 #include "master-gain-config.h"
-#include <vector>
 
 namespace dsp {
 
