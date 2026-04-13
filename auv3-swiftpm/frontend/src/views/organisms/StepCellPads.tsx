@@ -42,7 +42,7 @@ const ExStepsContent = ({ code }: { code: ExGaterCode }) => {
       {code === ExGaterCode.off && <Icons.Dash className="text-[20px]" />}
       {code === ExGaterCode.one && <Icons.DotFill className="text-[14px]" />}
       {code === ExGaterCode.tie && <Icons.AngleRight className="text-[12px]" />}
-      {code === ExGaterCode.double && (
+      {code === ExGaterCode.two && (
         <div className="flex-c">
           <Icons.DotFill className="mx-[-1.5px] text-[14px]" />
           <Icons.DotFill className="mx-[-1.5px] text-[14px]" />

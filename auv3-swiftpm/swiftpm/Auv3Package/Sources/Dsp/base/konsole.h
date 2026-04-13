@@ -33,4 +33,12 @@ inline void debugEmitError(const char *msg) {
 #endif
 }
 
+inline void debugAssert(bool cond, const char *msg) {
+#ifdef DEBUG
+  if (!cond) {
+    printf("[🔺dsp] %s\n", msg);
+  }
+#endif
+}
+
 } // namespace dsp

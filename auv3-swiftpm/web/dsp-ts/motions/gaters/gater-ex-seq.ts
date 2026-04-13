@@ -1,4 +1,4 @@
-import { debugEmitError } from "@dsp/base/konsole";
+import { debugAssert, debugEmitError } from "@dsp/base/konsole";
 import { ExGaterCode } from "@dsp/base/parameter-defs";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForExGater } from "@dsp/motions/funcs/steps-common";
@@ -84,6 +84,8 @@ function buildNotesFromCodes(codes: ExGaterCode[], outNotes: GaterExNotes) {
     note.offset = offset;
     offset += note.duration;
   }
+  const totalDuration = offset;
+  debugAssert(totalDuration === 4, "totalDuration must be 4");
 }
 
 //for test
@@ -104,6 +106,7 @@ function packExtGaterCodes(codes: ExGaterCode[]): ExGaterCodePacked {
 }
 
 function buildNotesCached(bus: Bus, codes: ExGaterCode[]): GaterExNotes {
+  debugAssert(codes[0] !== ExGaterCode.tie, "first code must not be tie");
   const cacheState = bus.moduleLocals.gaterExSeq as GaterExCacheState;
   const packed = packExtGaterCodes(codes);
   const same = cacheState.cacheKeys.codes === packed;
@@ -124,7 +127,7 @@ export function gaterExSeqMode_cleanupLocalState(bus: Bus): void {
 function findNote(notes: GaterExNotes, pos: number): GaterExNote | undefined {
   for (let i = 0; i < notes.count; i++) {
     const note = notes.items[i];
-    if (note.offset <= pos && note.offset + note.duration > pos) {
+    if (note.offset <= pos && pos < note.offset + note.duration) {
       return note;
     }
   }

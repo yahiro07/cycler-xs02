@@ -92,8 +92,8 @@ export enum MoEgWave {
 export enum ExGaterCode {
   one,
   off,
-  tie,
   two,
+  tie,
 }
 export enum MoRndMode {
   sh,

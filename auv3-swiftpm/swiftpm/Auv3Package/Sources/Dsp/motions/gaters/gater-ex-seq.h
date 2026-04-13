@@ -54,6 +54,7 @@ packExGaterCodes(const ExGaterCode codes[kGaterExCodeLength]) {
 
 inline void buildNotesFromCodes(const ExGaterCode codes[kGaterExCodeLength],
                                 GaterExNotes &outNotes) {
+  debugAssert(codes[0] != ExGaterCode::tie, "first code must not be tie");
   int outNoteIndex = 0;
   for (int i = 0; i < kGaterExCodeLength; i++) {
     const ExGaterCode code = codes[i];
@@ -85,6 +86,8 @@ inline void buildNotesFromCodes(const ExGaterCode codes[kGaterExCodeLength],
     note.offset = offset;
     offset += note.duration;
   }
+  const float totalDuration = offset;
+  debugAssert(totalDuration == 4.0f, "totalDuration must be 4");
 }
 
 inline void gaterExSeqMode_setupLocalState(SynthesisBus &bus) {

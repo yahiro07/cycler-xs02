@@ -189,19 +189,19 @@ export const moEgWaveOptions = createEnumOptions<MoEgWave>([
 export enum ExGaterCode {
   one,
   off,
+  two,
   tie,
-  double,
 }
 export const exGaterCodeValues = [
   ExGaterCode.one,
   ExGaterCode.off,
   ExGaterCode.tie,
-  ExGaterCode.double,
+  ExGaterCode.two,
 ];
 export const exGaterCodeValuesForHead = [
   ExGaterCode.one,
   ExGaterCode.off,
-  ExGaterCode.double,
+  ExGaterCode.two,
 ];
 export enum MoRndMode {
   sh,

@@ -108,8 +108,8 @@ enum class MoEgWave {
 enum class ExGaterCode {
   one,
   off,
-  tie,
   two,
+  tie,
 };
 
 enum class MoRndMode {
