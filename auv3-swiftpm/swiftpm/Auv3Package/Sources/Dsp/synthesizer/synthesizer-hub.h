@@ -3,7 +3,6 @@
 #include "../base/synthesis-bus.h"
 #include "../dsp-modules/basic/buffer-functions.h"
 #include "../dsp-modules/basic/db-gain-mapper.h"
-#include "../motions/funcs/steps-common.h"
 #include "../motions/motions-root.h"
 #include "../rhythm/bass-synthesizer.h"
 #include "../rhythm/beat-driver.h"
@@ -39,8 +38,6 @@ private:
     debugAssert(len == CHUNK_SIZE, "invalid processing length");
 
     const auto &sp = bus.parameters;
-
-    bus.loopBars = getLoopBarsFromKey(static_cast<LoopBarsKey>(bus.loopBars));
 
     if (bus.blockLength != len) {
       bus.blockLength = len;

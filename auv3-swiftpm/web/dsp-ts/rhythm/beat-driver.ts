@@ -79,7 +79,6 @@ export class BeatDriver {
   }
 
   advance() {
-    const sp = this.bus.parameters;
     const { currentStep } = this.bus;
     const frameStepLength = calcNumStepsForSamples(
       this.bus.bpm,
