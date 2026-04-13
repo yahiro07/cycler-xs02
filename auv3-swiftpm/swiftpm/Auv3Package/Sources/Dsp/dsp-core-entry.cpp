@@ -4,7 +4,7 @@
 namespace dsp {
 
 IDspCore *createDspCoreInstance() {
-  konsole.debugLog("createDspCoreInstance");
+  konsole.debugLog("createDspCoreInstance 1925");
   return new SynthesizerRoot();
 }
 
