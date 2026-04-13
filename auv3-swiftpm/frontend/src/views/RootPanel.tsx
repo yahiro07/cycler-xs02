@@ -714,6 +714,16 @@ const WrapTouchPointerView = () => {
   return st.touchPointerVisible ? <TouchPointerView /> : null;
 };
 
+const ErrorMessagePart = () => {
+  const { envErrorMessage } = store.useSnapshot();
+  if (!envErrorMessage) return;
+  return (
+    <div className="absolute top-0 left-0 px-2 py-1 bg-white/70 whitespace-pre-wrap">
+      {envErrorMessage}
+    </div>
+  );
+};
+
 export const RootPanel = () => {
   return (
     <>
@@ -732,6 +742,7 @@ export const RootPanel = () => {
       </div>
       {/* {appEnvs.isWebDeployment && <PageGuard appName="xs02" />} */}
       <WrapTouchPointerView />
+      <ErrorMessagePart />
     </>
   );
 };

@@ -6,7 +6,7 @@ export type CoreBridge = {
   subscribe: (listener: (msg: MessageFromApp) => void) => () => void;
 };
 
-const windowTyped = window as unknown as {
+export const windowTyped = window as unknown as {
   webkit?: {
     messageHandlers: {
       pluginEditor?: {
