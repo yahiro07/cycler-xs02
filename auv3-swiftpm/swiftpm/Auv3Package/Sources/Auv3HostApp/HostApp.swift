@@ -8,7 +8,7 @@ public struct HostApp: App {
   public var body: some Scene {
     WindowGroup {
       #if os(iOS)
-        ContentView2(hostModel: hostModel).ignoresSafeArea()  //fullscreen
+        ContentView2(hostModel: hostModel).ignoresSafeArea().statusBarHidden()  //fullscreen
       #else
         ContentView2(hostModel: hostModel)  //window with title bar
       #endif
