@@ -72,6 +72,8 @@ public:
           rtHostEventQueue.push({RtHostEventType::NoteOff, noteNumber,
                                  0.f}); //  ack response to ui
         }
+      } else if (e.type == RtProcessorEventType::CustomCommand) {
+        mDspCore->applyCommand(e.customCommand.id, e.customCommand.value);
       }
     }
   }
