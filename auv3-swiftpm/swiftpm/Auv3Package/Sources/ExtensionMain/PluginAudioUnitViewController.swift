@@ -71,17 +71,13 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
           self.configureSwiftUIView(audioUnit: audioUnit)
         }
       }
+
       // self.observation = audioUnit.observe(\.allParameterValues, options: [.new]) {
       //   object, change in
       //   guard let tree = audioUnit.parameterTree else { return }
 
       //   // This insures the Audio Unit gets initial values from the host.
       //   for param in tree.allParameters { param.value = param.value }
-      // }
-
-      // guard audioUnit.parameterTree != nil else {
-      //   logger.error("Unable to access AU ParameterTree")
-      //   return audioUnit
       // }
 
       return audioUnit
