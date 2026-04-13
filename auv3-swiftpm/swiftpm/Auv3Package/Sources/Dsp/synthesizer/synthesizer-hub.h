@@ -9,6 +9,7 @@
 #include "../rhythm/kick-synthesizer.h"
 #include "../utils/number-utils.h"
 #include "main-synthesis-line.h"
+#include "silence-checker.h"
 #include "trigger-manager.h"
 
 namespace dsp {
@@ -31,6 +32,7 @@ private:
   BassSynth bassSynth;
   BeatDriver beatDriver;
   TriggerManager triggerManager;
+  SilenceChecker silenceChecker;
   float workBuffer[CHUNK_SIZE] = {0.f};
   ChunkBuffer chunkBuffer;
 
@@ -79,6 +81,7 @@ private:
     applyBufferSoftClip(buffer, len);
 
     motionsRoot_processOnFrameEnd(bus);
+    silenceChecker.update(buffer, len);
   }
 
   void processSamplesWithChunks(float *destBuffer, int len) {
@@ -101,7 +104,7 @@ private:
 public:
   SynthesizerHub()
       : mainSynth(bus), beatDriver(bus, kickSynth, bassSynth),
-        triggerManager(bus) {}
+        triggerManager(bus), silenceChecker(bus) {}
 
   ~SynthesizerHub() {
     gaterMainLaxMode_cleanupLocalState(bus);
@@ -127,13 +130,20 @@ public:
 
   void setGroovePlaying(bool playing) {
     triggerManager.setGroovePlaying(playing);
+    silenceChecker.wakeUp();
   }
 
-  void noteOn(int noteNumber) { triggerManager.playNote(noteNumber); }
+  void noteOn(int noteNumber) {
+    triggerManager.playNote(noteNumber);
+    silenceChecker.wakeUp();
+  }
 
   void noteOff(int noteNumber) { triggerManager.stopNote(noteNumber); }
 
   void processSamples(float *buffer, int len) {
+    if (!silenceChecker.isSoundActive()) {
+      return;
+    }
     processSamplesWithChunks(buffer, len);
   }
 };
