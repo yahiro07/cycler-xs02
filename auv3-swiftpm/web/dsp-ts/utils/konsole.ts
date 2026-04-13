@@ -1,16 +1,16 @@
 export const dspEnvs = {
   isDebug: false,
-}
+};
 
 export const konsole = {
   isDebug: false,
 
   log(message: string) {
-    console.log(message);
+    console.log(`[🔺dsp] ${message}`);
   },
   debugLog(message: string) {
     if (!dspEnvs.isDebug) return;
-    console.log(message);
+    console.log(`[🔺dsp] ${message}`);
   },
 };
 

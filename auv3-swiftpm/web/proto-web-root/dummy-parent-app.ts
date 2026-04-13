@@ -228,6 +228,7 @@ export function setupDummyParentApp() {
     if (msg.type === "log") {
       writeLogItemToConsole(msg as LogItem);
     } else if (msg.type === "uiLoaded") {
+      logger.log("uiLoaded");
       sendMessageToUi({
         type: "applyCommand",
         commandKey: "setStandaloneFlag",
