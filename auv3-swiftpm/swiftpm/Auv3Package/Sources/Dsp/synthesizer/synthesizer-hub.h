@@ -8,7 +8,6 @@
 #include "../rhythm/bass-synthesizer.h"
 #include "../rhythm/beat-driver.h"
 #include "../rhythm/kick-synthesizer.h"
-#include "../synthesis-modules/funcs/debug-waves.h"
 #include "../utils/number-utils.h"
 #include "main-synthesis-line.h"
 #include "trigger-manager.h"
