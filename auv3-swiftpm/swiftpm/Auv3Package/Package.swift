@@ -12,6 +12,7 @@ let package = Package(
   targets: [
     .target(
       name: "Dsp",
+      sources: ["dsp-core-entry.cpp"],
       publicHeadersPath: "",
     ),
     .target(
