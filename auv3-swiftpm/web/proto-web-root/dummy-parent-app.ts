@@ -113,7 +113,7 @@ const parameterDefs: ParameterDefItem[] = [
   //
   [PK.oscOn, "oscOn", true],
   [PK.oscWave, "oscWave", 0],
-  [PK.oscOctave, "oscOctave", 0.5],
+  [PK.oscOctave, "oscOctave", 0],
   [PK.oscPitch, "oscPitch", 0.5],
   [PK.oscPitchMode, "oscPitchMode", OscPitchMode.octave],
   [PK.oscPitchMoSmooth, "oscPitchMoSmooth", 0],
