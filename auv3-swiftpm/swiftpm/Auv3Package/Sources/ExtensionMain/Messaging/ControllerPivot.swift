@@ -75,7 +75,6 @@ class ControllerPivot: ControllerPivotProtocol {
 
   func randomizeParameters() {
     var parameters = parametersService.getAllParameterValues()
-    // applyRandomizeParameters(&parameters)  //in swift side
     applyParameterSuitOperationMapped(&parameters) { mapped in
       dspRouteAgent.extraLogic_randomizeParameters(&mapped)
     }
