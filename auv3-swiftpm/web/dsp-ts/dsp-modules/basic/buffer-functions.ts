@@ -2,7 +2,7 @@ import {
   applyHardClip,
   applySoftClip,
 } from "@dsp/dsp-modules/effects/soft-clip-shaper";
-import { m_sqrt } from "@dsp/utils/math-utils";
+import { m_abs, m_max, m_sqrt } from "@dsp/utils/math-utils";
 import { mixValue } from "@dsp/utils/number-utils";
 
 export function readBufferInterpolated(
@@ -92,4 +92,12 @@ export function applyBufferHardClip(buffer: Float32Array, len: number) {
   for (let i = 0; i < len; i++) {
     buffer[i] = applyHardClip(buffer[i]);
   }
+}
+
+export function getBufferMaxLevel(buffer: Float32Array, len: number) {
+  let maxLevel = 0;
+  for (let i = 0; i < len; i++) {
+    maxLevel = m_max(maxLevel, m_abs(buffer[i]));
+  }
+  return maxLevel;
 }

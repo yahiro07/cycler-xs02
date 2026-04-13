@@ -27,6 +27,7 @@ import { BassSynth } from "@dsp/rhythm/bass-synthesizer";
 import { BeatDriver } from "@dsp/rhythm/beat-driver";
 import { KickSynth } from "@dsp/rhythm/kick-synthesizer";
 import { MainSynthesisLine } from "@dsp/synthesizer/main-synthesis-line";
+import { SilenceChecker } from "@dsp/synthesizer/silence-checker";
 import { power2 } from "@dsp/utils/number-utils";
 import { TriggerManager } from "./trigger-manager";
 
@@ -50,28 +51,23 @@ export class SynthesizerHub {
   private chunkBuffer: ChunkBuffer;
   private triggerManager: TriggerManager;
 
+  private silenceChecker: SilenceChecker;
+
   constructor() {
     const bus = createSynthesisBus();
-    const mainSynth = new MainSynthesisLine(bus);
-
-    const kickSynth = new KickSynth();
-    const bassSynth = new BassSynth();
-    const beatDriver = new BeatDriver(bus, kickSynth, bassSynth);
-    const workBuffer = new Float32Array(configs.chunkSize);
-    const chunkBuffer: ChunkBuffer = {
+    this.bus = bus;
+    this.mainSynth = new MainSynthesisLine(bus);
+    this.kickSynth = new KickSynth();
+    this.bassSynth = new BassSynth();
+    this.beatDriver = new BeatDriver(bus, this.kickSynth, this.bassSynth);
+    this.workBuffer = new Float32Array(configs.chunkSize);
+    this.chunkBuffer = {
       buffer: new Float32Array(configs.chunkSize),
       readPos: 0,
       size: configs.chunkSize,
     };
-    const triggerManager = new TriggerManager(bus);
-    this.bus = bus;
-    this.mainSynth = mainSynth;
-    this.kickSynth = kickSynth;
-    this.bassSynth = bassSynth;
-    this.beatDriver = beatDriver;
-    this.workBuffer = workBuffer;
-    this.chunkBuffer = chunkBuffer;
-    this.triggerManager = triggerManager;
+    this.triggerManager = new TriggerManager(bus);
+    this.silenceChecker = new SilenceChecker(bus);
   }
 
   //for c++ porting
@@ -99,9 +95,11 @@ export class SynthesizerHub {
 
   setGroovePlaying(playing: boolean) {
     this.triggerManager.setGroovePlaying(playing);
+    this.silenceChecker.wakeUp();
   }
   noteOn(noteNumber: number) {
     this.triggerManager.playNote(noteNumber);
+    this.silenceChecker.wakeUp();
   }
 
   noteOff(noteNumber: number) {
@@ -152,6 +150,7 @@ export class SynthesizerHub {
     applyBufferGain(buffer, len, masterGain);
     applyBufferSoftClip(buffer, len);
     motionsRoot_processOnFrameEnd(bus);
+    this.silenceChecker.update(buffer, len);
   }
 
   private processSamplesWithChunks(destBuffer: Float32Array, len: number) {
@@ -175,10 +174,10 @@ export class SynthesizerHub {
   }
 
   processSamples(buffer: Float32Array, len: number) {
+    if (!this.silenceChecker.isSoundActive()) {
+      //stop processing after a certain period of silence
+      return;
+    }
     this.processSamplesWithChunks(buffer, len);
   }
-
-  // getBarPosition(): number {
-  //   return (this.bus.totalStep / 16) >>> 0;
-  // }
 }
