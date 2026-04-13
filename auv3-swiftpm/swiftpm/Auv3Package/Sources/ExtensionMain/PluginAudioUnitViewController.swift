@@ -52,7 +52,7 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   {
     logger.trace("createAudioUnit 1329")
     showEntryInfo(componentDescription)
-    SharedContainer.setAppGroupId("group.net.miqsel.myau2.v2-swiftpm")
+    SharedContainer.setAppGroupId("group.com.example.sonic.proto-kit-auv3.Project1")
 
     return try DispatchQueue.main.sync {
 
