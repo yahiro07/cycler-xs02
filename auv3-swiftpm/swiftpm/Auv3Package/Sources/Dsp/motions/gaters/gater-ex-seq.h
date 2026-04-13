@@ -1,7 +1,6 @@
 #pragma once
 #include "../../base/parameter-defs.h"
 #include "../../base/synthesis-bus.h"
-#include "../../utils/math-utils.h"
 #include "../funcs/steps-common.h"
 #include "./ramp-types.h"
 
@@ -18,11 +17,6 @@ struct GaterExNote {
   float duration; // Relative length to the step
 };
 
-struct GaterExTemporalNote {
-  GaterExNoteType type;
-  float duration; // Relative length to the step
-};
-
 static constexpr int kGaterExCapacity = 8;
 static constexpr int kGaterExCodeLength = 4;
 
@@ -31,36 +25,15 @@ struct GaterExNotes {
   int length;
 };
 
-struct GaterExTmpNotes {
-  GaterExTemporalNote items[kGaterExCapacity];
-  int count;
-
-  void reset() { count = 0; }
-
-  GaterExTemporalNote &beginPush() { return items[count]; }
-
-  void endPush() { count++; }
-
-  GaterExTemporalNote *at(int index) {
-    if (index < 0)
-      index = count + index;
-    if (index < 0 || index >= count)
-      return nullptr;
-    return &items[index];
-  }
-};
-
 using ExGaterCodePacked = int;
 
 struct GaterExCacheState {
-  GaterExTmpNotes tmpWorkingNotes;
   GaterExNotes notes;
   struct {
     ExGaterCodePacked codes;
   } cacheKeys;
 
   GaterExCacheState() {
-    tmpWorkingNotes.count = 0;
     notes.length = 0;
     for (int i = 0; i < kGaterExCapacity; i++) {
       notes.items[i] = {GaterExNoteType::gate, static_cast<float>(i), 1.0f};
@@ -79,46 +52,38 @@ packExGaterCodes(const ExGaterCode codes[kGaterExCodeLength]) {
 }
 
 inline void buildNotesFromCodes(const ExGaterCode codes[kGaterExCodeLength],
-                                GaterExNotes &outNotes,
-                                GaterExTmpNotes &tmpWorkingNotes) {
-  tmpWorkingNotes.reset();
+                                GaterExNotes &outNotes) {
+  int outNoteIndex = 0;
   for (int i = 0; i < kGaterExCodeLength; i++) {
     const ExGaterCode code = codes[i];
     if (code == ExGaterCode::off) {
-      GaterExTemporalNote &note = tmpWorkingNotes.beginPush();
+      GaterExNote &note = outNotes.items[outNoteIndex++];
       note.type = GaterExNoteType::off;
       note.duration = 1.0f;
-      tmpWorkingNotes.endPush();
     } else if (code == ExGaterCode::one) {
-      GaterExTemporalNote &note = tmpWorkingNotes.beginPush();
+      GaterExNote &note = outNotes.items[outNoteIndex++];
       note.type = GaterExNoteType::gate;
       note.duration = 1.0f;
-      tmpWorkingNotes.endPush();
     } else if (code == ExGaterCode::two) {
       for (int j = 0; j < 2; j++) {
-        GaterExTemporalNote &note = tmpWorkingNotes.beginPush();
+        GaterExNote &note = outNotes.items[outNoteIndex++];
         note.type = GaterExNoteType::gate;
         note.duration = 0.5f;
-        tmpWorkingNotes.endPush();
       }
     } else if (code == ExGaterCode::tie) {
-      GaterExTemporalNote *lastNote = tmpWorkingNotes.at(-1);
-      if (lastNote) {
-        lastNote->duration += 1.0f;
+      if (outNoteIndex > 0) {
+        outNotes.items[outNoteIndex - 1].duration += 1.0f;
       }
     }
   }
+  outNotes.length = outNoteIndex;
 
   float offset = 0.0f;
-  for (int i = 0; i < tmpWorkingNotes.count; i++) {
-    const GaterExTemporalNote *note = tmpWorkingNotes.at(i);
-    GaterExNote &outNote = outNotes.items[i];
-    outNote.type = note->type;
-    outNote.offset = offset;
-    outNote.duration = note->duration;
-    offset += note->duration;
+  for (int i = 0; i < outNotes.length; i++) {
+    GaterExNote &note = outNotes.items[i];
+    note.offset = offset;
+    offset += note.duration;
   }
-  outNotes.length = tmpWorkingNotes.count;
 }
 
 inline void gaterExSeqMode_setupLocalState(SynthesisBus &bus) {
@@ -156,8 +121,7 @@ inline RampSpec gaterExSeqMode_getRampSpec(SynthesisBus &bus, float stepPos) {
       *static_cast<GaterExCacheState *>(bus.moduleLocals.gaterExSeq);
   const ExGaterCodePacked packed = packExGaterCodes(sp.exGaterCodes);
   if (cacheState.cacheKeys.codes != packed) {
-    buildNotesFromCodes(sp.exGaterCodes, cacheState.notes,
-                        cacheState.tmpWorkingNotes);
+    buildNotesFromCodes(sp.exGaterCodes, cacheState.notes);
     cacheState.cacheKeys.codes = packed;
   }
 
