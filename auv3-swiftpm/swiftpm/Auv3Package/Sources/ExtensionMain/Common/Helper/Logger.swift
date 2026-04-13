@@ -26,41 +26,50 @@ let logKindIcons: [String: String] = [
 
 #if DEBUG
 
-  class UDPLogger {
-    private var conn: NWConnection?
-    private let dispatchQueue = DispatchQueue(label: "UDPLogger")
+  // class UDPLogger {
+  //   private var conn: NWConnection?
+  //   private let dispatchQueue = DispatchQueue(label: "UDPLogger")
 
-    init() {}
+  //   init() {}
 
-    private func ensureConnection() {
-      if conn != nil { return }
+  //   private func ensureConnection() {
+  //     if conn != nil { return }
 
-      let nwHost = NWEndpoint.Host("127.0.0.1")
-      let nwPort = NWEndpoint.Port(integerLiteral: 9001)
-      conn = NWConnection(host: nwHost, port: nwPort, using: .udp)
+  //     let nwHost = NWEndpoint.Host("127.0.0.1")
+  //     let nwPort = NWEndpoint.Port(integerLiteral: 9001)
+  //     conn = NWConnection(host: nwHost, port: nwPort, using: .udp)
 
-      conn?.start(queue: dispatchQueue)
-    }
+  //     conn?.start(queue: dispatchQueue)
+  //   }
 
-    private func log(_ logLine: String) {
-      guard let content = logLine.data(using: .utf8) else { return }
-      let workItem = DispatchWorkItem { [weak self] in
-        guard let self else { return }
-        self.ensureConnection()
-        self.conn?.send(
-          content: content,
-          completion: .contentProcessed({ error in }))
-      }
-      dispatchQueue.async(execute: workItem)
-    }
+  //   private func log(_ logLine: String) {
+  //     guard let content = logLine.data(using: .utf8) else { return }
+  //     let workItem = DispatchWorkItem { [weak self] in
+  //       guard let self else { return }
+  //       self.ensureConnection()
+  //       self.conn?.send(
+  //         content: content,
+  //         completion: .contentProcessed({ error in }))
+  //     }
+  //     dispatchQueue.async(execute: workItem)
+  //   }
 
-    func pushLogLine(_ logLine: String) {
-      log(logLine)
-    }
-  }
+  //   func pushLogLine(_ logLine: String) {
+  //     log(logLine)
+  //   }
+  // }
 
   class LoggerCore {
-    let udpLogger = UDPLogger()
+    // let udpLogger = UDPLogger()
+    // private func emitUdpLog(_ item: LogItem){
+    //   let timestamp = item.timestamp
+    //   let subsystem = item.subsystem
+    //   let logKind = item.logKind
+    //   let message = item.message.replacingOccurrences(of: "\"", with: "\\\"")
+    //   let jsonText =
+    //     "{ \"timestamp\": \(timestamp), \"subsystem\": \"\(subsystem)\", \"logKind\": \"\(logKind)\", \"message\": \"\(message)\"}"
+    //   udpLogger.pushLogLine(jsonText)
+    // }
 
     private func printLogLine(_ item: LogItem) {
       let ssIcon = subsystemIcons[item.subsystem] ?? ""
@@ -68,16 +77,10 @@ let logKindIcons: [String: String] = [
       let logLine = "[\(ssIcon)\(item.subsystem)] \(kindIcon) \(item.message)"
       print(logLine)
     }
+
     func pushLogItem(_ item: LogItem) {
       printLogLine(item)
-
-      let timestamp = item.timestamp
-      let subsystem = item.subsystem
-      let logKind = item.logKind
-      let message = item.message.replacingOccurrences(of: "\"", with: "\\\"")
-      let jsonText =
-        "{ \"timestamp\": \(timestamp), \"subsystem\": \"\(subsystem)\", \"logKind\": \"\(logKind)\", \"message\": \"\(message)\"}"
-      udpLogger.pushLogLine(jsonText)
+      // emitUdpLog(item)
     }
   }
 
