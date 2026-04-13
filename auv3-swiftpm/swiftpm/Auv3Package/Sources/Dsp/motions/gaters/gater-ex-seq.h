@@ -39,7 +39,7 @@ struct GaterExCacheState {
     for (int i = 0; i < kGaterExCapacity; i++) {
       notes.items[i] = {GaterExNoteType::gate, static_cast<float>(i), 1.0f};
     }
-    cacheKeys.codes = 0;
+    cacheKeys.codes = -1;
   }
 };
 
