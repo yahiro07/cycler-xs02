@@ -45,7 +45,7 @@ export function motionsRoot_processOnFrameEnd(bus: Bus) {
     if (!sp.looped) {
       bus.loopSeed = m_random();
     }
-    if (sp.autoRandomizeOnLoop) {
+    if (bus.gateOn && sp.autoRandomizeOnLoop) {
       bus.randomizationRequestFlag = true;
     }
   }

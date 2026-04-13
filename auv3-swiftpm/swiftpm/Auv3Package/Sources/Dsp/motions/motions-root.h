@@ -49,7 +49,7 @@ inline void motionsRoot_processOnFrameEnd(SynthesisBus &bus) {
     if (!sp.looped) {
       bus.loopSeed = m_random();
     }
-    if (sp.autoRandomizeOnLoop) {
+    if (bus.gateOn && sp.autoRandomizeOnLoop) {
       bus.randomizationRequestFlag.store(true);
     }
   }
