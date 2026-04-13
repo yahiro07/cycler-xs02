@@ -1,6 +1,6 @@
 #pragma once
-#include "ovs-filter-butterworth.h"
 #include "../../utils/math-utils.h"
+#include "ovs-filter-butterworth.h"
 #include <cstring>
 #include <memory>
 #include <vector>
@@ -10,22 +10,14 @@ namespace dsp {
 class OversamplingStage {
 private:
   int oversampleRatio;
-  float cutoffScale;
   int decimateOffset;
 
-  std::unique_ptr<OvsFilterButterworth> preFilterButterworth;
-  std::unique_ptr<OvsFilterButterworth> postFilterButterworth;
+  OvsFilterButterworth preFilter;
+  OvsFilterButterworth postFilter;
 
   std::vector<float> highResBuffer;
   float *originalBufferPtr = nullptr;
   int originalLength = 0;
-
-  void createFilters() {
-    preFilterButterworth = std::make_unique<OvsFilterButterworth>(
-        oversampleRatio, cutoffScale, 8);
-    postFilterButterworth = std::make_unique<OvsFilterButterworth>(
-        oversampleRatio, cutoffScale, 8);
-  }
 
   void zeroStuffUpsampling(float *highRes, const float *original, int origLen,
                            int nx) {
@@ -44,17 +36,17 @@ private:
 
 public:
   OversamplingStage(int oversampleRatio, float cutoffScale = 1.0f)
-      : oversampleRatio(oversampleRatio), cutoffScale(cutoffScale),
-        decimateOffset(m_max(0, oversampleRatio >> 1)) {
-    createFilters();
-  }
+      : oversampleRatio(oversampleRatio),
+        decimateOffset(m_max(0, oversampleRatio >> 1)),
+        preFilter(OvsFilterButterworth(oversampleRatio, cutoffScale)),
+        postFilter(OvsFilterButterworth(oversampleRatio, cutoffScale)) {}
 
   void ensureAllocated(int maxFrames) {
     const int len = maxFrames * oversampleRatio;
     if (highResBuffer.size() != static_cast<size_t>(len)) {
       highResBuffer.resize(len);
-      preFilterButterworth->reset();
-      postFilterButterworth->reset();
+      preFilter.reset();
+      postFilter.reset();
     }
   }
 
@@ -65,7 +57,7 @@ public:
 
     if (chainInput) {
       zeroStuffUpsampling(highResBuffer.data(), originalBuffer, len, nx);
-      preFilterButterworth->processSamples(highResBuffer.data(), len * nx);
+      preFilter.processSamples(highResBuffer.data(), len * nx);
     } else {
       std::fill(highResBuffer.begin(), highResBuffer.end(), 0.0f);
     }
@@ -80,8 +72,7 @@ public:
       return;
     const int nx = oversampleRatio;
 
-    postFilterButterworth->processSamples(highResBuffer.data(),
-                                          originalLength * nx);
+    postFilter.processSamples(highResBuffer.data(), originalLength * nx);
 
     decimate(highResBuffer.data(), originalBufferPtr, originalLength, nx,
              decimateOffset);
