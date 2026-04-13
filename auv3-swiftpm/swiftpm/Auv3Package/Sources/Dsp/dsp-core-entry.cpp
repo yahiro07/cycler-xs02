@@ -1,6 +1,5 @@
 #include "./base/api.h"
 #include "./synthesizer-root.h"
-#include "./utils/konsole.h"
 
 namespace dsp {
 

@@ -1,7 +1,7 @@
 #pragma once
+#include "../../base/konsole.h"
 #include "../../base/parameter-defs.h"
 #include "../../base/synthesis-bus.h"
-#include "../../utils/konsole.h"
 #include "../funcs/steps-common.h"
 #include "./ramp-types.h"
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../utils/konsole.h"
+#include "../../base/konsole.h"
 
 namespace dsp {
 
