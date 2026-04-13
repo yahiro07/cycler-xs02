@@ -1,14 +1,22 @@
+import { konsole } from "@dsp/base/konsole";
+import { masterGainConfig } from "@dsp/base/master-gain-config";
 import { Bus, createSynthesisBus } from "@dsp/base/synthesis-bus";
 import {
   applyBufferGain,
   applyBufferGainRms,
-  applyBufferSoftClip, writeBufferWithGain
+  applyBufferSoftClip,
+  writeBufferWithGain,
 } from "@dsp/dsp-modules/basic/buffer-functions";
 import { mapDbGain } from "@dsp/dsp-modules/basic/db-gain-mapper";
-import { masterGainConfig } from "@dsp/base/master-gain-config";
 import { blWaveProvider } from "@dsp/dsp-modules/oscillators/bl-wave-provider";
-import { gaterExSeqMode_cleanupLocalState, gaterExSeqMode_setupLocalState } from "@dsp/motions/gaters/gater-ex-seq";
-import { gaterMinLaxMode_cleanupLocalState, gaterMinLaxMode_setupLocalState } from "@dsp/motions/gaters/gater-main-lax";
+import {
+  gaterExSeqMode_cleanupLocalState,
+  gaterExSeqMode_setupLocalState,
+} from "@dsp/motions/gaters/gater-ex-seq";
+import {
+  gaterMinLaxMode_cleanupLocalState,
+  gaterMinLaxMode_setupLocalState,
+} from "@dsp/motions/gaters/gater-main-lax";
 import {
   motionsRoot_advance,
   motionsRoot_processOnFrameEnd,
@@ -18,7 +26,6 @@ import { BassSynth } from "@dsp/rhythm/bass-synthesizer";
 import { BeatDriver } from "@dsp/rhythm/beat-driver";
 import { KickSynth } from "@dsp/rhythm/kick-synthesizer";
 import { MainSynthesisLine } from "@dsp/synthesizer/main-synthesis-line";
-import { konsole } from "@dsp/utils/konsole";
 import { power2 } from "@dsp/utils/number-utils";
 import { TriggerManager } from "./trigger-manager";
 
@@ -89,7 +96,7 @@ export class SynthesizerHub {
     this.mainSynth.prepare();
     this.kickSynth.prepare(sampleRate, maxFrames);
     this.bassSynth.prepare(sampleRate, maxFrames);
-    konsole.log(`synthesizerHub_prepare ${sampleRate} ${maxFrames}`);
+    konsole.log(`synthesizerHub.prepare sampleRate:${sampleRate}`);
   }
 
   setGroovePlaying(playing: boolean) {

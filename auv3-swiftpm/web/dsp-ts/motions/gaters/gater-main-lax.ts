@@ -1,8 +1,8 @@
+import { debugEmitError } from "@dsp/base/konsole";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForGaterMain } from "@dsp/motions/funcs/steps-common";
 import { StepRampCode } from "@dsp/motions/gaters/ramp-types";
 import { seqNumbers } from "@dsp/utils/arrays";
-import { debugEmitError } from "@dsp/utils/konsole";
 import { m_random } from "@dsp/utils/math-utils";
 
 type GaterMainLaxState = {

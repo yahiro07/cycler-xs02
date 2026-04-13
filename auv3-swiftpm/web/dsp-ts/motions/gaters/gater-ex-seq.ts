@@ -1,9 +1,9 @@
+import { debugEmitError } from "@dsp/base/konsole";
 import { ExGaterCode } from "@dsp/base/parameter-defs";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForExGater } from "@dsp/motions/funcs/steps-common";
 import { RampSpec } from "@dsp/motions/gaters/ramp-types";
 import { seqNumbers } from "@dsp/utils/arrays";
-import { debugEmitError } from "@dsp/utils/konsole";
 
 export enum GaterExNoteType {
   off,

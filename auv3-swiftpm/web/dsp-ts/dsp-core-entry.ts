@@ -1,5 +1,5 @@
+import { konsole } from "@dsp/base/konsole";
 import { SynthesizerRoot } from "@dsp/synthesizer-root";
-import { konsole } from "@dsp/utils/konsole";
 import type { IDspCore } from "./base/api";
 
 export type { IDspCore } from "./base/api";
