@@ -131,7 +131,7 @@ public:
     kickSynth.prepare(sampleRate, maxFrames);
     bassSynth.prepare(sampleRate, maxFrames);
 
-    konsole.log("synthesizerHub_prepare %.1f %d", sampleRate, maxFrames);
+    konsole.debugLog("synthesizerHub_prepare %.1f %d", sampleRate, maxFrames);
   }
 
   void setGroovePlaying(bool playing) {

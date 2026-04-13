@@ -12,7 +12,7 @@ public:
     va_start(args, fmt);
     vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
-    printf("%s\n", buf);
+    printf("[🔺dsp] %s\n", buf);
   }
   static void debugLog(const char *fmt, ...) {
 #ifdef DEBUG
@@ -21,7 +21,7 @@ public:
     va_start(args, fmt);
     vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
-    printf("%s\n", buf);
+    printf("[🔺dsp] %s\n", buf);
 #endif
   }
 };
@@ -29,7 +29,7 @@ inline Konsole konsole;
 
 inline void debugEmitError(const char *msg) {
 #ifdef DEBUG
-  printf("%s\n", msg);
+  printf("[🔺dsp] %s\n", msg);
 #endif
 }
 
