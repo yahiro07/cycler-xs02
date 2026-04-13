@@ -214,6 +214,7 @@ export function setupDummyParentApp() {
   const { sendMessageToUi, setReceiverForMessageFromUi } =
     createParentSideBridge();
   const workletWrapper = createDspCoreWorkletWrapper();
+  const defaultParameters = getInitialParameterValues();
   const localParameters = getInitialParameterValues();
 
   function emitRandomizationRequest() {
@@ -222,6 +223,15 @@ export function setupDummyParentApp() {
       type: "randomizeParameters",
       parameters: params,
     });
+  }
+
+  function loadFullParameters(parameters: Record<string, number>) {
+    for (const [key, value] of Object.entries(parameters)) {
+      const id = parameterKeyToIdMap[key];
+      workletWrapper.setParameter(id, value);
+    }
+    sendMessageToUi({ type: "bulkSendParameters", parameters });
+    Object.assign(localParameters, parameters);
   }
 
   function onMessageFromUi(msg: MessageFromUi) {
@@ -234,8 +244,7 @@ export function setupDummyParentApp() {
         commandKey: "setStandaloneFlag",
         value: 1,
       });
-      const parameters = getInitialParameterValues();
-      sendMessageToUi({ type: "bulkSendParameters", parameters });
+      loadFullParameters(defaultParameters);
     } else if (msg.type === "performEdit") {
       const id = parameterKeyToIdMap[msg.paramKey];
       if (id !== undefined) {
@@ -252,8 +261,7 @@ export function setupDummyParentApp() {
       if (msg.commandKey === "setPlayState") {
         workletWrapper.applyCommand(CommandId.setPlayState, msg.value);
       } else if (msg.commandKey === "resetParameters") {
-        const parameters = getInitialParameterValues();
-        sendMessageToUi({ type: "bulkSendParameters", parameters });
+        loadFullParameters(defaultParameters);
       } else if (msg.commandKey === "randomizeParameters") {
         emitRandomizationRequest();
       }
@@ -267,14 +275,10 @@ export function setupDummyParentApp() {
           emitRandomizationRequest();
         }
       } else if (msg.type === "randomizeParameters_response") {
-        for (const [id, value] of Object.entries(msg.parameters)) {
-          workletWrapper.setParameter(Number(id), value);
-        }
         const parameters = parametersRecordConverter.mapIdsToKeys(
           msg.parameters,
         );
-        sendMessageToUi({ type: "bulkSendParameters", parameters });
-        Object.assign(localParameters, parameters);
+        loadFullParameters(parameters);
       }
     });
     setInterval(() => {
