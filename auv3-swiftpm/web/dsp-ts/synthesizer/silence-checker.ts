@@ -25,9 +25,11 @@ export class SilenceChecker {
       const maxLevel = getBufferMaxLevel(buffer, len);
       if (maxLevel < 1e-3) {
         this.silentSec += len / this.bus.sampleRate;
-        if (this.silentSec > 3) {
+        if (this.silentSec > 2) {
           this.soundActive = false;
         }
+      } else {
+        this.silentSec = 0;
       }
     }
   }

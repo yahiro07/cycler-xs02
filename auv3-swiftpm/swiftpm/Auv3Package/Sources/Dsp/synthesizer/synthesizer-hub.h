@@ -130,7 +130,9 @@ public:
 
   void setGroovePlaying(bool playing) {
     triggerManager.setGroovePlaying(playing);
-    silenceChecker.wakeUp();
+    if (playing) {
+      silenceChecker.wakeUp();
+    }
   }
 
   void noteOn(int noteNumber) {

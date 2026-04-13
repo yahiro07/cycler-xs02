@@ -25,9 +25,11 @@ public:
       const float maxLevel = getBufferMaxLevel(buffer, len);
       if (maxLevel < 1e-3f) {
         silentSec += static_cast<float>(len) / bus.sampleRate;
-        if (silentSec > 3.f) {
+        if (silentSec > 2.f) {
           soundActive = false;
         }
+      } else {
+        silentSec = 0.f;
       }
     }
   }

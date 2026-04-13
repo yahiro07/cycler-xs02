@@ -137,9 +137,12 @@ public:
     if (outputBuffers.size() >= 2) {
       auto bufferL = outputBuffers[0];
       auto bufferR = outputBuffers[1];
+      memset(bufferL, 0, frameCount * sizeof(float));
+      memset(bufferR, 0, frameCount * sizeof(float));
       mDspCore->processAudio(bufferL, bufferR, frameCount);
     } else {
       auto bufferL = outputBuffers[0];
+      memset(bufferL, 0, frameCount * sizeof(float));
       mDspCore->processAudio(bufferL, bufferL, frameCount);
     }
   }

@@ -95,7 +95,9 @@ export class SynthesizerHub {
 
   setGroovePlaying(playing: boolean) {
     this.triggerManager.setGroovePlaying(playing);
-    this.silenceChecker.wakeUp();
+    if (playing) {
+      this.silenceChecker.wakeUp();
+    }
   }
   noteOn(noteNumber: number) {
     this.triggerManager.playNote(noteNumber);
