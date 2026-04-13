@@ -17,7 +17,7 @@ struct PluginMainView: View {
         webViewBridge.unbindWebView()
       }
     }
-    .border(.green, width: 2)
+    // .border(.green, width: 2)
     .ignoresSafeArea()
   }
 }
