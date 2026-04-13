@@ -1,10 +1,11 @@
-import { konsole } from "@dsp/base/konsole";
+import { debugAssert, konsole } from "@dsp/base/konsole";
 import { masterGainConfig } from "@dsp/base/master-gain-config";
 import { Bus, createSynthesisBus } from "@dsp/base/synthesis-bus";
 import {
   applyBufferGain,
   applyBufferGainRms,
   applyBufferSoftClip,
+  clearBuffer,
   writeBufferWithGain,
 } from "@dsp/dsp-modules/basic/buffer-functions";
 import { mapDbGain } from "@dsp/dsp-modules/basic/db-gain-mapper";
@@ -56,7 +57,7 @@ export class SynthesizerHub {
     const kickSynth = new KickSynth();
     const bassSynth = new BassSynth();
     const beatDriver = new BeatDriver(bus, kickSynth, bassSynth);
-    const workBuffer = new Float32Array(0);
+    const workBuffer = new Float32Array(configs.chunkSize);
     const chunkBuffer: ChunkBuffer = {
       buffer: new Float32Array(configs.chunkSize),
       readPos: 0,
@@ -87,9 +88,6 @@ export class SynthesizerHub {
     const maxFrames = configs.chunkSize;
     this.bus.sampleRate = sampleRate;
     this.bus.maxFrames = maxFrames;
-    if (this.workBuffer.length !== maxFrames) {
-      this.workBuffer = new Float32Array(maxFrames);
-    }
     blWaveProvider.setupTables();
     gaterMinLaxMode_setupLocalState(this.bus);
     gaterExSeqMode_setupLocalState(this.bus);
@@ -111,9 +109,10 @@ export class SynthesizerHub {
   }
 
   private coreProcessSamples(buffer: Float32Array, len: number) {
-    const { bus } = this;
+    debugAssert(len === configs.chunkSize, "invalid processing length");
+    const bus = this.bus;
     const sp = bus.parameters;
-    const { workBuffer } = this;
+    const workBuffer = this.workBuffer;
 
     if (bus.blockLength !== buffer.length) {
       bus.blockLength = buffer.length;
@@ -136,13 +135,13 @@ export class SynthesizerHub {
     this.kickSynth.applyPreset(sp.kickPresetKey);
     this.bassSynth.applyPreset(sp.bassPresetKey);
 
-    workBuffer.fill(0);
+    clearBuffer(workBuffer, len);
     this.mainSynth.processSamples(workBuffer, len);
     writeBufferWithGain(buffer, workBuffer, len, power2(sp.synthVolume));
-    workBuffer.fill(0);
+    clearBuffer(workBuffer, len);
     this.kickSynth.processSamples(workBuffer, len);
     writeBufferWithGain(buffer, workBuffer, len, power2(sp.kickVolume));
-    workBuffer.fill(0);
+    clearBuffer(workBuffer, len);
     this.bassSynth.processSamples(workBuffer, len);
     writeBufferWithGain(buffer, workBuffer, len, power2(sp.bassVolume));
 
@@ -164,7 +163,7 @@ export class SynthesizerHub {
     for (let i = 0; i < len; i++) {
       // Generate a waveform for one buffer page when the read position is at the beginning
       if (outBuf.readPos === 0) {
-        outBuf.buffer.fill(0);
+        clearBuffer(outBuf.buffer, outBuf.size);
         this.coreProcessSamples(outBuf.buffer, outBuf.size);
       }
       //Fill the output buffer by taking one sample at a time

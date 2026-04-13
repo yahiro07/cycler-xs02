@@ -13,6 +13,12 @@ inline float readBufferInterpolated(const float *buffer, int len,
   return mixValue(buffer[idx0], buffer[idx1], fraction);
 }
 
+inline void clearBuffer(float *buffer, int len) {
+  for (int i = 0; i < len; i++) {
+    buffer[i] = 0.f;
+  }
+}
+
 inline void copyBuffer(float *dstBuffer, const float *srcBuffer, int len) {
   for (int i = 0; i < len; i++) {
     dstBuffer[i] = srcBuffer[i];

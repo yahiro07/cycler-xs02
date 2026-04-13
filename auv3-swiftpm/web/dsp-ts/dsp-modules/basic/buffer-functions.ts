@@ -16,6 +16,12 @@ export function readBufferInterpolated(
   return mixValue(buffer[idx0], buffer[idx1], fraction);
 }
 
+export function clearBuffer(buffer: Float32Array, len: number) {
+  for (let i = 0; i < len; i++) {
+    buffer[i] += 0.0;
+  }
+}
+
 export function copyBuffer(
   dstBuffer: Float32Array,
   srcBuffer: Float32Array,
@@ -29,7 +35,8 @@ export function copyBuffer(
 export function writeBuffer(
   dstBuffer: Float32Array,
   srcBuffer: Float32Array,
-  len: number) {
+  len: number,
+) {
   for (let i = 0; i < len; i++) {
     dstBuffer[i] += srcBuffer[i];
   }
@@ -39,7 +46,7 @@ export function writeBufferWithGain(
   dstBuffer: Float32Array,
   srcBuffer: Float32Array,
   len: number,
-  volume: number
+  volume: number,
 ) {
   for (let i = 0; i < len; i++) {
     dstBuffer[i] += srcBuffer[i] * volume;
