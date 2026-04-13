@@ -1,6 +1,7 @@
 #pragma once
 #include "../../base/parameter-defs.h"
 #include "../../base/synthesis-bus.h"
+#include "../../utils/konsole.h"
 #include "../funcs/steps-common.h"
 #include "./ramp-types.h"
 
@@ -134,9 +135,10 @@ inline RampSpec gaterExSeqMode_getRampSpec(SynthesisBus &bus, float stepPos) {
         progress,
         note->duration * stepPeriodF,
     };
+  } else {
+    debugEmitError("note not found");
+    return RampSpec{0.0f, 0.0f, 0.0f, stepPeriodF};
   }
-  // Fallback (should not happen with valid codes)
-  return RampSpec{0.0f, 0.0f, 0.0f, stepPeriodF};
 }
 
 } // namespace dsp

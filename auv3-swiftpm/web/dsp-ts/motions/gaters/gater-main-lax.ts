@@ -1,7 +1,8 @@
-import { StepRampCode } from "@dsp/motions/gaters/ramp-types";
 import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForGaterMain } from "@dsp/motions/funcs/steps-common";
+import { StepRampCode } from "@dsp/motions/gaters/ramp-types";
 import { seqNumbers } from "@dsp/utils/arrays";
+import { debugEmitError } from "@dsp/utils/konsole";
 import { m_random } from "@dsp/utils/math-utils";
 
 type GaterMainLaxState = {
@@ -85,12 +86,11 @@ export function gaterMinLaxMode_getRampCodeCached(
   const gaterState = bus.moduleLocals.gaterMainLax as GaterMainLaxState;
   const gp = bus.parameters;
   const period = getStepPeriodForGaterMain(gp.gaterStride);
-  const scaledStep = stepPos / period;
+  let scaledStep = stepPos / period;
 
-  console.assert(scaledStep < 64);
   if (scaledStep >= 64) {
-    // debugger;
-    throw new Error("stepPos >= 64");
+    debugEmitError("stepPos >= 64");
+    scaledStep = 0;
   }
   const gsk = gaterState.stepCellsKeys;
   if (

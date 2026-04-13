@@ -1,5 +1,6 @@
 #pragma once
 #include "../../base/synthesis-bus.h"
+#include "../../utils/konsole.h"
 #include "../../utils/math-utils.h"
 #include "../funcs/steps-common.h"
 #include "ramp-types.h"
@@ -74,11 +75,13 @@ inline StepRampCode gaterMainLaxMode_getRampCodeCached(SynthesisBus &bus,
   const auto &gp = bus.parameters;
   const int period = getStepPeriodForGaterMain(gp.gaterStride);
   const float scaledStep = stepPos / period;
-  const int index = static_cast<int>(scaledStep);
 
-  if (index >= 64) {
+  if (scaledStep >= 64) {
+    debugEmitError("stepPos >= 64");
     return StepRampCode::one;
   }
+
+  const int index = static_cast<int>(scaledStep);
 
   auto &gsk = gaterState->stepCellsKeys;
   if (!gsk.initialized || gp.gaterRndTieOn != gsk.gaterRndTieOn ||

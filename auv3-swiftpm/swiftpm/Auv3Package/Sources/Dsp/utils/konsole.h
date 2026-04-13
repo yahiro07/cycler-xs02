@@ -14,8 +14,23 @@ public:
     va_end(args);
     printf("%s\n", buf);
   }
+  static void debugLog(const char *fmt, ...) {
+#ifdef DEBUG
+    static char buf[200];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
+    printf("%s\n", buf);
+#endif
+  }
 };
-
 inline Konsole konsole;
+
+inline void debugEmitError(const char *msg) {
+#ifdef DEBUG
+  printf("%s\n", msg);
+#endif
+}
 
 } // namespace dsp

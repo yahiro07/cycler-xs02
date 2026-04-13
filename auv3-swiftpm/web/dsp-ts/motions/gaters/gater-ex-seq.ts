@@ -3,6 +3,7 @@ import { Bus } from "@dsp/base/synthesis-bus";
 import { getStepPeriodForExGater } from "@dsp/motions/funcs/steps-common";
 import { RampSpec } from "@dsp/motions/gaters/ramp-types";
 import { seqNumbers } from "@dsp/utils/arrays";
+import { debugEmitError } from "@dsp/utils/konsole";
 
 export enum GaterExNoteType {
   off,
@@ -151,6 +152,12 @@ export function gaterExSeqMode_getRampSpec(
       duration: note.duration * stepPeriod,
     };
   } else {
-    throw new Error("note not found");
+    debugEmitError("note not found");
+    return {
+      headPos: basePosition * stepPeriod,
+      relPos: 0,
+      progress: 0,
+      duration: stepPeriod,
+    };
   }
 }
