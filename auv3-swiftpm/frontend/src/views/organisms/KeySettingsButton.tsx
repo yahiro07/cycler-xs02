@@ -66,7 +66,7 @@ const cssKeySettingsPanel = css({
   flexWrap: "wrap-reverse",
   zIndex: 1,
   color: "#444",
-  "&>div": {
+  "&>button": {
     width: "45px",
     height: "33px",
     fontSize: "16px",
