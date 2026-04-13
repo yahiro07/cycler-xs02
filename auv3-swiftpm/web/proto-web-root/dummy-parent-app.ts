@@ -214,7 +214,6 @@ export function setupDummyParentApp() {
   const { sendMessageToUi, setReceiverForMessageFromUi } =
     createParentSideBridge();
   const workletWrapper = createDspCoreWorkletWrapper();
-  const defaultParameters = getInitialParameterValues();
   const localParameters = getInitialParameterValues();
 
   function emitRandomizationRequest() {
@@ -244,7 +243,8 @@ export function setupDummyParentApp() {
         commandKey: "setStandaloneFlag",
         value: 1,
       });
-      loadFullParameters(defaultParameters);
+      const parameters = getInitialParameterValues();
+      loadFullParameters(parameters);
     } else if (msg.type === "performEdit") {
       const id = parameterKeyToIdMap[msg.paramKey];
       if (id !== undefined) {
@@ -261,7 +261,22 @@ export function setupDummyParentApp() {
       if (msg.commandKey === "setPlayState") {
         workletWrapper.applyCommand(CommandId.setPlayState, msg.value);
       } else if (msg.commandKey === "resetParameters") {
-        loadFullParameters(defaultParameters);
+        const parameters = getInitialParameterValues();
+        const excludingKeys = [
+          "parametersVersion",
+          "loopBars",
+          "looped",
+          "masterVolume",
+          "clockingOn",
+          "baseNoteIndex",
+          "internalBpm",
+          "autoRandomizeOnLoop",
+          "randomizeLevel",
+        ];
+        excludingKeys.forEach((key) => {
+          delete parameters[key];
+        });
+        loadFullParameters(parameters);
       } else if (msg.commandKey === "randomizeParameters") {
         emitRandomizationRequest();
       }

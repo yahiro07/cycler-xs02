@@ -20,9 +20,13 @@ class ParametersService: ParameterServiceProtocol {
   private var observerToken: AUParameterObserverToken?
   private var listeners: [Int: (_ paramKey: String, _ value: Float) -> Void] = [:]
   private var nextListenerToken = 0
+  private var defaultParameterValues: [String:Float]; 
 
   init(parameterTree: AUParameterTree) {
     self.parameterTree = parameterTree
+    defaultParameterValues = parameterTree.allParameters.reduce(into: [String:Float]()) { result, param in
+      result[param.identifier] = param.value
+    }
   }
 
   private func getParamIdByParamKey(_ paramKey: String) -> ParamId? {
@@ -95,6 +99,10 @@ class ParametersService: ParameterServiceProtocol {
     return parameterTree.allParameters.reduce(into: [:]) { dict, parameter in
       dict[parameter.identifier] = parameter.value
     }
+  }
+
+  func getDefaultParameterValues() -> [String: Float] {
+    return Dictionary(uniqueKeysWithValues: defaultParameterValues.map { ($0.key, $0.value) })
   }
 
   func loadFullParametersSuit(_ inputParameters: [String: Float]) {
