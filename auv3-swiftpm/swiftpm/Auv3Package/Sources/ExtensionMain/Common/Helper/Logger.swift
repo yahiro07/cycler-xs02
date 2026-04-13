@@ -9,14 +9,6 @@ struct LogItem {
   let message: String
 }
 
-//00:00:00.000
-func formatTimestamp(_ timestamp: Double) -> String {
-  let date = Date(timeIntervalSince1970: timestamp / 1000)
-  let formatter = DateFormatter()
-  formatter.dateFormat = "HH:mm:ss.SSS"
-  return formatter.string(from: date)
-}
-
 let subsystemIcons: [String: String] = [
   "host": "🧊",
   "ext": "🔸",
@@ -71,10 +63,9 @@ let logKindIcons: [String: String] = [
     let udpLogger = UDPLogger()
 
     private func printLogLine(_ item: LogItem) {
-      let ts = formatTimestamp(item.timestamp)
       let ssIcon = subsystemIcons[item.subsystem] ?? ""
       let kindIcon = logKindIcons[item.logKind] ?? ""
-      let logLine = "\(ts) [\(ssIcon)\(item.subsystem)] \(kindIcon) \(item.message)"
+      let logLine = "[\(ssIcon)\(item.subsystem)] \(kindIcon) \(item.message)"
       print(logLine)
     }
     func pushLogItem(_ item: LogItem) {
