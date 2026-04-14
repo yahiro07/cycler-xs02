@@ -153,7 +153,8 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
         "manufacturer": componentDescription.componentManufacturer,
         "version": baseState?["version"] as? Int ?? 0,
       ]
-      state["kvsItems"] = stateKvsService.getItems()
+      let kvsItems = stateKvsService.getItems()
+      state["kvsItems"] = kvsItems
       let parameters = parametersService.getAllParameterValues()
       state["parameters"] = parameters
       return state
@@ -173,8 +174,6 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
       if let kvsItems = state["kvsItems"] as? [String: String] {
         stateKvsService.setItems(kvsItems)
       }
-      //skipping super.fullState to avoid overwriting our custom restoration results.
-      // super.fullState = state
     }
   }
 
