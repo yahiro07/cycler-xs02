@@ -9,6 +9,7 @@ struct PluginMainView: View {
 
   var body: some View {
     VStack {
+      // Text("xs02-2239")
       WebViewComponent { webViewIo in
         // webViewIo.loadURL("http://localhost:3000?debug=1")
         webViewIo.loadURL("app://www-bundles/index.html")
