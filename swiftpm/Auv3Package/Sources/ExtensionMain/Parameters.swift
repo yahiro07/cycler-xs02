@@ -170,7 +170,7 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
         isInternal: true,
       )
       pb.Enum(
-        "randomizeLevel", "Randomize Level", 3, randomizeLevelLabels,
+        "randomizeLevel", "Randomize Level", 4, randomizeLevelLabels,
         isInternal: true,
       )
       pb.Linear(

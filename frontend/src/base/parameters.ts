@@ -560,7 +560,7 @@ export const defaultSynthParameters: SynthParametersSuit = {
   //
   internalBpm: 130,
   autoRandomizeOnLoop: false,
-  randomizeLevel: RandomizeLevel.rnd10,
+  randomizeLevel: RandomizeLevel.rnd20,
   //
   ...flatMotionParamsDefault("moOscPitch", MoType.rnd),
   ...flatMotionParamsDefault("moOscColor", MoType.eg),

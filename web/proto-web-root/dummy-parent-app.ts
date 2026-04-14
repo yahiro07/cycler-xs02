@@ -184,7 +184,7 @@ const parameterDefs: ParameterDefItem[] = [
   //
   [PK.internalBpm, "internalBpm", 130],
   [PK.autoRandomizeOnLoop, "autoRandomizeOnLoop", false],
-  [PK.randomizeLevel, "randomizeLevel", RandomizeLevel.rnd10],
+  [PK.randomizeLevel, "randomizeLevel", RandomizeLevel.rnd20],
   ...motionParameterDefs("moOscPitch", MoType.rnd),
   ...motionParameterDefs("moOscColor", MoType.eg),
   ...motionParameterDefs("moFilterCutoff", MoType.lfo),

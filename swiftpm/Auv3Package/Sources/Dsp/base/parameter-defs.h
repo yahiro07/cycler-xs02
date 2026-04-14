@@ -393,7 +393,7 @@ inline SynthParametersSuit createSynthParametersSuit() {
   sp.baseNoteIndex = 9; // A
 
   sp.autoRandomizeOnLoop = false;
-  sp.randomizeLevel = RandomizeLevel::rnd10;
+  sp.randomizeLevel = RandomizeLevel::rnd20;
 
   return sp;
 }

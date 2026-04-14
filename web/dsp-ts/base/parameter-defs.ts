@@ -358,6 +358,6 @@ export function createSynthParametersSuit(): SynthParametersSuit {
     baseNoteIndex: 9, //A
     //
     autoRandomizeOnLoop: false,
-    randomizeLevel: RandomizeLevel.rnd10,
+    randomizeLevel: RandomizeLevel.rnd20,
   };
 }
