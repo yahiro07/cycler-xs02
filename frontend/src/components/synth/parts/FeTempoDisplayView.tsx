@@ -17,7 +17,7 @@ export const FeTempoDisplayView = ({ value, readonly }: Props) => {
       css={styles}
       className={clsx(!readonly && hold && "--hold", readonly && "--readonly")}
     >
-      <div>{value}</div>
+      <div>{Math.round(value)}</div>
     </div>
   );
 };
