@@ -14,6 +14,7 @@ export type WorkletOutputMessage =
     };
 
 export type WorkletWrapper = {
+  resumeIfNeed(): Promise<void>;
   setParameter(id: number, value: number): void;
   noteOn(noteNumber: number, velocity: number): void;
   noteOff(noteNumber: number): void;
