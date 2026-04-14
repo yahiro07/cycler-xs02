@@ -50,7 +50,7 @@ func addMotionParameterSpecs(
 func buildPluginParameterSpecs() -> ParameterTreeSpec {
   let pb = ParameterSpecBuilder(calcParameterIdHash)
   return ParameterTreeSpec {
-    ParameterGroupSpec(identifier: "global", name: "Global") {
+    ParameterGroupSpec(identifier: "osc", name: "OSC") {
       pb.Bool("oscOn", "OSC On", true)
       pb.Enum("oscWave", "OSC Wave", 0, oscWaveLabels)
       pb.Unary("oscOctave", "OSC Octave", 0)
@@ -61,38 +61,42 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
       pb.Enum("oscColorMode", "OSC Color Mode", 0, oscColorModeLabels)
       pb.Enum("oscUnisonMode", "OSC Unison Mode", 0, oscUnisonModeLabels)
       pb.Unary("oscUnisonDetune", "OSC Unison Detune", 0)
-      //
+    }
+    ParameterGroupSpec(identifier: "filter", name: "Filter") {
       pb.Bool("filterOn", "Filter On", true)
       pb.Unary("filterCutoff", "Filter Cutoff", 1)
       pb.Unary("filterPeak", "Filter Peak", 0)
-      //
+    }
+    ParameterGroupSpec(identifier: "amp", name: "Amp") {
       pb.Bool("ampOn", "Amp On", true)
       pb.Unary("ampEgHold", "Amp Eg Hold", 0.8)
       pb.Unary("ampEgDecay", "Amp Eg Decay", 0)
-      //
+    }
+    ParameterGroupSpec(identifier: "shaper", name: "Shaper") {
       pb.Bool("shaperOn", "Shaper On", false)
       pb.Enum("shaperMode", "Shaper Mode", 0, shaperModeLabels)
       pb.Unary("shaperLevel", "Shaper Level", 0.5)
-      //
+    }
+    ParameterGroupSpec(identifier: "phaser", name: "Phaser") {
       pb.Bool("phaserOn", "Phaser On", false)
       pb.Unary("phaserLevel", "Phaser Level", 0.5)
-      //
-      pb.Bool("delayOn", "Delay On", false)
-      pb.Unary("delayTime", "Delay Time", 0.5)
-      pb.Unary("delayFeed", "Delay Feed", 0.3)
-      //
-      pb.Bool("stepDelayOn", "Step Delay On", false)
-      pb.Enum("stepDelayStep", "Step Delay Step", 1, delayStepLabels)
-      pb.Unary("stepDelayFeed", "Step Delay Feed", 0.5)
-      pb.Unary("stepDelayMix", "Step Delay Mix", 0.5)
-      //
-      pb.Enum("gaterStride", "Gater Stride", 0, gaterStrideLabels)
-      pb.Enum("gaterType", "Gater Type", 0, gaterTypeLabels)
-      pb.Bool("gaterRndTieOn", "Gater Rnd Tie On", false)
-      pb.Unary("gaterRndTieCover", "Gater Rnd Tie Cover", 0.5)
-      pb.Enum(
-        "exGaterSeqStride", "Ex Gater Seq Stride", 0,
-        gaterExSourceStrideLabels)
+    }
+    ParameterGroupSpec(identifier: "flanger", name: "Flanger") {
+      pb.Bool("delayOn", "Flanger On", false)
+      pb.Unary("delayTime", "Flanger Time", 0.5)
+      pb.Unary("delayFeed", "Flanger Feed", 0.3)
+    }
+    ParameterGroupSpec(identifier: "delay", name: "Delay") {
+      pb.Bool("stepDelayOn", "Delay On", false)
+      pb.Enum("stepDelayStep", "Delay Step", 1, delayStepLabels)
+      pb.Unary("stepDelayFeed", "Delay Feed", 0.5)
+      pb.Unary("stepDelayMix", "Delay Mix", 0.5)
+    }
+    ParameterGroupSpec(identifier: "gater", name: "Gate") {
+      pb.Enum("gaterStride", "Gate Stride", 0, gaterStrideLabels)
+      pb.Enum("gaterType", "Gate Type", 0, gaterTypeLabels)
+      pb.Bool("gaterRndTieOn", "Gate Rnd Tie On", false)
+      pb.Unary("gaterRndTieCover", "Gate Rnd Tie Cover", 0.5)
       pb.Enum(
         "gaterSeqPatterns_0", "Gater Seq Patterns 0", 0,
         gateSequencerCodeLabels)
@@ -105,32 +109,59 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
       pb.Enum(
         "gaterSeqPatterns_3", "Gater Seq Patterns 3", 0,
         gateSequencerCodeLabels)
-      pb.Enum("exGaterCodes_0", "Ex Gater Codes 0", 0, exGaterCodeLabels)
-      pb.Enum("exGaterCodes_1", "Ex Gater Codes 1", 0, exGaterCodeLabels)
-      pb.Enum("exGaterCodes_2", "Ex Gater Codes 2", 0, exGaterCodeLabels)
-      pb.Enum("exGaterCodes_3", "Ex Gater Codes 3", 0, exGaterCodeLabels)
-      //
+    }
+    ParameterGroupSpec(identifier: "exGater", name: "Ex Steps") {
+      pb.Enum(
+        "exGaterSeqStride", "Ex Steps Stride", 0,
+        gaterExSourceStrideLabels)
+      pb.Enum("exGaterCodes_0", "Ex Steps Codes 0", 0, exGaterCodeLabels)
+      pb.Enum("exGaterCodes_1", "Ex Steps Codes 1", 0, exGaterCodeLabels)
+      pb.Enum("exGaterCodes_2", "Ex Steps Codes 2", 0, exGaterCodeLabels)
+      pb.Enum("exGaterCodes_3", "Ex Steps Codes 3", 0, exGaterCodeLabels)
+    }
+    ParameterGroupSpec(identifier: "kick", name: "Kick") {
       pb.Bool("kickOn", "Kick On", true)
       pb.Enum("kickPresetKey", "Kick Preset Key", 0, kickPresetKeyLabels)
+    }
+    ParameterGroupSpec(identifier: "bass", name: "Bass") {
       pb.Bool("bassOn", "Bass On", true)
       pb.Unary("bassDuty", "Bass Duty", 0.6)
       pb.Enum("bassPresetKey", "Bass Preset Key", 0, bassPresetKeyLabels)
       pb.Enum(
         "bassTailAccentPatternKey", "Bass Tail Accent Pattern Key",
         0, bassTailAccentPatternKeyLabels)
-      //
+    }
+    ParameterGroupSpec(identifier: "loop", name: "Loop") {
+      pb.Enum("loopBars", "Loop Bars", 1, loopBarsLabels)
+      pb.Bool("looped", "Looped", false)
+      pb.Bool("clockingOn", "Clocking On", true)
+      pb.Unary("baseNoteIndex", "Base Note Index", 9)  //A
+    }
+    ParameterGroupSpec(identifier: "mixer", name: "Mixer") {
       pb.Unary("kickVolume", "Kick Volume", 1)
       pb.Unary("bassVolume", "Bass Volume", 1)
       pb.Unary("synthVolume", "Synth Volume", 1)
-      //
-      pb.Enum("loopBars", "Loop Bars", 1, loopBarsLabels)
-      pb.Bool("looped", "Looped", false)
       pb.Unary("masterVolume", "Master Volume", 0.5)
-      pb.Bool("clockingOn", "Clocking On", true)
-      // [PK.baseOctave, "baseOctave", 3],
-      pb.Unary("baseNoteIndex", "Base Note Index", 9)  //A
-
-      //
+    }
+    ParameterGroupSpec(identifier: "moOscPitch", name: "MO OSC Pitch") {
+      addMotionParameterSpecs(pb, "moOscPitch", "OSC Pitch", 0)
+    }
+    ParameterGroupSpec(identifier: "moOscColor", name: "MO OSC Color") {
+      addMotionParameterSpecs(pb, "moOscColor", "OSC Color", 1)
+    }
+    ParameterGroupSpec(identifier: "moFilterCutoff", name: "MO Filter Cutoff") {
+      addMotionParameterSpecs(pb, "moFilterCutoff", "Filter Cutoff", 2)
+    }
+    ParameterGroupSpec(identifier: "moShaperLevel", name: "MO Shaper Level") {
+      addMotionParameterSpecs(pb, "moShaperLevel", "Shaper Level", 0)
+    }
+    ParameterGroupSpec(identifier: "moPhaserLevel", name: "MO Phaser Level") {
+      addMotionParameterSpecs(pb, "moPhaserLevel", "Phaser Level", 1)
+    }
+    ParameterGroupSpec(identifier: "moDelayTime", name: "MO Delay Time") {
+      addMotionParameterSpecs(pb, "moDelayTime", "Delay Time", 2)
+    }
+    ParameterGroupSpec(identifier: "internal", name: "Internal") {
       pb.Linear(
         "internalBpm", "Internal BPM", 130, 30, 400, isInternal: true,
       )
@@ -142,19 +173,12 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
         "randomizeLevel", "Randomize Level", 3, randomizeLevelLabels,
         isInternal: true,
       )
-      //
-      addMotionParameterSpecs(pb, "moOscPitch", "OSC Pitch", 0)
-      addMotionParameterSpecs(pb, "moOscColor", "OSC Color", 1)
-      addMotionParameterSpecs(pb, "moFilterCutoff", "Filter Cutoff", 2)
-      addMotionParameterSpecs(pb, "moShaperLevel", "Shaper Level", 0)
-      addMotionParameterSpecs(pb, "moPhaserLevel", "Phaser Level", 1)
-      addMotionParameterSpecs(pb, "moDelayTime", "Delay Time", 2)
-      //
       pb.Linear(
         "parametersVersion", "Parameters Version", 1, 0, 999999,
         isInternal: true,
       )
     }
+
   }
 }
 
