@@ -7,13 +7,15 @@ type MessageFromUi =
   | { type: "endEdit"; paramKey: string }
   | { type: "instantEdit"; paramKey: string; value: number }
   | { type: "noteOnRequest"; noteNumber: number }
-  | { type: "noteOffRequest"; noteNumber: number };
+  | { type: "noteOffRequest"; noteNumber: number }
+  | { type: "applyCommand"; commandKey: string; value: number };
 
 type MessageFromApp =
   | { type: "setParameter"; paramKey: string; value: number }
   | { type: "bulkSendParameters"; parameters: Record<string, number> }
   | { type: "hostNoteOn"; noteNumber: number }
-  | { type: "hostNoteOff"; noteNumber: number };
+  | { type: "hostNoteOff"; noteNumber: number }
+  | { type: "applyCommand"; commandKey: string; value: number };
 
 const windowTyped = window as unknown as {
   webkit?: {
@@ -111,6 +113,35 @@ function addNoteButton(label: string, noteNumber: number) {
   document.body.appendChild(button);
 }
 
+function addPlayButton() {
+  let playing = false;
+  const button = document.createElement("button");
+  button.innerText = "▶";
+  button.onclick = () => {
+    const nextPlaying = !playing;
+    sendMessage({
+      type: "applyCommand",
+      commandKey: "setPlayState",
+      value: nextPlaying ? 1 : 0,
+    });
+    playing = nextPlaying;
+  };
+  document.body.appendChild(button);
+}
+
+function addRandomizeButton() {
+  const button = document.createElement("button");
+  button.innerText = "randomize";
+  button.onclick = () => {
+    sendMessage({
+      type: "applyCommand",
+      commandKey: "randomizeParameters",
+      value: 1,
+    });
+  };
+  document.body.appendChild(button);
+}
+
 function addIndicator() {
   const div = document.createElement("div");
   div.id = "indicator";
@@ -121,13 +152,19 @@ if (!windowTyped.webkit) {
   pushLogLine("incompatible environment, window.webkit is not available");
 }
 pushLogLine("sonic vanilla minimum frontend example");
-pushLogLine("running at: " + location.href);
+pushLogLine(`running at: ${location.href}`);
 
-addSlider("Enabled", "oscEnabled", 1, 0, 1, 1);
-addSlider("Wave", "oscWave", 0, 0, 3, 1);
-addSlider("Pitch", "oscPitch", 0.5);
-addSlider("Volume", "oscVolume", 0.5);
+addSlider("Enabled", "osc1On", 1, 0, 1, 1);
+addSlider("Wave", "osc1Wave", 0, 0, 3, 1);
+addSlider("Pitch", "osc1Octave", 0.5);
+addSlider("Volume", "osc1Volume", 0.5);
+addSlider("internalBpm", "internalBpm", 120, 60, 180, 1);
+addSlider("autoRandomizeOnLoop", "autoRandomizeOnLoop", 1, 0, 1, 1);
+addSlider("randomizeLevel", "randomizeLevel", 0, 0, 5, 0);
+
 addNoteButton("Note(60)", 60);
+addPlayButton();
+addRandomizeButton();
 addIndicator();
 
 windowTyped.pluginEditorCallback = (msg) => {

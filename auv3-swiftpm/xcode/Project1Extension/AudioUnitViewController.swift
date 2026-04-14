@@ -1,4 +1,4 @@
-import FrameworkMain
+import ExtensionMain
 
 @MainActor
 public class AudioUnitViewController: PluginAudioUnitViewController {}

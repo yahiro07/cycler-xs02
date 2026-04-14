@@ -41,7 +41,9 @@ function subscribe(listener: EditorBridgeMessageLister): () => void {
 
 windowTyped.pluginEditorCallback = (msg) => {
   console.log("⇢ui", msg);
-  listeners.forEach((l) => l(msg));
+  listeners.forEach((listener) => {
+    listener(msg);
+  });
 };
 
 export const coreBridge = {

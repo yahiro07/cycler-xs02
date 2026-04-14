@@ -1,0 +1,4 @@
+.build/
+.swiftpm/
+
+**/pages/www-bundles/

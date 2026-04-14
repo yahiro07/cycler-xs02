@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3CA080D02F83761200AA0958 /* Auv3PluginPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA080882F8245ED00AA0958 /* Auv3PluginPackage */; };
-		3CA080DE2F83765000AA0958 /* Auv3PluginPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA080DD2F83765000AA0958 /* Auv3PluginPackage */; };
+		3C5E0C8C2F8601D40079348A /* Auv3Package in Frameworks */ = {isa = PBXBuildFile; productRef = 3C5E0C8B2F8601D40079348A /* Auv3Package */; };
+		3C5E0C8E2F8601E20079348A /* Auv3Package in Frameworks */ = {isa = PBXBuildFile; productRef = 3C5E0C8D2F8601E20079348A /* Auv3Package */; };
 		3CC608772F8110FC00B16DA7 /* Project1Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3CC608762F8110FC00B16DA7 /* Project1Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -72,7 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CA080D02F83761200AA0958 /* Auv3PluginPackage in Frameworks */,
+				3C5E0C8E2F8601E20079348A /* Auv3Package in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,7 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CA080DE2F83765000AA0958 /* Auv3PluginPackage in Frameworks */,
+				3C5E0C8C2F8601D40079348A /* Auv3Package in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,9 +134,6 @@
 				3CC608522F8110FB00B16DA7 /* Project1 */,
 			);
 			name = Project1;
-			packageProductDependencies = (
-				3CA080882F8245ED00AA0958 /* Auv3PluginPackage */,
-			);
 			productName = Project1;
 			productReference = 3CC608502F8110FB00B16DA7 /* Project1.app */;
 			productType = "com.apple.product-type.application";
@@ -157,9 +154,6 @@
 				3CC6087A2F8110FC00B16DA7 /* Project1Extension */,
 			);
 			name = Project1Extension;
-			packageProductDependencies = (
-				3CA080DD2F83765000AA0958 /* Auv3PluginPackage */,
-			);
 			productName = Project1Extension;
 			productReference = 3CC608762F8110FC00B16DA7 /* Project1Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -192,7 +186,7 @@
 			mainGroup = 3CC608472F8110FB00B16DA7;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				3CA080832F8245C900AA0958 /* XCLocalSwiftPackageReference "../swiftpm/Auv3PluginPackage" */,
+				3C5E0C8A2F8601D40079348A /* XCLocalSwiftPackageReference "../swiftpm/Auv3Package" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3CC608512F8110FB00B16DA7 /* Products */;
@@ -615,22 +609,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		3CA080832F8245C900AA0958 /* XCLocalSwiftPackageReference "../swiftpm/Auv3PluginPackage" */ = {
+		3C5E0C8A2F8601D40079348A /* XCLocalSwiftPackageReference "../swiftpm/Auv3Package" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../swiftpm/Auv3PluginPackage;
+			relativePath = ../swiftpm/Auv3Package;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3CA080882F8245ED00AA0958 /* Auv3PluginPackage */ = {
+		3C5E0C8B2F8601D40079348A /* Auv3Package */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3CA080832F8245C900AA0958 /* XCLocalSwiftPackageReference "../swiftpm/Auv3PluginPackage" */;
-			productName = Auv3PluginPackage;
+			productName = Auv3Package;
 		};
-		3CA080DD2F83765000AA0958 /* Auv3PluginPackage */ = {
+		3C5E0C8D2F8601E20079348A /* Auv3Package */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3CA080832F8245C900AA0958 /* XCLocalSwiftPackageReference "../swiftpm/Auv3PluginPackage" */;
-			productName = Auv3PluginPackage;
+			package = 3C5E0C8A2F8601D40079348A /* XCLocalSwiftPackageReference "../swiftpm/Auv3Package" */;
+			productName = Auv3Package;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
