@@ -8,6 +8,7 @@ import SwiftUI
 class AudioUnitHostModel {
   /// The playback engine used to play audio.
   private let playEngine = SimplePlayEngine()
+  private let autoSavingObserver = AutoSavingObserver()
 
   /// The model providing information about the current Audio Unit
   var viewModel = AudioUnitViewModel()
@@ -32,6 +33,8 @@ class AudioUnitHostModel {
 
   var validationResult: AudioComponentValidationResult?
   var currentValidationData: String?
+
+  private var stateLastSaved: [String: Any]?
 
   init(type: String, subType: String, manufacturer: String) {
     logger.trace("------------------------------------------------")
@@ -68,6 +71,11 @@ class AudioUnitHostModel {
         type: type, subType: subType, manufacturer: manufacturer)
 
       self.restoreState()
+
+      if let audioUnit = playEngine.avAudioUnit?.auAudioUnit {
+        autoSavingObserver.setup(audioUnit: audioUnit, saveState: saveState)
+        autoSavingObserver.startObservingParameterChanges()
+      }
 
       if false {
         //do validation
@@ -162,15 +170,20 @@ class AudioUnitHostModel {
 
   func saveState() {
     guard let au = playEngine.avAudioUnit?.auAudioUnit else { return }
-    let state = au.fullState
-    UserDefaults.standard.set(state, forKey: "SavedAUState")
-    let byteSize = calculateStateByteSize(of: state ?? [:])
-    logger.log("saved state: \(byteSize)bytes")
+    guard let state = au.fullState else { return }
+    let changed = !(state as NSDictionary).isEqual(to: stateLastSaved!)
+    if changed {
+      UserDefaults.standard.set(state, forKey: "SavedAUState")
+      let byteSize = calculateStateByteSize(of: state)
+      logger.log("saved state: \(byteSize)bytes")
+      stateLastSaved = state
+    }
   }
 
   func restoreState() {
     guard let au = playEngine.avAudioUnit?.auAudioUnit else { return }
     var state = UserDefaults.standard.dictionary(forKey: "SavedAUState") ?? au.fullState ?? [:]
+    self.stateLastSaved = state
     let byteSize = calculateStateByteSize(of: state)
     logger.log("restore state: \(byteSize)bytes")
     //set a flag to let the AU know it's being hosted in a standalone app

@@ -31,6 +31,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
       stateKvsService: stateKvsService)
     self.format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 2)!
     try super.init(componentDescription: componentDescription, options: options)
+    self.parameterTree = parameterTree
     outputBus = try AUAudioUnitBus(format: self.format)
     outputBus?.maximumChannelCount = 2
     _outputBusses = AUAudioUnitBusArray(
