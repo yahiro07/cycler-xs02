@@ -70,6 +70,10 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     return IndexSet(integersIn: 0..<availableViewConfigurations.count)
   }
 
+  public override func parametersForOverview(withCount count: Int) -> [NSNumber] {
+    return [NSNumber(value: parameterIds.masterVolume)]
+  }
+
   public override var outputBusses: AUAudioUnitBusArray {
     return _outputBusses
   }

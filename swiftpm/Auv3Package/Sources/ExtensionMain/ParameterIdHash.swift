@@ -10,6 +10,7 @@ private let hash = calcParameterIdHash
 
 struct ParameterIds {
   //define fields only for parameters referenced in swift side
+  let masterVolume = hash("masterVolume")
   let internalBpm = hash("internalBpm")
   let autoRandomizeOnLoop = hash("autoRandomizeOnLoop")
   let randomizeLevel = hash("randomizeLevel")
