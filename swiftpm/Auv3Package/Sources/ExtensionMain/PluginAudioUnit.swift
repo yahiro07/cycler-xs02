@@ -189,7 +189,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   }
 
   private func handleHostBpmChange(_ bpm: Float) {
-    logger.log("host bpm change: \(bpm)")
+    // logger.log("host bpm change: \(bpm)")
     if isStandalone {
       //standalone
     } else {
