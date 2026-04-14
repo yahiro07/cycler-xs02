@@ -18,7 +18,7 @@ const App = () => {
       );
       return;
     }
-    logger.trace("frontend app mounted");
+    logger.trace("frontend app mounted 0132");
     agents.setup();
     setupKeyboardHandlerForTonePreview(actions.setPlayState);
     void (async () => {

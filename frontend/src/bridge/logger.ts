@@ -1,4 +1,9 @@
-const isDebug = import.meta.env.DEV;
+const isDebug =
+  import.meta.env.DEV ||
+  location.href.includes("debug=1") ||
+  location.href.includes("debug=2");
+
+export const debugLogFrontendMessages = location.href.includes("debug=2");
 
 type LogKind = "trace" | "info" | "log" | "warn" | "error";
 

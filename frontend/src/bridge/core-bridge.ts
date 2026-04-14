@@ -1,4 +1,4 @@
-import { logger } from "@/bridge/logger";
+import { debugLogFrontendMessages, logger } from "@/bridge/logger";
 import { MessageFromApp, MessageFromUi } from "@/bridge/message-types";
 
 export type CoreBridge = {
@@ -20,7 +20,9 @@ export const windowTyped = window as unknown as {
 export function createCoreBridge(): CoreBridge {
   function sendMessage(msg: MessageFromUi) {
     try {
-      logger.log("⇠ui", msg);
+      if (debugLogFrontendMessages) {
+        logger.log("⇠ui", msg);
+      }
       windowTyped.webkit?.messageHandlers.pluginEditor?.postMessage(msg);
     } catch (e) {
       console.log(e);
@@ -31,7 +33,9 @@ export function createCoreBridge(): CoreBridge {
   const listeners: Set<CoreBridgeMessageListener> = new Set();
 
   windowTyped.pluginEditorCallback ??= (msg: MessageFromApp) => {
-    logger.log("⇢ui", msg);
+    if (debugLogFrontendMessages) {
+      logger.log("⇢ui", msg);
+    }
     listeners.forEach((fn) => {
       fn(msg);
     });
