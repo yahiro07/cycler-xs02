@@ -1,4 +1,5 @@
 import AVFoundation
+import CoreAudioKit
 import DspRoute
 
 public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
@@ -61,6 +62,12 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
       parametersService.unsubscribeParameterChanges(parameterChangesToken)
       parameterChangesToken = 0
     }
+  }
+
+  public override func supportedViewConfigurations(
+    _ availableViewConfigurations: [AUAudioUnitViewConfiguration]
+  ) -> IndexSet {
+    return IndexSet(integersIn: 0..<availableViewConfigurations.count)
   }
 
   public override var outputBusses: AUAudioUnitBusArray {
