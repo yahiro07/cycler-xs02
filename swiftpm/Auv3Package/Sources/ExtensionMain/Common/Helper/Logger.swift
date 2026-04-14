@@ -131,16 +131,12 @@ let logKindIcons: [String: String] = [
 
   final class LoggerEntry: Sendable {
     init() {}
-    func trace(_ message: String) {
-    }
-    func info(_ message: String) {
-    }
-    func log(_ message: String) {
-    }
-    func warn(_ message: String) {
-    }
-    func error(_ message: String) {
-    }
+    func pushLogItem(_ item: LogItem) {}
+    func trace(_ message: String) {}
+    func info(_ message: String) {}
+    func log(_ message: String) {}
+    func warn(_ message: String) {}
+    func error(_ message: String) {}
   }
   let logger = LoggerEntry()
 #endif
