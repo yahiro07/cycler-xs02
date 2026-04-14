@@ -216,6 +216,8 @@ export function setupDummyParentApp() {
   const workletWrapper = createDspCoreWorkletWrapper();
   const localParameters = getInitialParameterValues();
 
+  let randomizationTaskInitialize = false;
+
   function emitRandomizationRequest() {
     const params = parametersRecordConverter.mapKeysToIds(localParameters);
     workletWrapper.sendMessage({
@@ -261,6 +263,10 @@ export function setupDummyParentApp() {
       if (msg.commandKey === "setPlayState") {
         await workletWrapper.resumeIfNeed();
         workletWrapper.applyCommand(CommandId.setPlayState, msg.value);
+        if (!randomizationTaskInitialize) {
+          startAutoRandomizationTask();
+          randomizationTaskInitialize = true;
+        }
       } else if (msg.commandKey === "resetParameters") {
         const parameters = getInitialParameterValues();
         const excludingKeys = [
@@ -303,6 +309,5 @@ export function setupDummyParentApp() {
   }
 
   setReceiverForMessageFromUi(onMessageFromUi);
-  startAutoRandomizationTask();
   logger.trace("dummy parent app initialized");
 }
