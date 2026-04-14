@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.example.sonic.proto-kit-auv3.Project1</string>
+		<string>group.com.example.sonic.proto-kit-auv3.CyclerXS02</string>
 	</array>
 </dict>
 </plist>

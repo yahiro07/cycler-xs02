@@ -19,25 +19,25 @@ This template uses Swift/SwiftUI for business logic and user interface and C++ (
 This template is designed to make Audio Unit development as easy as possible. In most cases you should only need to edit files in the top level groups; `Parameters`, `DSP` and `UI` groups.
 
 * /Common - Contains common code split by functionality which should rarely need to be modified. 
-	* `Audio Unit/Project1ExtensionAudioUnit.swift` - A subclass of AUAudioUnit, this is the actual Audio Unit implementation. You may in advanced cases need to change this file to add additional functionality from AUAudioUnit.  
+	* `Audio Unit/CyclerXS02ExtensionAudioUnit.swift` - A subclass of AUAudioUnit, this is the actual Audio Unit implementation. You may in advanced cases need to change this file to add additional functionality from AUAudioUnit.  
 * /Parameters
-	* `Project1ExtensionParameterAddresses.h` - A pure `C` enum containing parameter addresses used by Swift and C++ to reference parameters.
+	* `CyclerXS02ExtensionParameterAddresses.h` - A pure `C` enum containing parameter addresses used by Swift and C++ to reference parameters.
 	
 	* `Parameters.swift` - Contains a ParameterTreeSpec object made up of ParameterGroupSpec's and ParameterSpec's which allow you describe your plug-in's parameters and the layout of those parameters.
 
 * /DSP
-	* `Project1ExtensionDSPKernel.hpp` - A pure C++ class to handle the real-time aspects of the Audio Unit Extension. DSP and processing should be done here. Note: Be aware of the constraints of real-time audio processing. 
+	* `CyclerXS02ExtensionDSPKernel.hpp` - A pure C++ class to handle the real-time aspects of the Audio Unit Extension. DSP and processing should be done here. Note: Be aware of the constraints of real-time audio processing. 
 * /UI
-	* `Project1ExtensionMainView.swift` - SwiftUI based main view, add your SwiftUI views and controls here.
+	* `CyclerXS02ExtensionMainView.swift` - SwiftUI based main view, add your SwiftUI views and controls here.
 
 ## Adding a parameter
-1. Add a new parameter address to the `Project1ExtensionParameterAddress` enum in `Project1ExtensionParameterAddresses.h` 
+1. Add a new parameter address to the `CyclerXS02ExtensionParameterAddress` enum in `CyclerXS02ExtensionParameterAddresses.h` 
 
 
 Example:
 
 ```c
-typedef NS_ENUM(AUParameterAddress, Project1ExtensionParameterAddress) {
+typedef NS_ENUM(AUParameterAddress, CyclerXS02ExtensionParameterAddress) {
 	sendNote = 0,
 	....
 	attack
@@ -62,7 +62,7 @@ ParameterGroupSpec(identifier: "global", name: "Global") {
 ```
 Note: the identifier will be used to interact with this parameter from SwiftUI.
 
-3. In order to manipulate the DSP side of the Audio Unit we must handle changes to our new parameter in `Project1ExtensionDSPKernel.hpp`. In the `setParameter` and `getParameter` methods add a case for the new parameter address.
+3. In order to manipulate the DSP side of the Audio Unit we must handle changes to our new parameter in `CyclerXS02ExtensionDSPKernel.hpp`. In the `setParameter` and `getParameter` methods add a case for the new parameter address.
 
 Example:
 
@@ -70,7 +70,7 @@ Example:
 	void setParameter(AUParameterAddress address, AUValue value) {
 		switch (address) {
 			....
-			case Project1ExtensionExtensionParameterAddress:: attack:
+			case CyclerXS02ExtensionExtensionParameterAddress:: attack:
 				mAttack = value;
 				break;			
 			...
@@ -79,7 +79,7 @@ Example:
 	AUValue getParameter(AUParameterAddress address) {
 		switch (address) {
 			....
-			case Project1ExtensionExtensionParameterAddress::attack:
+			case CyclerXS02ExtensionExtensionParameterAddress::attack:
 				return (AUValue) mAttack;
 			...
 	}

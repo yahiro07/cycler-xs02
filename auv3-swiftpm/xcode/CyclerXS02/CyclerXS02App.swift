@@ -2,7 +2,7 @@ import Auv3HostApp
 import SwiftUI
 
 @main
-struct Project1App: App {
+struct CyclerXS02App: App {
   @Environment(\.scenePhase) private var scenePhase
   private let hostApp = HostApp()
 
