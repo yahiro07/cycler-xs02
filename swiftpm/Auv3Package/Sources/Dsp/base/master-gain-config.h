@@ -10,10 +10,10 @@ struct MasterGainConfig {
 };
 
 inline const MasterGainConfig masterGainConfig = {
-    0.5f,   // levelCenter
-    -40.0f, // dbLo
-    12.0f,  // dbHi
-    0.3f,   // prescale
+    .levelCenter = 0.5f,
+    .dbLo = -42.0f,
+    .dbHi = 18.0f,
+    .prescale = 0.7f,
 };
 
 } // namespace dsp
