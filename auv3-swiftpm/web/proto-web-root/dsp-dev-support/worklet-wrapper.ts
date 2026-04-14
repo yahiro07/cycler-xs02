@@ -22,6 +22,9 @@ export function createDspCoreWorkletWrapper(): WorkletWrapper {
   void nodeWrapper.initialize();
 
   return {
+    async resumeIfNeed() {
+      await nodeWrapper.resumeIfNeed();
+    },
     setParameter(id: number, value: number) {
       nodeWrapper.sendMessage({ type: "setParameter", id, value });
     },

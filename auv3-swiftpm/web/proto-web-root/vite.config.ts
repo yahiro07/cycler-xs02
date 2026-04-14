@@ -2,9 +2,20 @@ import { fileURLToPath, URL } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import mkcert from "vite-plugin-mkcert";
+
+const configs = {
+  useDevServerHttps: false,
+  devServerPort: 3000,
+};
+if (1) {
+  //For AudioWorklet, use https to access from devices on the local network.
+  configs.useDevServerHttps = true;
+  configs.devServerPort = 3002;
+}
 
 export default defineConfig({
-  plugins: [tailwindcss(), react()],
+  plugins: [tailwindcss(), react(), configs.useDevServerHttps && mkcert()],
   resolve: {
     alias: {
       react: fileURLToPath(
@@ -24,7 +35,8 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   server: {
-    port: 3000,
+    port: configs.devServerPort,
+    host: "0.0.0.0",
     fs: {
       allow: [".", "../../frontend/src"],
     },

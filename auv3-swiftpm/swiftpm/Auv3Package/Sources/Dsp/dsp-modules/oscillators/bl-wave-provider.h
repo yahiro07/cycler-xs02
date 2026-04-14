@@ -2,7 +2,6 @@
 #include "../../utils/math-utils.h"
 #include "../../utils/number-utils.h"
 #include "wave-frame-helper.h"
-#include <memory>
 #include <vector>
 
 namespace dsp {
@@ -147,11 +146,6 @@ inline float blWave_getWaveformSample(const BlWave &self,
 class BlWaveProvider {
 public:
   void setupTables() { blWave_buildWaveTables(blWaveInstance); }
-
-  // In Safari on iOS, calling time-consuming operations within a Worklet slows
-  // down subsequent operations, so the waveform table is created on the main
-  // thread and injected
-  void setBlWaveInstance(BlWave blWave) { blWaveInstance = std::move(blWave); }
 
   float getWaveformSample(BlWaveWaveform waveform, float pp, float normFreq) {
     return blWave_getWaveformSample(blWaveInstance, waveform, pp, normFreq);
