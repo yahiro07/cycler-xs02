@@ -71,42 +71,33 @@ export function blWave_buildWaveTables(self: BlWave) {
   ];
 
   const waveFrameTables = {
-    [BlWaveWaveform.saw]: buildWaveFrameTable(
-      tableHarmonicsSeries,
-      (x, h) => {
-        let value = 0;
-        for (let k = 1; k <= h; k++) {
-          const sign = k % 2 === 0 ? 1 : -1;
-          value += (sign * m_sin(k * (x + m_pi))) / k;
-        }
-        return value * (2 / m_pi);
-      },
-    ),
-    [BlWaveWaveform.rect]: buildWaveFrameTable(
-      tableHarmonicsSeries,
-      (x, n) => {
-        let value = 0;
-        for (let k = 1; k <= n; k += 2) {
-          const y = (1 / k) * m_sin(k * x);
-          value += y;
-        }
-        return value * (4 / m_pi);
-      },
-    ),
-    [BlWaveWaveform.tri]: buildWaveFrameTable(
-      tableHarmonicsSeries,
-      (x, n) => {
-        let value = 0;
-        let harmonicIndex = 0;
-        for (let k = 1; k <= n; k += 2) {
-          const sign = harmonicIndex % 2 === 0 ? 1 : -1;
-          const y = sign * (1 / (k * k)) * m_sin(k * x);
-          value += y;
-          harmonicIndex++;
-        }
-        return value * (8 / (m_pi * m_pi)); // Scale to [-1, 1] range
-      },
-    ),
+    [BlWaveWaveform.saw]: buildWaveFrameTable(tableHarmonicsSeries, (x, h) => {
+      let value = 0;
+      for (let k = 1; k <= h; k++) {
+        const sign = k % 2 === 0 ? 1 : -1;
+        value += (sign * m_sin(k * (x + m_pi))) / k;
+      }
+      return value * (2 / m_pi);
+    }),
+    [BlWaveWaveform.rect]: buildWaveFrameTable(tableHarmonicsSeries, (x, n) => {
+      let value = 0;
+      for (let k = 1; k <= n; k += 2) {
+        const y = (1 / k) * m_sin(k * x);
+        value += y;
+      }
+      return value * (4 / m_pi);
+    }),
+    [BlWaveWaveform.tri]: buildWaveFrameTable(tableHarmonicsSeries, (x, n) => {
+      let value = 0;
+      let harmonicIndex = 0;
+      for (let k = 1; k <= n; k += 2) {
+        const sign = harmonicIndex % 2 === 0 ? 1 : -1;
+        const y = sign * (1 / (k * k)) * m_sin(k * x);
+        value += y;
+        harmonicIndex++;
+      }
+      return value * (8 / (m_pi * m_pi)); // Scale to [-1, 1] range
+    }),
   };
 
   const numHarmonicsMax = tableHarmonicsSeries[tableHarmonicsSeries.length - 1];
@@ -140,24 +131,20 @@ function blWave_getWaveformSample(
   return readWaveFrameInterpolated(waveFrame, waveFrame.length, pp);
 }
 
-
 class BlWaveProvider {
   private blWaveInstance: BlWave = createBlWave();
 
   setupTables() {
     blWave_buildWaveTables(this.blWaveInstance);
   }
-  //In Safari on iOS, calling time-consuming operations within a Worklet slows down subsequent operations,
-  //so the waveform table is created on the main thread and injected
-  setBlWaveInstance(blWave: BlWave) {
-    this.blWaveInstance = blWave;
-  }
 
-  getWaveformSample(waveform: BlWaveWaveform,
-    pp: number,
-    normFreq: number) {
-    return blWave_getWaveformSample(this.blWaveInstance, waveform, pp, normFreq);
+  getWaveformSample(waveform: BlWaveWaveform, pp: number, normFreq: number) {
+    return blWave_getWaveformSample(
+      this.blWaveInstance,
+      waveform,
+      pp,
+      normFreq,
+    );
   }
-
 }
 export const blWaveProvider = new BlWaveProvider();
