@@ -1,4 +1,6 @@
 #pragma once
-#include "./api.h"
+#include "./base/api.h"
 
+namespace dsp {
 IDspCore *createDspCoreInstance();
+}

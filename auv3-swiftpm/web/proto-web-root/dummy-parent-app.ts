@@ -1,4 +1,4 @@
-import { CommandId, ParameterId } from "@core/parameter-id";
+import { CommandId, ParameterId } from "@dsp/base/parameter-id";
 import {
   BassPresetKey,
   BassTailAccentPatternKey,
@@ -21,10 +21,10 @@ import {
   OscUnisonMode,
   RandomizeLevel,
   ShaperMode,
-} from "@frontend/base/parameters";
-import { createLogger } from "@frontend/bridge/logger";
-import { MessageFromApp, MessageFromUi } from "@frontend/bridge/message-types";
-import { masterGainConfig } from "@frontend/logic/master-gain-config";
+} from "@/base/parameters";
+import { createLogger } from "@/bridge/logger";
+import { MessageFromApp, MessageFromUi } from "@/bridge/message-types";
+import { masterGainConfig } from "@/logic/master-gain-config";
 import { createDspCoreWorkletWrapper } from "./dsp-dev-support/worklet-wrapper";
 import { LogItem, writeLogItemToConsole } from "./log-emitter";
 

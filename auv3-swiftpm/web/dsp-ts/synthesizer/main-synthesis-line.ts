@@ -1,0 +1,51 @@
+import { Bus } from "@dsp/base/synthesis-bus";
+import { Delay } from "@dsp/synthesis-modules/delay";
+import { Filter } from "@dsp/synthesis-modules/filter";
+import { Oscillators } from "@dsp/synthesis-modules/oscillators";
+import { Phaser } from "@dsp/synthesis-modules/phaser";
+import { Shaper } from "@dsp/synthesis-modules/shaper";
+import { StepDelay } from "@dsp/synthesis-modules/step-delay";
+import { VoicingAmp } from "@dsp/synthesis-modules/voicing-amp";
+
+export class MainSynthesisLine {
+  private oscillators: Oscillators;
+  private filter: Filter;
+  private voicingAmp: VoicingAmp;
+  private shaper: Shaper;
+  private phaser: Phaser;
+  private delay: Delay;
+  private stepDelay: StepDelay;
+
+  constructor(bus: Bus) {
+    this.oscillators = new Oscillators(bus);
+    this.filter = new Filter(bus);
+    this.voicingAmp = new VoicingAmp(bus);
+    this.shaper = new Shaper(bus);
+    this.phaser = new Phaser(bus);
+    this.delay = new Delay(bus);
+    this.stepDelay = new StepDelay(bus);
+  }
+
+  prepare() {
+    this.oscillators.prepare();
+    this.shaper.prepare();
+    this.delay.prepare();
+    this.stepDelay.prepare();
+  }
+
+  reset() {
+    this.oscillators.reset();
+    this.filter.reset();
+    this.voicingAmp.reset();
+  }
+
+  processSamples(buffer: Float32Array, len: number) {
+    this.oscillators.processSamples(buffer, len);
+    this.filter.processSamples(buffer, len);
+    this.shaper.processSamples(buffer, len);
+    this.voicingAmp.processSamples(buffer, len);
+    this.phaser.processSamples(buffer, len);
+    this.delay.processSamples(buffer, len);
+    this.stepDelay.processSamples(buffer, len);
+  }
+}

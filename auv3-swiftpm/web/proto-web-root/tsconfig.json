@@ -18,11 +18,11 @@
     "noEmit": true,
     "skipLibCheck": true,
     "paths": {
-      "@frontend/*": [
+      "@/*": [
         "../../frontend/src/*"
       ],
-      "@core/*": [
-        "../dsp-dev/*"
+      "@dsp/*": [
+        "../dsp-ts/*"
       ]
     }
   },

@@ -1,0 +1,110 @@
+import {
+  GaterType,
+  GateStride,
+  MotionStride,
+  PureStride,
+} from "@dsp/base/parameter-defs";
+import { Bus } from "@dsp/base/synthesis-bus";
+import { getStepPeriod } from "@dsp/motions/funcs/steps-common";
+import { gaterExSeqMode_getRampSpec } from "@dsp/motions/gaters/gater-ex-seq";
+import { gaterMinLaxMode_getRampCodeCached } from "@dsp/motions/gaters/gater-main-lax";
+import { gaterMainSeqMode_getRampCode } from "@dsp/motions/gaters/gater-main-seq";
+import { RampSpec, StepRampCode } from "@dsp/motions/gaters/ramp-types";
+import { m_floor } from "@dsp/utils/math-utils";
+import { fracPart, lowClipZero } from "@dsp/utils/number-utils";
+
+export function getGaterStepRamp(
+  stepPos: number,
+  gaterPeriod: PureStride,
+  rampCode: StepRampCode,
+): RampSpec {
+  const stepPeriod = getStepPeriod(gaterPeriod);
+  const scaledStep = stepPos / stepPeriod;
+  let headPos = m_floor(scaledStep) * stepPeriod;
+  let progress = fracPart(scaledStep);
+  let duration = stepPeriod;
+  if (rampCode === StepRampCode.tie1) {
+    progress *= 0.5;
+    duration *= 2;
+  } else if (rampCode === StepRampCode.tie2) {
+    headPos -= stepPeriod;
+    progress = 0.5 + progress * 0.5;
+    duration *= 2;
+  }
+  return {
+    headPos,
+    relPos: progress * duration,
+    progress,
+    duration,
+  };
+}
+export function getMasterDividedRamp(
+  stepPos: number,
+  stepPeriod: number,
+  oneShot = false,
+): RampSpec {
+  const scaledStep = stepPos / stepPeriod;
+  if (oneShot) {
+    const progress = stepPos < stepPeriod ? fracPart(scaledStep) : 1;
+    return {
+      headPos: 0,
+      relPos: stepPos,
+      progress,
+      duration: stepPeriod,
+    };
+  } else {
+    const progress = fracPart(scaledStep);
+    return {
+      headPos: m_floor(scaledStep) * stepPeriod,
+      relPos: progress * stepPeriod,
+      progress,
+      duration: stepPeriod,
+    };
+  }
+}
+export function getPlainRamp(
+  bus: Bus,
+  stepPos: number,
+  inputStride: GateStride,
+): RampSpec {
+  const sp = bus.parameters;
+  if (inputStride === GateStride.gate) {
+    const rampCode =
+      sp.gaterType === GaterType.lax
+        ? gaterMinLaxMode_getRampCodeCached(bus, stepPos)
+        : gaterMainSeqMode_getRampCode(bus, stepPos);
+
+    const gaterStride = sp.gaterStride as unknown as PureStride;
+    return getGaterStepRamp(stepPos, gaterStride, rampCode);
+  } else {
+    const stride = inputStride as unknown as PureStride;
+    const stepPeriod = getStepPeriod(stride);
+    return getMasterDividedRamp(stepPos, stepPeriod, false);
+  }
+}
+export function getMotionRamp(
+  bus: Bus,
+  stepPos: number,
+  inputStride: MotionStride,
+): RampSpec {
+  if (inputStride === MotionStride.ex) {
+    return gaterExSeqMode_getRampSpec(bus, stepPos);
+  }
+  const stride = inputStride as unknown as GateStride;
+  return getPlainRamp(bus, stepPos, stride);
+}
+
+export function wrapGetStepRamp(
+  bus: Bus,
+  stride: GateStride,
+  stepPos: number,
+): RampSpec {
+  return getPlainRamp(bus, lowClipZero(stepPos), stride);
+}
+export function wrapGetMoStepRamp(
+  bus: Bus,
+  stride: MotionStride,
+  stepPos: number,
+): RampSpec {
+  return getMotionRamp(bus, lowClipZero(stepPos), stride);
+}

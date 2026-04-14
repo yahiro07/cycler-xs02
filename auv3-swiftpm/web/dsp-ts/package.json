@@ -1,0 +1,11 @@
+{
+  "name": "dsp",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0"
+  },
+  "scripts": {
+    "dev": "tsx dev-root.ts"
+  }
+}

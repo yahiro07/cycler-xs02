@@ -1,5 +1,5 @@
-import { StepRampCode } from "@core/base/synthesis-types";
-import { gaterMainLax_testGenerateStepRampCodes } from "@core/motions/gaters/gater-main-lax";
+import { StepRampCode } from "@dsp/motions/gaters/ramp-types";
+import { gaterMainLax_testGenerateStepRampCodes } from "@dsp/motions/gaters/gater-main-lax";
 import { it } from "vitest";
 
 function debugShowRampCodes(rampCodes: StepRampCode[]) {
