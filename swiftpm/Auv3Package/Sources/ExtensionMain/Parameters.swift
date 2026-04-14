@@ -51,10 +51,6 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
   let pb = ParameterSpecBuilder(calcParameterIdHash)
   return ParameterTreeSpec {
     ParameterGroupSpec(identifier: "global", name: "Global") {
-      pb.Linear(
-        "parametersVersion", "Parameters Version", 1, 0, 999999,
-        isInternal: true,
-      )
       pb.Bool("oscOn", "OSC On", true)
       pb.Enum("oscWave", "OSC Wave", 0, oscWaveLabels)
       pb.Unary("oscOctave", "OSC Octave", 0)
@@ -153,6 +149,11 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
       addMotionParameterSpecs(pb, "moShaperLevel", "Shaper Level", 0)
       addMotionParameterSpecs(pb, "moPhaserLevel", "Phaser Level", 1)
       addMotionParameterSpecs(pb, "moDelayTime", "Delay Time", 2)
+      //
+      pb.Linear(
+        "parametersVersion", "Parameters Version", 1, 0, 999999,
+        isInternal: true,
+      )
     }
   }
 }
