@@ -50,7 +50,7 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   nonisolated public func createAudioUnit(with componentDescription: AudioComponentDescription)
     throws -> AUAudioUnit
   {
-    logger.trace("createAudioUnit 1329")
+    logger.trace("createAudioUnit 1914")
     showEntryInfo(componentDescription)
     SharedContainer.setAppGroupId("group.net.miqsel.cycler.xs02")
 
@@ -79,6 +79,11 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
       //   // This insures the Audio Unit gets initial values from the host.
       //   for param in tree.allParameters { param.value = param.value }
       // }
+
+      guard audioUnit.parameterTree != nil else {
+        logger.warn("Unable to access AU ParameterTree")
+        return audioUnit
+      }
 
       return audioUnit
     }
