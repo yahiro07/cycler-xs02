@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": "../../prototyping"
+    },
+    {
+      "path": "../../frontend"
+    },
+    {
+      "path": "."
+    },
+    // {
+    //   "path": "../xcode"
+    // },
+  ]
+}
