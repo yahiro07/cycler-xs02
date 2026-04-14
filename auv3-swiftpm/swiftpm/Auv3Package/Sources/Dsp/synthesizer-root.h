@@ -1,8 +1,9 @@
 #pragma once
 #include "./api.h"
 #include "parameter-id.h"
+#include <atomic>
 #include <cmath>
-// #include <cstdio>
+#include <cstdio>
 
 enum class OscWave : int {
   Saw = 0,
@@ -66,13 +67,13 @@ inline void applySynthesisParameter(SynthesisParameters &sp, uint64_t id,
   // printf("applySynthesisParameter %llu %f\n", id, value);
   if (id == PK::parametersVersion) {
     sp.parametersVersion = static_cast<int>(std::lround(value));
-  } else if (id == PK::osc1On) {
+  } else if (id == PK::oscOn) {
     sp.oscOn = paramToBool(value);
-  } else if (id == PK::osc1Wave) {
+  } else if (id == PK::oscWave) {
     sp.osc1Wave = paramToEnum<OscWave>(value);
-  } else if (id == PK::osc1Octave) {
+  } else if (id == PK::oscOctave) {
     sp.osc1Octave = value;
-  } else if (id == PK::osc1Volume) {
+  } else if (id == PK::synthVolume) {
     sp.osc1Volume = value;
   }
 }
@@ -84,6 +85,8 @@ struct SynthesizerStateBus {
   bool gateOn = false;
   float bpm = 120.0;
   bool playState = false;
+  float gateOnUptimeSec = 0.f;
+  std::atomic<bool> needRandomize = false;
 };
 
 static const int noteNumber_globalPlayState = 200;
@@ -110,6 +113,7 @@ public:
   void noteOn(int noteNumber, double velocity) override {
     bus.noteNumber = noteNumber;
     bus.gateOn = true;
+    bus.gateOnUptimeSec = 0.f;
   }
   void noteOff(int noteNumber) override {
     if (noteNumber == bus.noteNumber) {
@@ -136,6 +140,17 @@ public:
       leftBuffer[i] = y;
       rightBuffer[i] = y;
     }
+    auto elapsed = (float)frames / bus.sampleRate;
+    auto currUptime = bus.gateOnUptimeSec;
+    auto nextUptime = bus.gateOnUptimeSec + elapsed;
+    if (bus.gateOn) {
+      auto currSec = static_cast<int>(currUptime / 1.0);
+      auto nextSec = static_cast<int>(nextUptime / 1.0);
+      if (currSec != nextSec) {
+        bus.needRandomize.store(true, std::memory_order_release);
+      }
+    }
+    bus.gateOnUptimeSec = nextUptime;
   }
 
   void applyCommand(uint64_t id, double value) override {
@@ -144,7 +159,12 @@ public:
     }
   }
 
-  bool extraLogic_isRandomizeRequired() override { return false; }
-  // void extraLogic_randomizeParameters(
-  //     std::map<uint64_t, double> &parameters) override {}
+  bool extraLogic_pullRandomizeRequestFlag() override {
+    return bus.needRandomize.exchange(false, std::memory_order_acq_rel);
+  }
+  void extraLogic_randomizeParameters(
+      std::map<uint64_t, double> &parameters) override {
+    parameters[PK::oscWave] = 1;
+    parameters[PK::oscOctave] = rand() / (double)RAND_MAX;
+  }
 };

@@ -50,7 +50,7 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   nonisolated public func createAudioUnit(with componentDescription: AudioComponentDescription)
     throws -> AUAudioUnit
   {
-    logger.trace("createAudioUnit 1347")
+    logger.trace("createAudioUnit 1329")
     showEntryInfo(componentDescription)
     SharedContainer.setAppGroupId("group.net.miqsel.myau2.v2-swiftpm")
 
@@ -89,8 +89,9 @@ open class PluginAudioUnitViewController: AUViewController, AUAudioUnitFactory {
   }
 
   private func configureSwiftUIView(audioUnit: PluginAudioUnit) {
-    guard let controllerFacade = audioUnit.controllerFacade else { return }
-    let content = PluginMainView(controllerFacade)
+    let controllerPivot = audioUnit.controllerPivot
+    let webviewBridge = WebViewBridge(controllerPivot)
+    let content = PluginMainView(webviewBridge)
     hostingControllerWrapper.bindView(vc: self, content: AnyView(content))
     audioUnit.viewAdded()
   }

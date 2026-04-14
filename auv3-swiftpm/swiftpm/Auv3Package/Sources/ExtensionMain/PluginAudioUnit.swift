@@ -2,57 +2,63 @@ import AVFoundation
 import DspRoute
 
 public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
-  // C++ Objects
-  var kernel = PluginDSPKernel()
-  var processHelper: AUProcessHelper?
-
+  private var dspRoute = DspRouteEntry()  // C++ Object
   private var outputBus: AUAudioUnitBus?
   private var _outputBusses: AUAudioUnitBusArray!
+  private let format: AVAudioFormat
 
-  private var format: AVAudioFormat
-
-  private let hostEventService = HostEventService()
-  private var parametersService: ParametersService?
-  private let internalNoteService = InternalNoteService()
+  private let dspRouteAgent: DspRouteAgent
+  private let parametersService: ParametersService
   private let storageFileIoService = StorageFileIoService()
   private let stateKvsService = StateKvsService()
-  private let commandService = CommandService()
-  private(set) var controllerFacade: ControllerFacade?
+  internal let controllerPivot: ControllerPivot
 
-  private let intervalTimer = IntervalTimer()
-  private var viewCount = 0
+  private var parameterChangesToken: Int = 0
 
-  private var commandServiceSubscriptionToken: Int?
+  private let intervalTimerManager = IntervalTimerManager()
+  private var isStandalone = false
 
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
   ) throws {
+    dspRouteAgent = DspRouteAgent(dspRoute: dspRoute)
+    let parameterTree = buildPluginParameterSpecs().createAUParameterTree()
+    parametersService = ParametersService(parameterTree: parameterTree)
+    controllerPivot = ControllerPivot(
+      dspRouteAgent: dspRouteAgent,
+      parametersService: parametersService,
+      storageFileIoService: storageFileIoService,
+      stateKvsService: stateKvsService)
     self.format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 2)!
     try super.init(componentDescription: componentDescription, options: options)
     outputBus = try AUAudioUnitBus(format: self.format)
     outputBus?.maximumChannelCount = 2
     _outputBusses = AUAudioUnitBusArray(
       audioUnit: self, busType: AUAudioUnitBusType.output, busses: [outputBus!])
-    processHelper = AUProcessHelper(&kernel)
-    internalNoteService.setDestinationFn { noteNumber, velocity in
-      self.kernel.pushInternalNote(Int32(noteNumber), velocity)
-    }
-    self.setupParameterTree()
-
-    commandServiceSubscriptionToken = commandService.subscribeCommandFromUi {
-      [weak self] id, value in
-      if id == "randomizeParameters" {
-        self?.doRandomizeParameters()
-      } else if id == "setPlayState" {
-        self?.kernel.pushCustomCommand(commandId_setPlayState, value)
-      }
-    }
+    // processHelper = AUProcessHelper(&dspKernel)
+    setupParameterStore(parameterTree)
+    intervalTimerManager.setTimerCallbackFn(onIntervalTimerTick)
+    intervalTimerManager.start()
+    setupSubscriptions()
   }
 
   deinit {
-    if let token = commandServiceSubscriptionToken {
-      commandService.unsubscribeCommandFromUi(token)
-      commandServiceSubscriptionToken = nil
+    intervalTimerManager.stop()
+    cleanupSubscriptions()
+  }
+
+  func setupSubscriptions() {
+    parameterChangesToken =
+      parametersService.subscribeParameterChanges {
+        [weak self] paramKey, value in
+        self?.controllerPivot.broadcastParameterChange(paramKey, value)
+      }
+  }
+
+  func cleanupSubscriptions() {
+    if parameterChangesToken != 0 {
+      parametersService.unsubscribeParameterChanges(parameterChangesToken)
+      parameterChangesToken = 0
     }
   }
 
@@ -62,32 +68,30 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
   public override var maximumFramesToRender: AUAudioFrameCount {
     get {
-      return kernel.maximumFramesToRender()
+      return dspRoute.maximumFramesToRender()
     }
 
     set {
-      kernel.setMaximumFramesToRender(newValue)
+      dspRoute.setMaximumFramesToRender(newValue)
     }
   }
 
   public override var shouldBypassEffect: Bool {
     get {
-      return kernel.isBypassed()
+      return dspRoute.isBypassed()
     }
 
     set {
-      kernel.setBypass(newValue)
+      dspRoute.setBypass(newValue)
     }
   }
 
-  // MARK: - MIDI
   public override var audioUnitMIDIProtocol: MIDIProtocolID {
-    return kernel.AudioUnitMIDIProtocol()
+    return ._2_0
   }
 
-  // MARK: - Rendering
   public override var internalRenderBlock: AUInternalRenderBlock {
-    return processHelper!.internalRenderBlock()
+    return dspRoute.internalRenderBlock()
   }
 
   // Allocate resources required to render.
@@ -95,10 +99,10 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   public override func allocateRenderResources() throws {
     let outputChannelCount = self.outputBusses[0].format.channelCount
 
-    kernel.setMusicalContextBlock(self.musicalContextBlock)
-    kernel.initialize(Int32(outputChannelCount), outputBus!.format.sampleRate)
+    dspRoute.setMusicalContextBlock(self.musicalContextBlock)
+    dspRoute.initialize(Int32(outputChannelCount), outputBus!.format.sampleRate)
 
-    processHelper?.setChannelCount(0, self.outputBusses[0].format.channelCount)
+    dspRoute.setChannelCount(0, self.outputBusses[0].format.channelCount)
 
     try super.allocateRenderResources()
   }
@@ -108,23 +112,9 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   public override func deallocateRenderResources() {
 
     // Deallocate your resources.
-    kernel.deInitialize()
+    dspRoute.deInitialize()
 
     super.deallocateRenderResources()
-  }
-
-  private func setupParameterTree() {
-    let parameterTree = buildPluginParameterSpecs().createAUParameterTree()
-    let parametersService = ParametersService(parameterTree: parameterTree)
-    self.parameterTree = parameterTree
-    self.parametersService = parametersService
-    self.controllerFacade = ControllerFacade(
-      parametersService: parametersService,
-      hostEventService: hostEventService, internalNoteService: internalNoteService,
-      storageFileIoService: storageFileIoService, stateKvsService: stateKvsService,
-      commandService: commandService)
-
-    setupParameterStore(parameterTree)
   }
 
   private func setupParameterStore(_ parameterTree: AUParameterTree) {
@@ -132,14 +122,14 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
 
     for param in parameterTree.allParameters {
       parameterStore.set(param.address, param.value)
-      kernel.setParameter(param.address, param.value)
+      dspRoute.setParameter(param.address, param.value)
     }
     parameterStore.stateKnownKeysInserted()
 
     parameterTree.implementorValueObserver = { [weak self] param, value -> Void in
       // logger.log("parameter changed: \(param.address) \(value)")
       parameterStore.set(param.address, value)
-      self?.kernel.pushParameterChange(param.address, value)
+      self?.dspRoute.pushParameterChange(param.address, value)
     }
     parameterTree.implementorValueProvider = { param in
       parameterStore.get(param.address)
@@ -163,7 +153,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
         "version": baseState?["version"] as? Int ?? 0,
       ]
       state["kvsItems"] = stateKvsService.getItems()
-      let parameters = parametersService!.getAllParameterValues()
+      let parameters = parametersService.getAllParameterValues()
       state["parameters"] = parameters
       return state
     }
@@ -171,11 +161,13 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     set(newValue) {
       logger.log("fullState restoration")
       guard let state = newValue else { return }
-      // if let flag = state["MySynth1.hostedInStandaloneApp"] as? Bool {
-      //   self.isHostedInStandaloneApp = flag
-      // }
+      if state["MySynth1.hostedInStandaloneApp"] != nil {
+        logger.log("hosted in standalone app")
+        controllerPivot.setStandaloneFlag()
+        isStandalone = true
+      }
       if let parameters = state["parameters"] as? [String: Float] {
-        parametersService!.loadFullParametersSuit(parameters)
+        parametersService.loadFullParametersSuit(parameters)
       }
       if let kvsItems = state["kvsItems"] as? [String: String] {
         stateKvsService.setItems(kvsItems)
@@ -185,60 +177,47 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     }
   }
 
-  private let isStandalone = true
-
   private func handleHostBpmChange(_ bpm: Float) {
+    logger.log("host bpm change: \(bpm)")
     if isStandalone {
       //standalone
     } else {
       //executed in host app
       //Host bpm --> DSP, UI
-      parametersService?.setInternalParameterFromHost(ParameterId.internalBpm.rawValue, bpm)
+      parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
     }
   }
 
-  private func doRandomizeParameters() {
-    var parameters = parametersService!.getAllParameterValues()
-    randomizeParameters(&parameters)
-    parametersService!.loadFullParametersSuit(parameters)
-  }
-
-  private func updateParameterRandomization() {
-    if kernel.extraLogic_isRandomizeRequired() {
-      doRandomizeParameters()
+  func updateParameterRandomization() {
+    if dspRoute.extraLogic_pullRandomizeRequestFlag() {
+      controllerPivot.randomizeParameters()
     }
   }
 
   func drainHostEvents() {
-    var rawEvent = RtHostEvent()
-    while kernel.popRtHostEvent(&rawEvent) {
-      if let event = mapHostEventFromRtHostEvent(rawEvent) {
-        hostEventService.emitHostEvent(event)
-        switch event {
-        case .hostTempo(let bpm):
-          handleHostBpmChange(bpm)
-        default:
-          break
-        }
+    dspRouteAgent.drainHostEvents { event in
+      self.controllerPivot.broadcastHostEvent(event)
+      switch event {
+      case .hostTempo(let bpm):
+        handleHostBpmChange(bpm)
+      default:
+        break
       }
     }
   }
 
   func onIntervalTimerTick() {
     drainHostEvents()
+    // if viewActive {
     updateParameterRandomization()
+    // }
   }
 
   func viewAdded() {
-    viewCount += 1
-    if viewCount == 1 {
-      intervalTimer.start(intervalMs: 16, callback: onIntervalTimerTick)
-    }
+    intervalTimerManager.viewAdded()
   }
+
   func viewRemoved() {
-    viewCount -= 1
-    if viewCount == 0 {
-      intervalTimer.stop()
-    }
+    intervalTimerManager.viewRemoved()
   }
 }

@@ -8,6 +8,7 @@ enum MessageFromUI {
   case noteOnRequest(_ noteNumber: Int)
   case noteOffRequest(_ noteNumber: Int)
   case loadFullParameters(parameters: [String: Float])
+  case applyCommand(commandKey: String, value: Float)
   //
   case rpcReadFileRequest(rpcId: Int, path: String, skipIfNotExists: Bool)
   case rpcWriteFileRequest(rpcId: Int, path: String, content: String, append: Bool)
@@ -24,6 +25,7 @@ enum MessageFromApp {
   case hostNoteOff(noteNumber: Int)
   case hostTempo(tempo: Float)
   case hostPlayState(isPlaying: Bool)
+  case applyCommand(commandKey: String, value: Float)
   //
   case rpcReadFileResponse(rpcId: Int, success: Bool, content: String)
   case rpcWriteFileResponse(rpcId: Int, success: Bool)

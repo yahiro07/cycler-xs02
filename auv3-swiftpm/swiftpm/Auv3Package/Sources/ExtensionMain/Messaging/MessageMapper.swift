@@ -44,6 +44,12 @@ func mapMessageFromUI_fromJsonString(_ jsonString: String) -> MessageFromUI? {
     if let noteNumber = dict["noteNumber"] as? Int {
       return .noteOffRequest(noteNumber)
     }
+  case "applyCommand":
+    if let commandKey = dict["commandKey"] as? String,
+      let value = dict["value"] as? Double
+    {
+      return .applyCommand(commandKey: commandKey, value: Float(value))
+    }
   case "loadFullParameters":
     if let parameters = dict["parameters"] as? [String: Float] {
       return .loadFullParameters(parameters: parameters)
@@ -116,6 +122,12 @@ func mapMessageFromApp_toJsonString(_ msg: MessageFromApp) -> String {
     return toJson([
       "type": "hostNoteOff",
       "noteNumber": noteNumber,
+    ])
+  case .applyCommand(let commandKey, let value):
+    return toJson([
+      "type": "applyCommand",
+      "commandKey": commandKey,
+      "value": value,
     ])
   case .hostTempo(let tempo):
     return toJson([

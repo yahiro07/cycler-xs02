@@ -1,81 +1,158 @@
 import AudioToolbox
 import Foundation
 
-let oscWaveValues = ["Saw", "Rect", "Tri", "Sine", "Noise"]
+let oscWaveLabels = ["saw", "rect", "tri", "sine"]
+let lfoWaveLabels = ["sine", "rect", "tri", "saw"]
+let delayStepLabels = ["/16", "/8", "/4"]
+let oscPitchModeLabels = ["liner", "octave", "oct-x", "ratio", "semi", "map1", "map2", "map3"]
+let gaterStrideLabels = ["/16", "/8", "/4", "/2", "1", "2", "4", "gate"]
+let motionStrideLabels = ["/16", "/8", "/4", "/2", "1", "2", "4", "gate", "ex"]
+let gaterSourceStrideLabels = ["/16", "/8", "/4"]
+let gaterExSourceStrideLabels = ["/16", "/8", "/4", "/2", "1"]
+let gaterTypeLabels = ["seq", "lax"]
+let gateSequencerCodeLabels = ["oooo", "ooo>", "oo>o", "o>oo", ">ooo", ">oo>"]
+let gateSequencerCodeLabelsForHead = ["oooo", "ooo>", "oo>o", "o>oo"]
+let moEgWaveLabels = ["d", "d2", "ad", "bump", "duty", "stair"]
+let exGaterCodeLabels = ["o", "-", ">", "oo"]
+let exGaterCodeLabelsForHead = ["o", "-", "oo"]
+let rndModeLabels = ["sh", "sd", "sg"]
+let oscColorModeLabels = ["sfm", "speed", "accel", "drill", "sdm", "creep", "sinus", "ridge"]
+let shaperModeLabels = ["ws1", "ws2", "ws3", "ws4", "ws5"]
+let oscUnisonModeLabels = ["one", "det2", "det3", "sub", "fifth"]
+let moTypeLabels = ["lfo", "eg", "rnd"]
+let kickPresetKeyLabels = ["kick1", "kick2", "kick3", "kick4", "kick5"]
+let bassPresetKeyLabels = ["bass1", "bass2", "bass3", "bass4"]
+let bassTailAccentPatternKeyLabels = ["off", "pattern1", "pattern2", "pattern3", "pattern4"]
+let loopBarsLabels = ["1", "2", "4"]
+let randomizeLevelLabels = ["rnd1", "rnd2", "rnd5", "rnd10", "rnd20", "rndFull"]
 
-let lfoDestinationValues = [
-  "None", "Osc1Pitch", "Osc1PWMix", "Osc1Volume", "Osc2Pitch", "Osc2PWMix", "Osc2Volume",
-  "FilterCutoff", "AmpVolume",
-]
-
-struct DefaultValues {
-  static let osc1Wave = "Saw"
-  static let osc1Volume: Float = 1
-  //debug
-  // static let osc1Wave = "Sine"
-  // static let osc1Volume: Float = 0.1
+func addMotionParameterSpecs(
+  _ pB: ParameterSpecBuilder, _ mo: String, _ baseLabel: String, _ moTypeDefault: Int
+) -> [ParameterSpec] {
+  return [
+    pB.Bool("\(mo)_moOn", "MO \(baseLabel) On", false),
+    pB.Enum("\(mo)_moType", "MO \(baseLabel) Type", moTypeDefault, moTypeLabels),
+    pB.Unary("\(mo)_moAmount", "MO \(baseLabel) Amount", 0.5),
+    pB.Enum("\(mo)_rndStride", "MO \(baseLabel) RND Stride", 7, motionStrideLabels),
+    pB.Enum("\(mo)_rndMode", "MO \(baseLabel) RND Mode", 0, rndModeLabels),
+    pB.Unary("\(mo)_rndCover", "MO \(baseLabel) RND Cover", 1),
+    pB.Enum("\(mo)_lfoWave", "MO \(baseLabel) LFO Wave", 0, lfoWaveLabels),
+    pB.Unary("\(mo)_lfoRate", "MO \(baseLabel) LFO Rate", 0.5),
+    pB.Bool("\(mo)_lfoRateStepped", "MO \(baseLabel) LFO Rate Stepped", false),
+    pB.Bool("\(mo)_lfoInvert", "MO \(baseLabel) LFO Invert", false),
+    pB.Enum("\(mo)_egStride", "MO \(baseLabel) EG Stride", 7, motionStrideLabels),
+    pB.Enum("\(mo)_egWave", "MO \(baseLabel) EG Wave", 0, moEgWaveLabels),
+    pB.Unary("\(mo)_egCurve", "MO \(baseLabel) EG Curve", 0.5),
+    pB.Bool("\(mo)_egInvert", "MO \(baseLabel) EG Invert", false),
+  ]
 }
 
 func buildPluginParameterSpecs() -> ParameterTreeSpec {
-  let PB: ParameterSpecBuilder<ParameterId> = ParameterSpecBuilder()
+  let pb = ParameterSpecBuilder(calcParameterIdHash)
   return ParameterTreeSpec {
     ParameterGroupSpec(identifier: "global", name: "Global") {
-      PB.Linear(
-        .parametersVersion, "parametersVersion", "Parameters Version", 0, 999999, 1,
+      pb.Linear(
+        "parametersVersion", "Parameters Version", 1, 0, 999999,
         isInternal: true,
       )
-      PB.Bool(.osc1On, "osc1On", "OSC1 On", true)
-      PB.Enum(.osc1Wave, "osc1Wave", "OSC1 Wave", DefaultValues.osc1Wave, oscWaveValues)
-      PB.Unary(.osc1Octave, "osc1Octave", "OSC1 Octave", 0.5)
-      PB.Unary(.osc1PwMix, "osc1PwMix", "OSC1 PwMix", 0.5)
-      PB.Unary(.osc1Volume, "osc1Volume", "OSC1 Volume", DefaultValues.osc1Volume)
+      pb.Bool("oscOn", "OSC On", true)
+      pb.Enum("oscWave", "OSC Wave", 0, oscWaveLabels)
+      pb.Unary("oscOctave", "OSC Octave", 0.5)
+      pb.Unary("oscPitch", "OSC Pitch", 0.5)
+      pb.Enum("oscPitchMode", "OSC Pitch Mode", 1, oscPitchModeLabels)
+      pb.Unary("oscPitchMoSmooth", "OSC Pitch MoSmooth", 0)
+      pb.Unary("oscColor", "OSC Color", 0)
+      pb.Enum("oscColorMode", "OSC Color Mode", 0, oscColorModeLabels)
+      pb.Enum("oscUnisonMode", "OSC Unison Mode", 0, oscUnisonModeLabels)
+      pb.Unary("oscUnisonDetune", "OSC Unison Detune", 0)
       //
-      PB.Bool(.osc2On, "osc2On", "OSC2 On", false)
-      PB.Enum(.osc2Wave, "osc2Wave", "OSC2 Wave", "Saw", oscWaveValues)
-      PB.Unary(.osc2Octave, "osc2Octave", "OSC2 Octave", 0.5)
-      PB.Unary(.osc2Detune, "osc2Detune", "OSC2 Detune", 0.5)
-      PB.Unary(.osc2Volume, "osc2Volume", "OSC2 Volume", 0.5)
+      pb.Bool("filterOn", "Filter On", true)
+      pb.Unary("filterCutoff", "Filter Cutoff", 1)
+      pb.Unary("filterPeak", "Filter Peak", 0)
       //
-      PB.Bool(.filterOn, "filterOn", "Filter On", true)
-      PB.Enum(.filterType, "filterType", "Filter Type", "LPF", ["LPF", "BPF", "HPF"])
-      PB.Unary(.filterCutoff, "filterCutoff", "Filter Cutoff", 1.0)
-      PB.Unary(.filterPeak, "filterPeak", "Filter Peak", 0.0)
-      PB.Unary(.filterEnvMod, "filterEnvMod", "Filter EnvMod", 0.5)
+      pb.Bool("ampOn", "Amp On", true)
+      pb.Unary("ampEgHold", "Amp Eg Hold", 0.8)
+      pb.Unary("ampEgDecay", "Amp Eg Decay", 0)
       //
-      PB.Bool(.ampOn, "ampOn", "Amp On", true)
-      PB.Unary(.ampAttack, "ampAttack", "Amp Attack", 0.0)
-      PB.Unary(.ampDecay, "ampDecay", "Amp Decay", 0.0)
-      PB.Unary(.ampSustain, "ampSustain", "Amp Sustain", 1.0)
-      PB.Unary(.ampRelease, "ampRelease", "Amp Release", 0.0)
+      pb.Bool("shaperOn", "Shaper On", false)
+      pb.Enum("shaperMode", "Shaper Mode", 0, shaperModeLabels)
+      pb.Unary("shaperLevel", "Shaper Level", 0.5)
       //
-      PB.Bool(.lfoOn, "lfoOn", "LFO On", false)
-      PB.Enum(.lfoWave, "lfoWave", "LFO Wave", "Saw", oscWaveValues)
-      PB.Unary(.lfoRate, "lfoRate", "LFO Rate", 0.5)
-      PB.Unary(.lfoDepth, "lfoDepth", "LFO Depth", 0.5)
-      PB.Enum(.lfoTarget, "lfoTarget", "LFO Target", "None", lfoDestinationValues)
+      pb.Bool("phaserOn", "Phaser On", false)
+      pb.Unary("phaserLevel", "Phaser Level", 0.5)
       //
-      PB.Bool(.egOn, "egOn", "EG On", false)
-      PB.Unary(.egAttack, "egAttack", "EG Attack", 0.0)
-      PB.Unary(.egDecay, "egDecay", "EG Decay", 0.0)
-      PB.Unary(.egAmount, "egAmount", "EG Amount", 0.5)
-      PB.Enum(.egTarget, "egTarget", "EG Target", "None", lfoDestinationValues)
+      pb.Bool("delayOn", "Delay On", false)
+      pb.Unary("delayTime", "Delay Time", 0.5)
+      pb.Unary("delayFeed", "Delay Feed", 0.3)
       //
-      PB.Unary(.glide, "glide", "glide", 0.0)
-      PB.Enum(.voicingMode, "voicingMode", "Voicing Mode", "Mono", ["Mono", "Poly"])
-      PB.Unary(.masterVolume, "masterVolume", "Master Volume", 0.8)
+      pb.Bool("stepDelayOn", "Step Delay On", false)
+      pb.Enum("stepDelayStep", "Step Delay Step", 1, delayStepLabels)
+      pb.Unary("stepDelayFeed", "Step Delay Feed", 0.5)
+      pb.Unary("stepDelayMix", "Step Delay Mix", 0.5)
       //
-      PB.Linear(
-        .internalBpm, "internalBpm", "Internal BPM", 0, 400, 120, isInternal: true,
+      pb.Enum("gaterStride", "Gater Stride", 0, gaterStrideLabels)
+      pb.Enum("gaterType", "Gater Type", 0, gaterTypeLabels)
+      pb.Bool("gaterRndTieOn", "Gater Rnd Tie On", false)
+      pb.Unary("gaterRndTieCover", "Gater Rnd Tie Cover", 0.5)
+      pb.Enum(
+        "exGaterSeqStride", "Ex Gater Seq Stride", 0,
+        gaterExSourceStrideLabels)
+      pb.Enum(
+        "gaterSeqPatterns_0", "Gater Seq Patterns 0", 0,
+        gateSequencerCodeLabels)
+      pb.Enum(
+        "gaterSeqPatterns_1", "Gater Seq Patterns 1", 0,
+        gateSequencerCodeLabels)
+      pb.Enum(
+        "gaterSeqPatterns_2", "Gater Seq Patterns 2", 0,
+        gateSequencerCodeLabels)
+      pb.Enum(
+        "gaterSeqPatterns_3", "Gater Seq Patterns 3", 0,
+        gateSequencerCodeLabels)
+      pb.Enum("exGaterCodes_0", "Ex Gater Codes 0", 0, exGaterCodeLabels)
+      pb.Enum("exGaterCodes_1", "Ex Gater Codes 1", 0, exGaterCodeLabels)
+      pb.Enum("exGaterCodes_2", "Ex Gater Codes 2", 0, exGaterCodeLabels)
+      pb.Enum("exGaterCodes_3", "Ex Gater Codes 3", 0, exGaterCodeLabels)
+      //
+      pb.Bool("kickOn", "Kick On", true)
+      pb.Enum("kickPresetKey", "Kick Preset Key", 0, kickPresetKeyLabels)
+      pb.Bool("bassOn", "Bass On", true)
+      pb.Unary("bassDuty", "Bass Duty", 0.6)
+      pb.Enum("bassPresetKey", "Bass Preset Key", 0, bassPresetKeyLabels)
+      pb.Enum(
+        "bassTailAccentPatternKey", "Bass Tail Accent Pattern Key",
+        0, bassTailAccentPatternKeyLabels)
+      //
+      pb.Unary("kickVolume", "Kick Volume", 1)
+      pb.Unary("bassVolume", "Bass Volume", 1)
+      pb.Unary("synthVolume", "Synth Volume", 1)
+      //
+      pb.Enum("loopBars", "Loop Bars", 1, loopBarsLabels)
+      pb.Bool("looped", "Looped", false)
+      pb.Unary("masterVolume", "Master Volume", 0.5)
+      pb.Bool("clockingOn", "Clocking On", true)
+      // [PK.baseOctave, "baseOctave", 3],
+      pb.Unary("baseNoteIndex", "Base Note Index", 9)  //A
+
+      //
+      pb.Linear(
+        "internalBpm", "Internal BPM", 120, 30, 400, isInternal: true,
       )
-      PB.Bool(
-        .autoRandomizeOnLoop, "autoRandomizeOnLoop", "Auto Randomize On Loop", false,
+      pb.Bool(
+        "autoRandomizeOnLoop", "Auto Randomize On Loop", false,
         isInternal: true,
       )
-      PB.Enum(
-        .randomizeLevel, "randomizeLevel", "Randomize Level", "rnd1",
-        ["rnd1", "rnd2", "rnd5", "rnd10", "rnd20", "rndFull"],
+      pb.Enum(
+        "randomizeLevel", "Randomize Level", 0, randomizeLevelLabels,
         isInternal: true,
       )
+      //
+      addMotionParameterSpecs(pb, "moOscPitch", "OSC Pitch", 0)
+      addMotionParameterSpecs(pb, "moOscColor", "OSC Color", 1)
+      addMotionParameterSpecs(pb, "moFilterCutoff", "Filter Cutoff", 2)
+      addMotionParameterSpecs(pb, "moShaperLevel", "Shaper Level", 0)
+      addMotionParameterSpecs(pb, "moPhaserLevel", "Phaser Level", 1)
+      addMotionParameterSpecs(pb, "moDelayTime", "Delay Time", 2)
     }
   }
 }

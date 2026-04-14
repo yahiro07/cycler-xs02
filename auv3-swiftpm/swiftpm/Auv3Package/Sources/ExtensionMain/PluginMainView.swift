@@ -3,8 +3,8 @@ import SwiftUI
 struct PluginMainView: View {
   @StateObject private var webViewBridge: WebViewBridge
 
-  init(_ controllerFacade: ControllerFacadeProtocol) {
-    _webViewBridge = StateObject(wrappedValue: WebViewBridge(controllerFacade))
+  init(_ webViewBridge: WebViewBridge) {
+    _webViewBridge = StateObject(wrappedValue: webViewBridge)
   }
 
   var body: some View {

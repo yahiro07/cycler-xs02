@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+button {
+  outline: none;
+}
+
+@font-face {
+  font-family: "Alarm Clock";
+  src: url("../assets/alarm-clock.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
