@@ -1,12 +1,11 @@
 #pragma once
 #include "../base/parameter-defs.h"
 #include "../base/synthesis-bus.h"
+#include "../dsp-modules/basic/debug-waves.h"
 #include "../dsp-modules/basic/synthesis-helper.h"
 #include "../dsp-modules/filters/oversampling-stage.h"
 #include "../motions/funcs/pitch-mapping.h"
 #include "oscillator-core.h"
-#include <memory>
-#include <vector>
 
 namespace dsp {
 
@@ -18,13 +17,13 @@ struct VoiceSpec {
 
 class Oscillators {
 private:
-  SynthesisBus &bus;
-  std::vector<OscillatorCore> oscs;
-  std::unique_ptr<OversamplingStage> ovsStage;
-  std::vector<VoiceSpec> voiceSpecs;
-  int voiceIndex = 0;
   constexpr static int ovsRate = 4;
   constexpr static int maxVoices = 6;
+  SynthesisBus &bus;
+  OversamplingStage ovsStage;
+  OscillatorCore oscs[maxVoices];
+  VoiceSpec voiceSpecs[maxVoices];
+  int voiceIndex = 0;
 
   float calcNormFreq() {
     const auto &sp = bus.parameters;
@@ -130,13 +129,11 @@ private:
 
 public:
   explicit Oscillators(SynthesisBus &bus)
-      : bus(bus), ovsStage(std::make_unique<OversamplingStage>(ovsRate, 1.0f)) {
-    oscs.reserve(maxVoices);
-    for (int i = 0; i < maxVoices; i++) {
-      oscs.emplace_back(bus);
-    }
-    voiceSpecs.resize(maxVoices);
-  }
+      : bus(bus), ovsStage(OversamplingStage(ovsRate)),
+        oscs{
+            OscillatorCore(bus), OscillatorCore(bus), OscillatorCore(bus),
+            OscillatorCore(bus), OscillatorCore(bus), OscillatorCore(bus),
+        } {}
 
   void reset() {
     for (auto &osc : oscs) {
@@ -144,23 +141,19 @@ public:
     }
   }
 
-  void prepare() { ovsStage->ensureAllocated(bus.maxFrames); }
+  void prepare() { ovsStage.ensureAllocated(bus.maxFrames); }
 
   void processSamples(float *buffer, int len) {
     const auto &sp = bus.parameters;
     if (!sp.oscOn)
       return;
-
     assignVoices();
-
     const float normFreq = calcNormFreq();
-
-    float *highResBuffer = ovsStage->readIn(buffer, len, false);
+    float *highResBuffer = ovsStage.readIn(buffer, len, false);
     if (!highResBuffer)
       return;
-
     processSamplesInternal(highResBuffer, len * ovsRate, normFreq);
-    ovsStage->writeOut();
+    ovsStage.writeOut();
   }
 };
 

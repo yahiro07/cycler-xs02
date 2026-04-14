@@ -1,5 +1,8 @@
+import { dspEnvs } from "@dsp/base/konsole";
 import { createDspCoreInstance, IDspCore } from "@dsp/dsp-core-entry";
 import { WorkletInputMessage, WorkletOutputMessage } from "./worklet-types";
+
+dspEnvs.isDebug = import.meta.env.DEV;
 
 function createProcessorClass() {
   return class extends AudioWorkletProcessor {

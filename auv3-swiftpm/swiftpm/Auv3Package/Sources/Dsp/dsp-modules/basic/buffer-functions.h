@@ -13,6 +13,12 @@ inline float readBufferInterpolated(const float *buffer, int len,
   return mixValue(buffer[idx0], buffer[idx1], fraction);
 }
 
+inline void clearBuffer(float *buffer, int len) {
+  for (int i = 0; i < len; i++) {
+    buffer[i] = 0.f;
+  }
+}
+
 inline void copyBuffer(float *dstBuffer, const float *srcBuffer, int len) {
   for (int i = 0; i < len; i++) {
     dstBuffer[i] = srcBuffer[i];
@@ -59,6 +65,16 @@ inline void applyBufferHardClip(float *buffer, int len) {
   for (int i = 0; i < len; i++) {
     buffer[i] = applyHardClip(buffer[i]);
   }
+}
+
+inline float getBufferMaxLevel(const float *buffer, int len) {
+  float maxLevel = 0.f;
+  for (int i = 0; i < len; i++) {
+    float v = std::fabs(buffer[i]);
+    if (v > maxLevel)
+      maxLevel = v;
+  }
+  return maxLevel;
 }
 
 } // namespace dsp

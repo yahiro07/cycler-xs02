@@ -1,0 +1,19 @@
+{
+  "folders": [
+    // {
+    //   "path": "../web"
+    // },
+    {
+      "path": "../frontend"
+    },
+    {
+      "path": "../swiftpm/Auv3Package"
+    },
+    {
+      "path": "../xcode"
+    },
+    {
+      "path": "."
+    },
+  ]
+}

@@ -14,7 +14,7 @@ describe("gaterExSeq_buildNotesFromCodesForTest", () => {
         ExGaterCode.one,
         ExGaterCode.one,
       ]);
-      expect(notes.length).toBe(4);
+      expect(notes.count).toBe(4);
       expect(notes.items.slice(0, 4)).toEqual([
         { type: GaterExNoteType.gate, offset: 0, duration: 1 },
         { type: GaterExNoteType.gate, offset: 1, duration: 1 },
@@ -29,7 +29,7 @@ describe("gaterExSeq_buildNotesFromCodesForTest", () => {
         ExGaterCode.one,
         ExGaterCode.tie,
       ]);
-      expect(notes.length).toBe(4);
+      expect(notes.count).toBe(4);
       expect(notes.items.slice(0, 4)).toEqual([
         { type: GaterExNoteType.gate, offset: 0, duration: 1 },
         { type: GaterExNoteType.gate, offset: 1, duration: 0.5 },
@@ -44,7 +44,7 @@ describe("gaterExSeq_buildNotesFromCodesForTest", () => {
         ExGaterCode.tie,
         ExGaterCode.tie,
       ]);
-      expect(notes.length).toBe(1);
+      expect(notes.count).toBe(1);
       expect(notes.items.slice(0, 1)).toEqual([
         { type: GaterExNoteType.gate, offset: 0, duration: 4 },
       ]);

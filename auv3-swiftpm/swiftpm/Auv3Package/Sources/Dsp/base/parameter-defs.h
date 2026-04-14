@@ -1,6 +1,5 @@
 #pragma once
 #include "master-gain-config.h"
-#include <vector>
 
 namespace dsp {
 
@@ -108,8 +107,8 @@ enum class MoEgWave {
 enum class ExGaterCode {
   one,
   off,
-  tie,
   two,
+  tie,
 };
 
 enum class MoRndMode {

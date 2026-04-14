@@ -113,7 +113,7 @@ const parameterDefs: ParameterDefItem[] = [
   //
   [PK.oscOn, "oscOn", true],
   [PK.oscWave, "oscWave", 0],
-  [PK.oscOctave, "oscOctave", 0.5],
+  [PK.oscOctave, "oscOctave", 0],
   [PK.oscPitch, "oscPitch", 0.5],
   [PK.oscPitchMode, "oscPitchMode", OscPitchMode.octave],
   [PK.oscPitchMoSmooth, "oscPitchMoSmooth", 0],
@@ -224,17 +224,27 @@ export function setupDummyParentApp() {
     });
   }
 
+  function loadFullParameters(parameters: Record<string, number>) {
+    for (const [key, value] of Object.entries(parameters)) {
+      const id = parameterKeyToIdMap[key];
+      workletWrapper.setParameter(id, value);
+    }
+    sendMessageToUi({ type: "bulkSendParameters", parameters });
+    Object.assign(localParameters, parameters);
+  }
+
   function onMessageFromUi(msg: MessageFromUi) {
     if (msg.type === "log") {
       writeLogItemToConsole(msg as LogItem);
     } else if (msg.type === "uiLoaded") {
+      logger.log("uiLoaded");
       sendMessageToUi({
         type: "applyCommand",
         commandKey: "setStandaloneFlag",
         value: 1,
       });
       const parameters = getInitialParameterValues();
-      sendMessageToUi({ type: "bulkSendParameters", parameters });
+      loadFullParameters(parameters);
     } else if (msg.type === "performEdit") {
       const id = parameterKeyToIdMap[msg.paramKey];
       if (id !== undefined) {
@@ -252,7 +262,21 @@ export function setupDummyParentApp() {
         workletWrapper.applyCommand(CommandId.setPlayState, msg.value);
       } else if (msg.commandKey === "resetParameters") {
         const parameters = getInitialParameterValues();
-        sendMessageToUi({ type: "bulkSendParameters", parameters });
+        const excludingKeys = [
+          "parametersVersion",
+          "loopBars",
+          "looped",
+          "masterVolume",
+          "clockingOn",
+          "baseNoteIndex",
+          "internalBpm",
+          "autoRandomizeOnLoop",
+          "randomizeLevel",
+        ];
+        excludingKeys.forEach((key) => {
+          delete parameters[key];
+        });
+        loadFullParameters(parameters);
       } else if (msg.commandKey === "randomizeParameters") {
         emitRandomizationRequest();
       }
@@ -266,14 +290,10 @@ export function setupDummyParentApp() {
           emitRandomizationRequest();
         }
       } else if (msg.type === "randomizeParameters_response") {
-        for (const [id, value] of Object.entries(msg.parameters)) {
-          workletWrapper.setParameter(Number(id), value);
-        }
         const parameters = parametersRecordConverter.mapIdsToKeys(
           msg.parameters,
         );
-        sendMessageToUi({ type: "bulkSendParameters", parameters });
-        Object.assign(localParameters, parameters);
+        loadFullParameters(parameters);
       }
     });
     setInterval(() => {

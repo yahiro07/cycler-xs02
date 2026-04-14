@@ -1,14 +1,23 @@
+import { debugAssert, konsole } from "@dsp/base/konsole";
+import { masterGainConfig } from "@dsp/base/master-gain-config";
 import { Bus, createSynthesisBus } from "@dsp/base/synthesis-bus";
 import {
   applyBufferGain,
   applyBufferGainRms,
-  applyBufferSoftClip, writeBufferWithGain
+  applyBufferSoftClip,
+  clearBuffer,
+  writeBufferWithGain,
 } from "@dsp/dsp-modules/basic/buffer-functions";
 import { mapDbGain } from "@dsp/dsp-modules/basic/db-gain-mapper";
-import { masterGainConfig } from "@dsp/base/master-gain-config";
 import { blWaveProvider } from "@dsp/dsp-modules/oscillators/bl-wave-provider";
-import { gaterExSeqMode_cleanupLocalState, gaterExSeqMode_setupLocalState } from "@dsp/motions/gaters/gater-ex-seq";
-import { gaterMinLaxMode_cleanupLocalState, gaterMinLaxMode_setupLocalState } from "@dsp/motions/gaters/gater-main-lax";
+import {
+  gaterExSeqMode_cleanupLocalState,
+  gaterExSeqMode_setupLocalState,
+} from "@dsp/motions/gaters/gater-ex-seq";
+import {
+  gaterMinLaxMode_cleanupLocalState,
+  gaterMinLaxMode_setupLocalState,
+} from "@dsp/motions/gaters/gater-main-lax";
 import {
   motionsRoot_advance,
   motionsRoot_processOnFrameEnd,
@@ -18,7 +27,7 @@ import { BassSynth } from "@dsp/rhythm/bass-synthesizer";
 import { BeatDriver } from "@dsp/rhythm/beat-driver";
 import { KickSynth } from "@dsp/rhythm/kick-synthesizer";
 import { MainSynthesisLine } from "@dsp/synthesizer/main-synthesis-line";
-import { konsole } from "@dsp/utils/konsole";
+import { SilenceChecker } from "@dsp/synthesizer/silence-checker";
 import { power2 } from "@dsp/utils/number-utils";
 import { TriggerManager } from "./trigger-manager";
 
@@ -42,28 +51,23 @@ export class SynthesizerHub {
   private chunkBuffer: ChunkBuffer;
   private triggerManager: TriggerManager;
 
+  private silenceChecker: SilenceChecker;
+
   constructor() {
     const bus = createSynthesisBus();
-    const mainSynth = new MainSynthesisLine(bus);
-
-    const kickSynth = new KickSynth();
-    const bassSynth = new BassSynth();
-    const beatDriver = new BeatDriver(bus, kickSynth, bassSynth);
-    const workBuffer = new Float32Array(0);
-    const chunkBuffer: ChunkBuffer = {
+    this.bus = bus;
+    this.mainSynth = new MainSynthesisLine(bus);
+    this.kickSynth = new KickSynth();
+    this.bassSynth = new BassSynth();
+    this.beatDriver = new BeatDriver(bus, this.kickSynth, this.bassSynth);
+    this.workBuffer = new Float32Array(configs.chunkSize);
+    this.chunkBuffer = {
       buffer: new Float32Array(configs.chunkSize),
       readPos: 0,
       size: configs.chunkSize,
     };
-    const triggerManager = new TriggerManager(bus);
-    this.bus = bus;
-    this.mainSynth = mainSynth;
-    this.kickSynth = kickSynth;
-    this.bassSynth = bassSynth;
-    this.beatDriver = beatDriver;
-    this.workBuffer = workBuffer;
-    this.chunkBuffer = chunkBuffer;
-    this.triggerManager = triggerManager;
+    this.triggerManager = new TriggerManager(bus);
+    this.silenceChecker = new SilenceChecker(bus);
   }
 
   //for c++ porting
@@ -80,23 +84,24 @@ export class SynthesizerHub {
     const maxFrames = configs.chunkSize;
     this.bus.sampleRate = sampleRate;
     this.bus.maxFrames = maxFrames;
-    if (this.workBuffer.length !== maxFrames) {
-      this.workBuffer = new Float32Array(maxFrames);
-    }
     blWaveProvider.setupTables();
     gaterMinLaxMode_setupLocalState(this.bus);
     gaterExSeqMode_setupLocalState(this.bus);
     this.mainSynth.prepare();
     this.kickSynth.prepare(sampleRate, maxFrames);
     this.bassSynth.prepare(sampleRate, maxFrames);
-    konsole.log(`synthesizerHub_prepare ${sampleRate} ${maxFrames}`);
+    konsole.log(`synthesizerHub.prepare sampleRate:${sampleRate}`);
   }
 
   setGroovePlaying(playing: boolean) {
     this.triggerManager.setGroovePlaying(playing);
+    if (playing) {
+      this.silenceChecker.wakeUp();
+    }
   }
   noteOn(noteNumber: number) {
     this.triggerManager.playNote(noteNumber);
+    this.silenceChecker.wakeUp();
   }
 
   noteOff(noteNumber: number) {
@@ -104,9 +109,10 @@ export class SynthesizerHub {
   }
 
   private coreProcessSamples(buffer: Float32Array, len: number) {
-    const { bus } = this;
+    debugAssert(len === configs.chunkSize, "invalid processing length");
+    const bus = this.bus;
     const sp = bus.parameters;
-    const { workBuffer } = this;
+    const workBuffer = this.workBuffer;
 
     if (bus.blockLength !== buffer.length) {
       bus.blockLength = buffer.length;
@@ -129,13 +135,13 @@ export class SynthesizerHub {
     this.kickSynth.applyPreset(sp.kickPresetKey);
     this.bassSynth.applyPreset(sp.bassPresetKey);
 
-    workBuffer.fill(0);
+    clearBuffer(workBuffer, len);
     this.mainSynth.processSamples(workBuffer, len);
     writeBufferWithGain(buffer, workBuffer, len, power2(sp.synthVolume));
-    workBuffer.fill(0);
+    clearBuffer(workBuffer, len);
     this.kickSynth.processSamples(workBuffer, len);
     writeBufferWithGain(buffer, workBuffer, len, power2(sp.kickVolume));
-    workBuffer.fill(0);
+    clearBuffer(workBuffer, len);
     this.bassSynth.processSamples(workBuffer, len);
     writeBufferWithGain(buffer, workBuffer, len, power2(sp.bassVolume));
 
@@ -146,6 +152,7 @@ export class SynthesizerHub {
     applyBufferGain(buffer, len, masterGain);
     applyBufferSoftClip(buffer, len);
     motionsRoot_processOnFrameEnd(bus);
+    this.silenceChecker.update(buffer, len);
   }
 
   private processSamplesWithChunks(destBuffer: Float32Array, len: number) {
@@ -157,7 +164,7 @@ export class SynthesizerHub {
     for (let i = 0; i < len; i++) {
       // Generate a waveform for one buffer page when the read position is at the beginning
       if (outBuf.readPos === 0) {
-        outBuf.buffer.fill(0);
+        clearBuffer(outBuf.buffer, outBuf.size);
         this.coreProcessSamples(outBuf.buffer, outBuf.size);
       }
       //Fill the output buffer by taking one sample at a time
@@ -169,10 +176,10 @@ export class SynthesizerHub {
   }
 
   processSamples(buffer: Float32Array, len: number) {
+    if (!this.silenceChecker.isSoundActive()) {
+      //stop processing after a certain period of silence
+      return;
+    }
     this.processSamplesWithChunks(buffer, len);
   }
-
-  // getBarPosition(): number {
-  //   return (this.bus.totalStep / 16) >>> 0;
-  // }
 }

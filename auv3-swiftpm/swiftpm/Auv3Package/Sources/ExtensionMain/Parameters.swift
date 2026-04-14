@@ -13,7 +13,7 @@ let gaterTypeLabels = ["seq", "lax"]
 let gateSequencerCodeLabels = ["oooo", "ooo>", "oo>o", "o>oo", ">ooo", ">oo>"]
 let gateSequencerCodeLabelsForHead = ["oooo", "ooo>", "oo>o", "o>oo"]
 let moEgWaveLabels = ["d", "d2", "ad", "bump", "duty", "stair"]
-let exGaterCodeLabels = ["o", "-", ">", "oo"]
+let exGaterCodeLabels = ["o", "-", "oo", ">"]
 let exGaterCodeLabelsForHead = ["o", "-", "oo"]
 let rndModeLabels = ["sh", "sd", "sg"]
 let oscColorModeLabels = ["sfm", "speed", "accel", "drill", "sdm", "creep", "sinus", "ridge"]
@@ -57,7 +57,7 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
       )
       pb.Bool("oscOn", "OSC On", true)
       pb.Enum("oscWave", "OSC Wave", 0, oscWaveLabels)
-      pb.Unary("oscOctave", "OSC Octave", 0.5)
+      pb.Unary("oscOctave", "OSC Octave", 0)
       pb.Unary("oscPitch", "OSC Pitch", 0.5)
       pb.Enum("oscPitchMode", "OSC Pitch Mode", 1, oscPitchModeLabels)
       pb.Unary("oscPitchMoSmooth", "OSC Pitch MoSmooth", 0)
@@ -136,14 +136,14 @@ func buildPluginParameterSpecs() -> ParameterTreeSpec {
 
       //
       pb.Linear(
-        "internalBpm", "Internal BPM", 120, 30, 400, isInternal: true,
+        "internalBpm", "Internal BPM", 130, 30, 400, isInternal: true,
       )
       pb.Bool(
         "autoRandomizeOnLoop", "Auto Randomize On Loop", false,
         isInternal: true,
       )
       pb.Enum(
-        "randomizeLevel", "Randomize Level", 0, randomizeLevelLabels,
+        "randomizeLevel", "Randomize Level", 3, randomizeLevelLabels,
         isInternal: true,
       )
       //

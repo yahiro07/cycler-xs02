@@ -5,13 +5,14 @@ import PackageDescription
 
 let package = Package(
   name: "Auv3Package",
-  platforms: [.macOS(.v14), .iOS(.v16)],
+  platforms: [.macOS(.v14), .iOS(.v18)],
   products: [
     .library(name: "Auv3Package", targets: ["ExtensionMain", "Auv3HostApp"])
   ],
   targets: [
     .target(
       name: "Dsp",
+      sources: ["dsp-core-entry.cpp"],
       publicHeadersPath: "",
     ),
     .target(

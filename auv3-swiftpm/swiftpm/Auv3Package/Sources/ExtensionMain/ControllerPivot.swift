@@ -59,6 +59,7 @@ class ControllerPivot: ControllerPivotProtocol {
   func loadFullParametersSuit(_ parameters: [String: Float]) {
     parametersService.loadFullParametersSuit(parameters)
   }
+
   func requestNoteOn(_ noteNumber: Int, _ velocity: Float) {
     dspRouteAgent.pushInternalNote(noteNumber, velocity)
   }
@@ -66,16 +67,32 @@ class ControllerPivot: ControllerPivotProtocol {
     dspRouteAgent.pushInternalNote(noteNumber, 0)
   }
   func applyCommandFromUi(_ commandKey: String, _ value: Float) {
-    if commandKey == "randomizeParameters" {
-      randomizeParameters()
-    } else if commandKey == "setPlayState" {
+    if commandKey == "setPlayState" {
       dspRouteAgent.pushCustomCommand(commandIds.setPlayState, value)
+    } else if commandKey == "resetParameters" {
+      var parameters = parametersService.getDefaultParameterValues()
+      let excludingKeys = [
+        "parametersVersion",
+        "loopBars",
+        "looped",
+        "masterVolume",
+        "clockingOn",
+        "baseNoteIndex",
+        "internalBpm",
+        "autoRandomizeOnLoop",
+        "randomizeLevel",
+      ]
+      for key in excludingKeys {
+        parameters.removeValue(forKey: key)
+      }
+      loadFullParametersSuit(parameters)
+    } else if commandKey == "randomizeParameters" {
+      randomizeParameters()
     }
   }
 
   func randomizeParameters() {
     var parameters = parametersService.getAllParameterValues()
-    // applyRandomizeParameters(&parameters)  //in swift side
     applyParameterSuitOperationMapped(&parameters) { mapped in
       dspRouteAgent.extraLogic_randomizeParameters(&mapped)
     }

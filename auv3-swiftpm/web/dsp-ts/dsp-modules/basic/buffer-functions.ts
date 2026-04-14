@@ -2,7 +2,7 @@ import {
   applyHardClip,
   applySoftClip,
 } from "@dsp/dsp-modules/effects/soft-clip-shaper";
-import { m_sqrt } from "@dsp/utils/math-utils";
+import { m_abs, m_max, m_sqrt } from "@dsp/utils/math-utils";
 import { mixValue } from "@dsp/utils/number-utils";
 
 export function readBufferInterpolated(
@@ -14,6 +14,12 @@ export function readBufferInterpolated(
   const idx1 = (idx0 + 1) % len;
   const fraction = fIndex - idx0;
   return mixValue(buffer[idx0], buffer[idx1], fraction);
+}
+
+export function clearBuffer(buffer: Float32Array, len: number) {
+  for (let i = 0; i < len; i++) {
+    buffer[i] += 0.0;
+  }
 }
 
 export function copyBuffer(
@@ -29,7 +35,8 @@ export function copyBuffer(
 export function writeBuffer(
   dstBuffer: Float32Array,
   srcBuffer: Float32Array,
-  len: number) {
+  len: number,
+) {
   for (let i = 0; i < len; i++) {
     dstBuffer[i] += srcBuffer[i];
   }
@@ -39,7 +46,7 @@ export function writeBufferWithGain(
   dstBuffer: Float32Array,
   srcBuffer: Float32Array,
   len: number,
-  volume: number
+  volume: number,
 ) {
   for (let i = 0; i < len; i++) {
     dstBuffer[i] += srcBuffer[i] * volume;
@@ -85,4 +92,12 @@ export function applyBufferHardClip(buffer: Float32Array, len: number) {
   for (let i = 0; i < len; i++) {
     buffer[i] = applyHardClip(buffer[i]);
   }
+}
+
+export function getBufferMaxLevel(buffer: Float32Array, len: number) {
+  let maxLevel = 0;
+  for (let i = 0; i < len; i++) {
+    maxLevel = m_max(maxLevel, m_abs(buffer[i]));
+  }
+  return maxLevel;
 }

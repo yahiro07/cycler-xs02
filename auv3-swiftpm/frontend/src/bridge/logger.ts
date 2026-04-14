@@ -1,4 +1,4 @@
-const isDebug = location.search.includes("debug=1");
+const isDebug = import.meta.env.DEV;
 
 type LogKind = "trace" | "info" | "log" | "warn" | "error";
 

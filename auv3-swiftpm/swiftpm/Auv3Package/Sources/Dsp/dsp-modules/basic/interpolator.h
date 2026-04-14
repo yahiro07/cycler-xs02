@@ -1,5 +1,5 @@
 #pragma once
-#include <stdexcept>
+#include "../../base/konsole.h"
 
 namespace dsp {
 
@@ -22,7 +22,8 @@ public:
 
   float advance() {
     if (!hasValue) {
-      throw std::runtime_error("interpolator.advance: value is undefined");
+      debugEmitError("interpolator.advance: value is undefined");
+      return 0.0f;
     }
     float res = value;
     value += delta;
