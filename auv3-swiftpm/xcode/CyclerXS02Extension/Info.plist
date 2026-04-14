@@ -10,17 +10,17 @@
 			<array>
 				<dict>
 					<key>description</key>
-					<string>CyclerXS02Extension PRK3</string>
+					<string>Cycler XS02</string>
 					<key>factoryFunction</key>
 					<string>$(PRODUCT_MODULE_NAME).AudioUnitViewController</string>
 					<key>manufacturer</key>
-					<string>Myco</string>
+					<string>Miqs</string>
 					<key>name</key>
-					<string>sonic: CyclerXS02Extension PRK3</string>
+					<string>miqsel: Cycler XS02</string>
 					<key>sandboxSafe</key>
 					<true/>
 					<key>subtype</key>
-					<string>prk3</string>
+					<string>xs02</string>
 					<key>tags</key>
 					<array>
 						<string>Synthesizer</string>
