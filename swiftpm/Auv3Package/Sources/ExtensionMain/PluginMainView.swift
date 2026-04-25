@@ -12,8 +12,12 @@ struct PluginMainView: View {
       // Text("xs02-2239")
       WebViewComponent(
         onBind: { webViewIo in
-          // webViewIo.loadURL("http://localhost:3000?debug=1")
-          webViewIo.loadURL("app://www-bundles/index.html?debug=1")
+          #if DEBUG
+            // webViewIo.loadURL("http://localhost:3000?debug=1")
+            webViewIo.loadURL("app://www-bundles/index.html?debug=1")
+          #else
+            webViewIo.loadURL("app://www-bundles/index.html")
+          #endif
           webViewBridge.bindWebView(webViewIo)
         },
         onUnbind: {
