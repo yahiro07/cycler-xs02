@@ -28,14 +28,8 @@ private class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
 class WebViewCoordinator: NSObject, @preconcurrency WebViewIoProtocol, WKNavigationDelegate {
   weak var webViewInstance: WKWebView?
+  var onUnbind: (() -> Void)?
   private var receivers: [UUID: (String) -> Void] = [:]
-  private var didCallOnBind = false
-
-  func callOnBindIfNeeded(_ onBind: (WebViewIoProtocol) -> Void) {
-    guard !didCallOnBind else { return }
-    didCallOnBind = true
-    onBind(self)
-  }
 
   func dispatchFromUI(_ dict: String) {
     receivers.values.forEach { $0(dict) }
@@ -212,8 +206,7 @@ func commonWebViewSetup(
   webView.navigationDelegate = coordinator
 
   coordinator.webViewInstance = webView
-
-  coordinator.callOnBindIfNeeded(onBind)
+  onBind(coordinator)
 
   return webView
 }
@@ -221,18 +214,26 @@ func commonWebViewSetup(
 #if os(macOS)
   struct WebViewComponent: NSViewRepresentable {
     let onBind: (WebViewIoProtocol) -> Void
+    let onUnbind: () -> Void
 
-    init(_ onBind: @escaping (WebViewIoProtocol) -> Void) {
+    init(onBind: @escaping (WebViewIoProtocol) -> Void, onUnbind: @escaping () -> Void) {
       self.onBind = onBind
+      self.onUnbind = onUnbind
     }
 
     func makeCoordinator() -> WebViewCoordinator { WebViewCoordinator() }
 
     func makeNSView(context: Context) -> WKWebView {
+      context.coordinator.onUnbind = onUnbind
       return commonWebViewSetup(coordinator: context.coordinator, onBind: onBind)
     }
 
     func updateNSView(_ webView: WKWebView, context: Context) {
+    }
+
+    static func dismantleNSView(_ webView: WKWebView, coordinator: WebViewCoordinator) {
+      coordinator.onUnbind?()
+      coordinator.webViewInstance = nil
     }
 
   }
@@ -242,14 +243,17 @@ func commonWebViewSetup(
   struct WebViewComponent: UIViewRepresentable {
 
     let onBind: (WebViewIoProtocol) -> Void
+    let onUnbind: () -> Void
 
-    init(_ onBind: @escaping (WebViewIoProtocol) -> Void) {
+    init(onBind: @escaping (WebViewIoProtocol) -> Void, onUnbind: @escaping () -> Void) {
       self.onBind = onBind
+      self.onUnbind = onUnbind
     }
 
     func makeCoordinator() -> WebViewCoordinator { WebViewCoordinator() }
 
     func makeUIView(context: Context) -> WKWebView {
+      context.coordinator.onUnbind = onUnbind
       let webView = commonWebViewSetup(coordinator: context.coordinator, onBind: onBind)
       //remove top and bottom insets
       webView.scrollView.contentInsetAdjustmentBehavior = .never
@@ -257,6 +261,11 @@ func commonWebViewSetup(
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {
+    }
+
+    static func dismantleUIView(_ webView: WKWebView, coordinator: WebViewCoordinator) {
+      coordinator.onUnbind?()
+      coordinator.webViewInstance = nil
     }
 
   }

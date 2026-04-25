@@ -10,13 +10,15 @@ struct PluginMainView: View {
   var body: some View {
     VStack {
       // Text("xs02-2239")
-      WebViewComponent { webViewIo in
-        // webViewIo.loadURL("http://localhost:3000?debug=1")
-        webViewIo.loadURL("app://www-bundles/index.html")
-        webViewBridge.bindWebView(webViewIo)
-      }.onDisappear {
-        webViewBridge.unbindWebView()
-      }
+      WebViewComponent(
+        onBind: { webViewIo in
+          // webViewIo.loadURL("http://localhost:3000?debug=1")
+          webViewIo.loadURL("app://www-bundles/index.html?debug=1")
+          webViewBridge.bindWebView(webViewIo)
+        },
+        onUnbind: {
+          webViewBridge.unbindWebView()
+        })
     }
     // .border(.green, width: 2)
     .ignoresSafeArea()

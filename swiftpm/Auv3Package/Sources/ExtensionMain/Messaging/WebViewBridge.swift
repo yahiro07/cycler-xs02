@@ -102,6 +102,9 @@ class WebViewBridge: NSObject, ObservableObject, WebViewBridgeProtocol {
 
   func bindWebView(_ webViewIo: WebViewIoProtocol) {
     logger.info("bindWebView")
+    if self.webViewIo != nil {
+      unbindWebView()
+    }
     self.webViewIo = webViewIo
     webViewIoSubscription = webViewIo.subscribeMessage { [weak self] message in
       if let msg: MessageFromUI = mapMessageFromUI_fromJsonString(message) {
@@ -115,9 +118,10 @@ class WebViewBridge: NSObject, ObservableObject, WebViewBridgeProtocol {
 
   func unbindWebView() {
     logger.info("unbindWebView")
-    controllerPivot.removeWebViewBridge(self)
     if webViewIo != nil {
+      controllerPivot.removeWebViewBridge(self)
       webViewIoSubscription?.cancel()
+      webViewIoSubscription = nil
       webViewIo = nil
     }
   }
