@@ -107,12 +107,6 @@ class ControllerPivot: ControllerPivotProtocol {
     }
   }
 
-  func broadcastHostEvent(_ event: HostEvent) {
-    for bridge in bridges {
-      bridge.sendHostEvent(event)
-    }
-  }
-
   func readFile(path: String, skipIfNotExist: Bool?) -> String? {
     return storageFileIoService.readFile(path: path, skipIfNotExist: skipIfNotExist)
   }
@@ -149,23 +143,28 @@ class ControllerPivot: ControllerPivotProtocol {
     }
   }
 
+  func broadcastHostNoteToUi(_ noteNumber: Int, _ isOn: Bool) {
+    for bridge in bridges {
+      bridge.sendHostNote(noteNumber, isOn)
+    }
+  }
+
   func drainHostEvents() {
     dspRouteAgent.drainHostEvents { event in
-      broadcastHostEvent(event)
       switch event {
+      case .hostNoteOn(let noteNumber):
+        broadcastHostNoteToUi(noteNumber, true)
+      case .hostNoteOff(let noteNumber):
+        broadcastHostNoteToUi(noteNumber, false)
       case .hostTempo(let bpm):
         // logger.log("host bpm change: \(bpm)")
-        if isStandalone {
-
-        } else {
+        if !isStandalone {
           //executed in host app
           //Host bpm --> DSP, UI
           parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
         }
       case .hostPlayState(let playState):
         broadcastCommandToUi("setHostPlayState", playState ? 1 : 0)
-      default:
-        break
       }
     }
   }

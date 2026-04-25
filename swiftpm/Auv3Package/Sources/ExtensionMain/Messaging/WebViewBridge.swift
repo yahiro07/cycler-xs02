@@ -36,9 +36,11 @@ class WebViewBridge: NSObject, ObservableObject, WebViewBridgeProtocol {
     sendMessageToUI(json)
   }
 
-  func sendHostEvent(_ event: HostEvent) {
-    let msg = mapHostEventToMessage(event)
-    let json = mapMessageFromApp_toJsonString(msg)
+  func sendHostNote(_ noteNumber: Int, _ isOn: Bool) {
+    let json =
+      isOn
+      ? mapMessageFromApp_toJsonString(.hostNoteOn(noteNumber: noteNumber))
+      : mapMessageFromApp_toJsonString(.hostNoteOff(noteNumber: noteNumber))
     sendMessageToUI(json)
   }
 

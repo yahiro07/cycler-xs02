@@ -23,8 +23,6 @@ enum MessageFromApp {
   case bulkSendParameters(parameters: [String: Float])
   case hostNoteOn(noteNumber: Int)
   case hostNoteOff(noteNumber: Int)
-  case hostTempo(tempo: Float)
-  case hostPlayState(isPlaying: Bool)
   case applyCommand(commandKey: String, value: Float)
   //
   case rpcReadFileResponse(rpcId: Int, success: Bool, content: String)
