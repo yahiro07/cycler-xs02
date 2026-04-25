@@ -111,6 +111,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     let outputChannelCount = self.outputBusses[0].format.channelCount
 
     dspRoute.setMusicalContextBlock(self.musicalContextBlock)
+    dspRoute.setTransportStateBlock(self.transportStateBlock)
     dspRoute.initialize(Int32(outputChannelCount), outputBus!.format.sampleRate)
 
     dspRoute.setChannelCount(0, self.outputBusses[0].format.channelCount)
