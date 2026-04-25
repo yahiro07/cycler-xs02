@@ -7,7 +7,7 @@ struct CyclerXS02App: App {
   private let hostApp = HostApp()
 
   var body: some Scene {
-    hostApp.body.onChange(of: scenePhase) { newPhase in
+    hostApp.body.onChange(of: scenePhase) { _, newPhase in
       switch newPhase {
       case .background:
         hostApp.saveState()
