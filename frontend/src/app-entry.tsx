@@ -18,7 +18,7 @@ const App = () => {
       );
       return;
     }
-    logger.trace("frontend app mounted 2017");
+    logger.trace("frontend app mounted 2049");
     agents.setup();
     setupKeyboardHandlerForTonePreview(actions.setPlayState);
     void (async () => {

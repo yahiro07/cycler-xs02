@@ -530,18 +530,28 @@ const PlayControlSection = () => {
   return (
     <div className="flex-v gap-0" css={cssSectionFrameBottom}>
       <div className="flex-h gap-2 items-start">
-        <FePadButton
-          children={<Icons.Loop size={22} />}
-          unitSize="u11"
-          active={st.looped}
-          onClick={mt.toggleLooped}
-        />
-        <FeSelectorPad
-          label="bars"
-          options={loopBarsOptions}
-          value={st.loopBars}
-          onChange={mt.setLoopBars}
-        />
+        <div className="flex-v gap-1.5">
+          <div className="flex-h gap-2">
+            <FePadButton
+              children={<Icons.Loop size={22} />}
+              unitSize="u11"
+              active={st.looped}
+              onClick={mt.toggleLooped}
+            />
+            <FeSelectorPad
+              label="bars"
+              options={loopBarsOptions}
+              value={st.loopBars}
+              onChange={mt.setLoopBars}
+            />
+          </div>
+          {!st.hostPlayState && st.groovePlaying && (
+            <div className="text-[12px] pl-1 w-[100px] whitespace-nowrap">
+              awaiting host start...
+            </div>
+          )}
+        </div>
+
         <FlexSpacer />
         {bpmEditable ? (
           <FeBpmControlDisplay
@@ -560,7 +570,7 @@ const PlayControlSection = () => {
           children={<Icons.Play size={28} />}
           height={50}
           width={70}
-          active={st.groovePlaying}
+          active={st.groovePlaying && st.hostPlayState}
           onClick={actions.togglePlayState}
         />
         <FlexSpacer />
