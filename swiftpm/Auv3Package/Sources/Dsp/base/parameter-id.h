@@ -192,6 +192,9 @@ enum ParameterId : uint64_t {
   randomizeLevel = hash("randomizeLevel")
 };
 
-enum CommandId : uint64_t { setPlayState = hash("setPlayState") };
+enum CommandId : uint64_t {
+  setPlayState = hash("setPlayState"),
+  setHostPlayState = hash("setHostPlayState")
+};
 
 } // namespace dsp

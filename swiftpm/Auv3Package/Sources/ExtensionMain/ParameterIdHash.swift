@@ -19,5 +19,6 @@ let parameterIds = ParameterIds()
 
 struct CommandIds {
   let setPlayState = hash("setPlayState")
+  let setHostPlayState = hash("setHostPlayState")
 }
 let commandIds = CommandIds()

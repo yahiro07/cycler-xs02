@@ -80,6 +80,7 @@ function main() {
   synth.setParameter(ParameterId.oscColor, 0.5);
   synth.setParameter(ParameterId.moOscColor_moOn, 1);
   synth.applyCommand(ParameterId.internalBpm, 120);
+  synth.applyCommand(CommandId.setHostPlayState, 1);
   synth.applyCommand(CommandId.setPlayState, 1);
 
   const outputBuffer = new Float32Array(totalFrames);

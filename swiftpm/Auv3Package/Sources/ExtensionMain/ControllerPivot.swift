@@ -23,6 +23,7 @@ class ControllerPivot: ControllerPivotProtocol {
   func setStandaloneFlag() {
     if !self.isStandalone {
       self.isStandalone = true
+      dspRouteAgent.pushCustomCommand(commandIds.setHostPlayState, 1)
       for bridge in bridges {
         bridge.sendCommandFromApp("setStandaloneFlag", 1)
         bridge.sendCommandFromApp("setHostPlayState", 1)
@@ -164,6 +165,8 @@ class ControllerPivot: ControllerPivotProtocol {
           parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
         }
       case .hostPlayState(let playState):
+        // logger.log("hostPalyState change: \(playState)")
+        dspRouteAgent.pushCustomCommand(commandIds.setHostPlayState, playState ? 1 : 0)
         broadcastCommandToUi("setHostPlayState", playState ? 1 : 0)
       }
     }

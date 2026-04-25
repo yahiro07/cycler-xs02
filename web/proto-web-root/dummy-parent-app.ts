@@ -245,6 +245,16 @@ export function setupDummyParentApp() {
         commandKey: "setStandaloneFlag",
         value: 1,
       });
+      sendMessageToUi({
+        type: "applyCommand",
+        commandKey: "setHostPlayState",
+        value: 1,
+      });
+      workletWrapper.sendMessage({
+        type: "applyCommand",
+        id: CommandId.setHostPlayState,
+        value: 1,
+      });
       const parameters = getInitialParameterValues();
       loadFullParameters(parameters);
     } else if (msg.type === "performEdit") {
