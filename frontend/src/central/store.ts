@@ -12,6 +12,7 @@ export type StoreState = SynthParametersSuit & {
   editTarget: ParameterKey | null;
   //passive
   isStandalone: boolean;
+  hostPlayState: boolean; //always true when standalone
   hostNoteNumber: number;
   //persist
   touchPointerVisible: boolean;
@@ -30,6 +31,7 @@ const storeInitialState: StoreState = {
   editTarget: null,
   //
   isStandalone: false,
+  hostPlayState: false,
   hostNoteNumber: -1,
   //
   touchPointerVisible: false,

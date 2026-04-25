@@ -111,6 +111,8 @@ export function createEditorBridge(coreBridge: CoreBridge): EditorBridge {
         } else if (msg.type === "applyCommand") {
           if (msg.commandKey === "setStandaloneFlag") {
             store.mutations.setIsStandalone(true);
+          } else if (msg.commandKey === "setHostPlayState") {
+            store.mutations.setHostPlayState(msg.value > 0);
           }
         }
         // else if (msg.type === "latestParametersVersion") {

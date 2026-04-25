@@ -25,6 +25,7 @@ class ControllerPivot: ControllerPivotProtocol {
       self.isStandalone = true
       for bridge in bridges {
         bridge.sendCommandFromApp("setStandaloneFlag", 1)
+        bridge.sendCommandFromApp("setHostPlayState", 1)
       }
     }
   }
@@ -40,6 +41,7 @@ class ControllerPivot: ControllerPivotProtocol {
     bridge.bulkSendParameters(parameters)
     if self.isStandalone {
       bridge.sendCommandFromApp("setStandaloneFlag", 1)
+      bridge.sendCommandFromApp("setHostPlayState", 1)
     }
   }
 
@@ -141,14 +143,9 @@ class ControllerPivot: ControllerPivotProtocol {
     }
   }
 
-  func handleHostBpmChange(_ bpm: Float) {
-    // logger.log("host bpm change: \(bpm)")
-    if isStandalone {
-      //standalone
-    } else {
-      //executed in host app
-      //Host bpm --> DSP, UI
-      parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
+  func broadcastCommandToUi(_ commandKey: String, _ value: Float) {
+    for bridge in bridges {
+      bridge.sendCommandFromApp(commandKey, value)
     }
   }
 
@@ -157,7 +154,16 @@ class ControllerPivot: ControllerPivotProtocol {
       broadcastHostEvent(event)
       switch event {
       case .hostTempo(let bpm):
-        handleHostBpmChange(bpm)
+        // logger.log("host bpm change: \(bpm)")
+        if isStandalone {
+
+        } else {
+          //executed in host app
+          //Host bpm --> DSP, UI
+          parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
+        }
+      case .hostPlayState(let playState):
+        broadcastCommandToUi("setHostPlayState", playState ? 1 : 0)
       default:
         break
       }
