@@ -135,6 +135,34 @@ class ControllerPivot: ControllerPivotProtocol {
     stateKvsService.delete(key)
   }
 
+  func updateAutoParameterRandomization() {
+    if dspRouteAgent.extraLogic_pullRandomizeRequestFlag() {
+      randomizeParameters()
+    }
+  }
+
+  func handleHostBpmChange(_ bpm: Float) {
+    // logger.log("host bpm change: \(bpm)")
+    if isStandalone {
+      //standalone
+    } else {
+      //executed in host app
+      //Host bpm --> DSP, UI
+      parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
+    }
+  }
+
+  func drainHostEvents() {
+    dspRouteAgent.drainHostEvents { event in
+      broadcastHostEvent(event)
+      switch event {
+      case .hostTempo(let bpm):
+        handleHostBpmChange(bpm)
+      default:
+        break
+      }
+    }
+  }
 }
 
 func applyParameterSuitOperationMapped(
