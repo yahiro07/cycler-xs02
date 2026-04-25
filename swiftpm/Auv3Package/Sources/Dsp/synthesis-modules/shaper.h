@@ -25,7 +25,8 @@ public:
     if (!highResBuffer)
       return;
     int hLen = len * ovsRate;
-    miLevel.feed(sp.shaperLevel, hLen);
+    float shaperLevel = bus.interm.pmxShaperLevel;
+    miLevel.feed(shaperLevel, hLen);
     for (int i = 0; i < hLen; i++) {
       float level = miLevel.advance();
       float input = highResBuffer[i];

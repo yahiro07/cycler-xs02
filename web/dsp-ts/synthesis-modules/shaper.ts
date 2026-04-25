@@ -32,7 +32,8 @@ export class Shaper {
     const highResBuffer = this.ovsStage.readIn(buffer, len, true);
     const hLen = len * ovsRate;
     if (!highResBuffer) return;
-    this.miLevel.feed(sp.shaperLevel, hLen);
+    const shaperLevel = this.bus.interm.pmxShaperLevel;
+    this.miLevel.feed(shaperLevel, hLen);
     for (let i = 0; i < hLen; i++) {
       const level = this.miLevel.advance();
       const input = highResBuffer[i];
