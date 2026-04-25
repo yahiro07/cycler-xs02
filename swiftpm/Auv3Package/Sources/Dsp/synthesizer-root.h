@@ -10,6 +10,8 @@ namespace dsp {
 class SynthesizerRoot : public IDspCore {
 private:
   SynthesizerHub hub;
+  bool hostPlaystate = false;
+  bool playState = false;
 
 public:
   SynthesizerRoot() = default;
@@ -34,9 +36,14 @@ public:
     memcpy(rightBuffer, leftBuffer, frames * sizeof(float));
   }
 
-  void applyCommand(uint64_t id, float value) override {
-    if (id == static_cast<uint64_t>(CommandId::setPlayState)) {
-      hub.setGroovePlaying(value > 0.5f);
+  void applyCommand(uint64_t _id, float value) override {
+    auto id = static_cast<CommandId>(_id);
+    if (id == CommandId::setHostPlayState) {
+      hostPlaystate = value > 0.5f;
+      hub.setGroovePlaying(hostPlaystate && playState);
+    } else if (id == (CommandId::setPlayState)) {
+      playState = value > 0.5f;
+      hub.setGroovePlaying(hostPlaystate && playState);
     }
   }
 

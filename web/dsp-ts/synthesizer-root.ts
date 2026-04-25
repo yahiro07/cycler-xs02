@@ -7,6 +7,9 @@ import { SynthesizerHub } from "./synthesizer/synthesizer-hub";
 export class SynthesizerRoot implements IDspCore {
   private synthesizerHub: SynthesizerHub;
 
+  private hostPlayState = false;
+  private playState = false;
+
   constructor() {
     this.synthesizerHub = new SynthesizerHub();
   }
@@ -32,9 +35,18 @@ export class SynthesizerRoot implements IDspCore {
     this.synthesizerHub.processSamples(bufferL, frames);
     bufferR.set(bufferL);
   }
+
   applyCommand(id: number, value: number): void {
-    if (id === CommandId.setPlayState) {
-      this.synthesizerHub.setGroovePlaying(value > 0.5);
+    if (id === CommandId.setHostPlayState) {
+      this.hostPlayState = value > 0.5;
+      this.synthesizerHub.setGroovePlaying(
+        this.hostPlayState && this.playState,
+      );
+    } else if (id === CommandId.setPlayState) {
+      this.playState = value > 0.5;
+      this.synthesizerHub.setGroovePlaying(
+        this.hostPlayState && this.playState,
+      );
     }
   }
 
