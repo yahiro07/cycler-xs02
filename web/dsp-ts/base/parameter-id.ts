@@ -191,4 +191,5 @@ export const ParameterId = {
 
 export const CommandId = {
   setPlayState: hash("setPlayState"),
+  setHostPlayState: hash("setHostPlayState"),
 };

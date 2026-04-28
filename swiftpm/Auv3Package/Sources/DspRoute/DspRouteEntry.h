@@ -28,6 +28,7 @@
 - (void)setMaximumFramesToRender:(AUAudioFrameCount)maxFrames
     NS_SWIFT_NAME(setMaximumFramesToRender(_:));
 - (void)setMusicalContextBlock:(AUHostMusicalContextBlock)contextBlock;
+- (void)setTransportStateBlock:(AUHostTransportStateBlock)transportStateBlock;
 - (bool)extraLogic_pullRandomizeRequestFlag;
 - (void)extraLogic_randomizeParameters:(NSMutableDictionary<NSNumber *, NSNumber *> *)parameters;
 @end

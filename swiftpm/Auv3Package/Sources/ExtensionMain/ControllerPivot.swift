@@ -23,8 +23,10 @@ class ControllerPivot: ControllerPivotProtocol {
   func setStandaloneFlag() {
     if !self.isStandalone {
       self.isStandalone = true
+      dspRouteAgent.pushCustomCommand(commandIds.setHostPlayState, 1)
       for bridge in bridges {
         bridge.sendCommandFromApp("setStandaloneFlag", 1)
+        bridge.sendCommandFromApp("setHostPlayState", 1)
       }
     }
   }
@@ -40,6 +42,7 @@ class ControllerPivot: ControllerPivotProtocol {
     bridge.bulkSendParameters(parameters)
     if self.isStandalone {
       bridge.sendCommandFromApp("setStandaloneFlag", 1)
+      bridge.sendCommandFromApp("setHostPlayState", 1)
     }
   }
 
@@ -105,12 +108,6 @@ class ControllerPivot: ControllerPivotProtocol {
     }
   }
 
-  func broadcastHostEvent(_ event: HostEvent) {
-    for bridge in bridges {
-      bridge.sendHostEvent(event)
-    }
-  }
-
   func readFile(path: String, skipIfNotExist: Bool?) -> String? {
     return storageFileIoService.readFile(path: path, skipIfNotExist: skipIfNotExist)
   }
@@ -135,6 +132,45 @@ class ControllerPivot: ControllerPivotProtocol {
     stateKvsService.delete(key)
   }
 
+  func updateAutoParameterRandomization() {
+    if dspRouteAgent.extraLogic_pullRandomizeRequestFlag() {
+      randomizeParameters()
+    }
+  }
+
+  func broadcastCommandToUi(_ commandKey: String, _ value: Float) {
+    for bridge in bridges {
+      bridge.sendCommandFromApp(commandKey, value)
+    }
+  }
+
+  func broadcastHostNoteToUi(_ noteNumber: Int, _ isOn: Bool) {
+    for bridge in bridges {
+      bridge.sendHostNote(noteNumber, isOn)
+    }
+  }
+
+  func drainHostEvents() {
+    dspRouteAgent.drainHostEvents { event in
+      switch event {
+      case .hostNoteOn(let noteNumber):
+        broadcastHostNoteToUi(noteNumber, true)
+      case .hostNoteOff(let noteNumber):
+        broadcastHostNoteToUi(noteNumber, false)
+      case .hostTempo(let bpm):
+        // logger.log("host bpm change: \(bpm)")
+        if !isStandalone {
+          //executed in host app
+          //Host bpm --> DSP, UI
+          parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
+        }
+      case .hostPlayState(let playState):
+        // logger.log("hostPalyState change: \(playState)")
+        dspRouteAgent.pushCustomCommand(commandIds.setHostPlayState, playState ? 1 : 0)
+        broadcastCommandToUi("setHostPlayState", playState ? 1 : 0)
+      }
+    }
+  }
 }
 
 func applyParameterSuitOperationMapped(

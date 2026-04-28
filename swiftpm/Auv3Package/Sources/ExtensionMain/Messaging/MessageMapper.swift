@@ -129,16 +129,6 @@ func mapMessageFromApp_toJsonString(_ msg: MessageFromApp) -> String {
       "commandKey": commandKey,
       "value": value,
     ])
-  case .hostTempo(let tempo):
-    return toJson([
-      "type": "hostTempo",
-      "tempo": tempo,
-    ])
-  case .hostPlayState(let isPlaying):
-    return toJson([
-      "type": "hostPlayState",
-      "isPlaying": isPlaying,
-    ])
   case .rpcReadFileResponse(let rpcId, let success, let content):
     return toJson([
       "type": "rpcReadFileResponse",
@@ -164,18 +154,5 @@ func mapMessageFromApp_toJsonString(_ msg: MessageFromApp) -> String {
       "rpcId": rpcId,
       "items": items,
     ])
-  }
-}
-
-func mapHostEventToMessage(_ event: HostEvent) -> MessageFromApp {
-  switch event {
-  case .hostNoteOn(let noteNumber):
-    return .hostNoteOn(noteNumber: noteNumber)
-  case .hostNoteOff(let noteNumber):
-    return .hostNoteOff(noteNumber: noteNumber)
-  case .hostTempo(let tempo):
-    return .hostTempo(tempo: tempo)
-  case .hostPlayState(let isPlaying):
-    return .hostPlayState(isPlaying: isPlaying)
   }
 }

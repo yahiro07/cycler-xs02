@@ -17,7 +17,6 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
   private var parameterChangesToken: Int = 0
 
   private let intervalTimerManager = IntervalTimerManager()
-  private var isStandalone = false
 
   @objc override init(
     componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions
@@ -112,6 +111,7 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     let outputChannelCount = self.outputBusses[0].format.channelCount
 
     dspRoute.setMusicalContextBlock(self.musicalContextBlock)
+    dspRoute.setTransportStateBlock(self.transportStateBlock)
     dspRoute.initialize(Int32(outputChannelCount), outputBus!.format.sampleRate)
 
     dspRoute.setChannelCount(0, self.outputBusses[0].format.channelCount)
@@ -177,7 +177,6 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
       if state["MySynth1.hostedInStandaloneApp"] != nil {
         logger.log("hosted in standalone app")
         controllerPivot.setStandaloneFlag()
-        isStandalone = true
       }
       if let parameters = state["parameters"] as? [String: Float] {
         parametersService.loadFullParametersSuit(parameters)
@@ -188,40 +187,9 @@ public class PluginAudioUnit: AUAudioUnit, @unchecked Sendable {
     }
   }
 
-  private func handleHostBpmChange(_ bpm: Float) {
-    // logger.log("host bpm change: \(bpm)")
-    if isStandalone {
-      //standalone
-    } else {
-      //executed in host app
-      //Host bpm --> DSP, UI
-      parametersService.setInternalParameterFromHost(parameterIds.internalBpm, bpm)
-    }
-  }
-
-  func updateParameterRandomization() {
-    if dspRoute.extraLogic_pullRandomizeRequestFlag() {
-      controllerPivot.randomizeParameters()
-    }
-  }
-
-  func drainHostEvents() {
-    dspRouteAgent.drainHostEvents { event in
-      self.controllerPivot.broadcastHostEvent(event)
-      switch event {
-      case .hostTempo(let bpm):
-        handleHostBpmChange(bpm)
-      default:
-        break
-      }
-    }
-  }
-
   func onIntervalTimerTick() {
-    drainHostEvents()
-    // if viewActive {
-    updateParameterRandomization()
-    // }
+    controllerPivot.drainHostEvents()
+    controllerPivot.updateAutoParameterRandomization()
   }
 
   func viewAdded() {

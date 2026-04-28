@@ -1,4 +1,4 @@
-export type CommandKeyFromApp = "setStandaloneFlag";
+export type CommandKeyFromApp = "setStandaloneFlag" | "setHostPlayState";
 
 export type CommandKeyFromUi =
   | "setPlayState"

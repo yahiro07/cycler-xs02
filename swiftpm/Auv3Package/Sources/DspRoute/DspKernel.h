@@ -15,11 +15,13 @@
 class DspKernel {
 private:
   AUHostMusicalContextBlock mMusicalContextBlock;
+  AUHostTransportStateBlock mTransportStateBlock;
 
   double mSampleRate = 44100.0;
   bool mBypassed = false;
   AUAudioFrameCount mMaxFramesToRender = 1024;
   double mCurrentTempo = 0.0;
+  bool mIsPlaying = false;
 
   std::unique_ptr<dsp::IDspCore> mDspCore =
       std::unique_ptr<dsp::IDspCore>(dsp::createDspCoreInstance());
@@ -96,6 +98,10 @@ public:
     mMusicalContextBlock = contextBlock;
   }
 
+  void setTransportStateBlock(AUHostTransportStateBlock transportStateBlock) {
+    mTransportStateBlock = transportStateBlock;
+  }
+
   void process(std::span<float *> outputBuffers,
                AUEventSampleTime bufferStartTime,
                AUAudioFrameCount frameCount) {
@@ -130,6 +136,22 @@ public:
           mCurrentTempo = currentTempo;
           rtHostEventQueue.push({RtHostEventType::Tempo,
                                  .tempo = static_cast<float>(currentTempo)});
+        }
+      }
+    }
+
+    if (mTransportStateBlock) {
+      AUHostTransportStateFlags transportStateFlags = 0;
+      if (mTransportStateBlock(&transportStateFlags,
+                               nullptr /* currentSamplePosition */,
+                               nullptr /* cycleStartBeatPosition */,
+                               nullptr /* cycleEndBeatPosition */)) {
+        const bool isPlaying =
+            (transportStateFlags & AUHostTransportStateMoving) != 0;
+        if (isPlaying != mIsPlaying) {
+          mIsPlaying = isPlaying;
+          rtHostEventQueue.push(
+              {RtHostEventType::PlayState, .playState = {isPlaying}});
         }
       }
     }

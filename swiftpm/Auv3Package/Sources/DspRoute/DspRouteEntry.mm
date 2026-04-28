@@ -96,6 +96,9 @@ DspRouteHostEvent mapRtHostEvent(const RtHostEvent &event) {
 - (void)setMusicalContextBlock:(AUHostMusicalContextBlock)contextBlock {
   dspKernel.setMusicalContextBlock(contextBlock);
 }
+- (void)setTransportStateBlock:(AUHostTransportStateBlock)transportStateBlock {
+  dspKernel.setTransportStateBlock(transportStateBlock);
+}
 - (bool)extraLogic_pullRandomizeRequestFlag {
   return dspKernel.extraLogic_pullRandomizeRequestFlag();
 }

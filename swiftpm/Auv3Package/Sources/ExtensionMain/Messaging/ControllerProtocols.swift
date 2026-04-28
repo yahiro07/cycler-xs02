@@ -27,6 +27,6 @@ protocol ControllerPivotProtocol {
 protocol WebViewBridgeProtocol: AnyObject {
   func sendParameter(_ paramKey: String, _ value: Float)
   func bulkSendParameters(_ parameters: [String: Float])
-  func sendHostEvent(_ event: HostEvent)
+  func sendHostNote(_ noteNumber: Int, _ isOn: Bool)
   func sendCommandFromApp(_ commandKey: String, _ value: Float)
 }
